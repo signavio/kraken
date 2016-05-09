@@ -1,0 +1,40 @@
+{
+  "traces": [{
+    "traceId": "f2e950d2bd0a492bbbf60952807c43ae",
+    "subjectId": 123,
+    "startActivity": "Check Order",
+    "endActivity": "Create Order",
+    "activities": ["Check Order", "Archive", "Create Order"]
+  }, {
+    "traceId": "b768bddd427a422485ae9e855d4f8b97",
+    "subjectId": 123,
+    "startActivity": "Check Order",
+    "endActivity": "Check Order",
+    "activities": ["Check Order"]
+  }, {
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "subjectId": 123,
+    "startActivity": "Check Order",
+    "endActivity": "Create Order",
+    "activities": ["Check Order", "Create Order"]
+  }, {
+    "traceId": "2144320ea62e45dc833e4f303221af63",
+    "subjectId": 123,
+    "startActivity": "Create Order",
+    "endActivity": "Create Order",
+    "activities": ["Create Order"]
+  }, {
+    "traceId": "33569c652a004a0c895e6f1c2019c03b",
+    "subjectId": 123,
+    "startActivity": "Create Vendor",
+    "endActivity": "Check Order",
+    "activities": ["Create Vendor", "Check Order"]
+  }, {
+    "traceId": "0b8c8b0532cb4908844fcc1968794484",
+    "subjectId": 123,
+    "startActivity": "Change Vendor Master Data",
+    "endActivity": "Create Order",
+    "activities": ["Change Vendor Master Data", "Check Order", "Create Order"]
+  }]
+
+}

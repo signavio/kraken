@@ -1,0 +1,735 @@
+{
+  "cases": [{
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658072,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379946_2703_2014",
+    "subjectId": 123,
+    "traceId": "f2e950d2bd0a492bbbf60952807c43ae",
+    "begin": 1409156381,
+    "end": 1409215562,
+    "activities": [{
+      "id": "176b9a0a3bc942bbbc08efefc9f0f2e5",
+      "caseId": "0IWE1379946_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409156381,
+      "payload": {
+        "Locator": "BELNR IWE1379946 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "cf3ec2cda7474a92abfcbe2148705057",
+      "caseId": "0IWE1379946_2703_2014",
+      "activity": "Archive",
+      "timestamp": 1409175440,
+      "payload": {
+        "Locator": "BELNR 0010122268 GJAHR 2014 BUKRS 2703",
+        "TCODE": "FB1S"
+      }
+    }, {
+      "id": "35df11ce54024d61a7f01ff1fd347b3a",
+      "caseId": "0IWE1379946_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409215562,
+      "payload": {
+        "Locator": "BELNR 1500009032 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658073,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329318_2703_2014",
+    "subjectId": 123,
+    "traceId": "b768bddd427a422485ae9e855d4f8b97",
+    "begin": 1405321470,
+    "end": 1405321470,
+    "activities": [{
+      "id": "ac9f81f5131e4b519141b65b38aa90b0",
+      "caseId": "0IWE1329318_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405321470,
+      "payload": {
+        "Locator": "BELNR IWE1329318 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658074,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379499_2703_2014",
+    "subjectId": 123,
+    "traceId": "f2e950d2bd0a492bbbf60952807c43ae",
+    "begin": 1409153542,
+    "end": 1409319473,
+    "activities": [{
+      "id": "530138e3548b41d6972277dfb9057728",
+      "caseId": "0IWE1379499_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409153542,
+      "payload": {
+        "Locator": "BELNR IWE1379499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "56ccb6cbbad74446a0668a41493fcc96",
+      "caseId": "0IWE1379499_2703_2014",
+      "activity": "Archive",
+      "timestamp": 1409319472,
+      "payload": {
+        "Locator": "BELNR 0170001263 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "4db5316854cb4a8082fb56667827c495",
+      "caseId": "0IWE1379499_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409319473,
+      "payload": {
+        "Locator": "BELNR 0170001263 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658075,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379502_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1409153510,
+    "end": 1409243458,
+    "activities": [{
+      "id": "e7d98dadc3174dcbb5af7ca31172564f",
+      "caseId": "0IWE1379502_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409153510,
+      "payload": {
+        "Locator": "BELNR IWE1379502 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "92fdff69a4df48af946fede711227da6",
+      "caseId": "0IWE1379502_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409243458,
+      "payload": {
+        "Locator": "BELNR 0170001255 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658076,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379947_2703_2014",
+    "subjectId": 123,
+    "traceId": "b768bddd427a422485ae9e855d4f8b97",
+    "begin": 1409156386,
+    "end": 1409156386,
+    "activities": [{
+      "id": "835967592d744a46bbe4422c6bd6a857",
+      "caseId": "0IWE1379947_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409156386,
+      "payload": {
+        "Locator": "BELNR IWE1379947 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658077,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329310_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324203,
+    "end": 1407400579,
+    "activities": [{
+      "id": "3e67aacf5e314090807c97f23d47f7b8",
+      "caseId": "0IWE1329310_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324203,
+      "payload": {
+        "Locator": "BELNR IWE1329310 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "be60e2ce87b54602b58fb382a1189e25",
+      "caseId": "0IWE1329310_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658078,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379488_2703_2014",
+    "subjectId": 123,
+    "traceId": "f2e950d2bd0a492bbbf60952807c43ae",
+    "begin": 1409153514,
+    "end": 1409243454,
+    "activities": [{
+      "id": "4867aa842b5345a68491aa74b79f351e",
+      "caseId": "0IWE1379488_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409153514,
+      "payload": {
+        "Locator": "BELNR IWE1379488 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "537fa5c4cae74f03986916d310c137ce",
+      "caseId": "0IWE1379488_2703_2014",
+      "activity": "Archive",
+      "timestamp": 1409243453,
+      "payload": {
+        "Locator": "BELNR 0170001254 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "5e194c73266e44d18f5ccd62b7faaafb",
+      "caseId": "0IWE1379488_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409243454,
+      "payload": {
+        "Locator": "BELNR 0170001254 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658079,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379945_2703_2014",
+    "subjectId": 123,
+    "traceId": "f2e950d2bd0a492bbbf60952807c43ae",
+    "begin": 1409156375,
+    "end": 1409215562,
+    "activities": [{
+      "id": "875b20de99534d9db2a724c8c7d91d7a",
+      "caseId": "0IWE1379945_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409156375,
+      "payload": {
+        "Locator": "BELNR IWE1379945 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "634f66293efe47628b0a7ba8ba55fb31",
+      "caseId": "0IWE1379945_2703_2014",
+      "activity": "Archive",
+      "timestamp": 1409175439,
+      "payload": {
+        "Locator": "BELNR 0010122266 GJAHR 2014 BUKRS 2703",
+        "TCODE": "FB1S"
+      }
+    }, {
+      "id": "6a9d467170684969b3097af7612d402e",
+      "caseId": "0IWE1379945_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409215562,
+      "payload": {
+        "Locator": "BELNR 1500009032 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658080,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329307_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324198,
+    "end": 1407400579,
+    "activities": [{
+      "id": "35d5aa9d194541eaa6047dbc0f0604da",
+      "caseId": "0IWE1329307_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324198,
+      "payload": {
+        "Locator": "BELNR IWE1329307 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "d84184407b5e43ee902d59a5dfe755c4",
+      "caseId": "0IWE1329307_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658081,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329314_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324859,
+    "end": 1407400579,
+    "activities": [{
+      "id": "f0645bf61ed44b7ab834684413aaa688",
+      "caseId": "0IWE1329314_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324859,
+      "payload": {
+        "Locator": "BELNR IWE1329314 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "8044c2bf172d40f1ba7cc8cfa6678c4c",
+      "caseId": "0IWE1329314_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658082,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329309_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324841,
+    "end": 1407400579,
+    "activities": [{
+      "id": "906c14f8e4d34e69806d26683abb364f",
+      "caseId": "0IWE1329309_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324841,
+      "payload": {
+        "Locator": "BELNR IWE1329309 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "21a7f0fe65a84f659c31870d325fb15d",
+      "caseId": "0IWE1329309_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658083,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1379051_2703_2014",
+    "subjectId": 123,
+    "traceId": "2144320ea62e45dc833e4f303221af63",
+    "begin": 1409819172,
+    "end": 1409819172,
+    "activities": [{
+      "id": "cbc55db8ac064837b9dbf2c41e668e77",
+      "caseId": "0IWE1379051_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409819172,
+      "payload": {
+        "Locator": "BELNR 1500009324 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658084,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329315_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405321424,
+    "end": 1410181288,
+    "activities": [{
+      "id": "e632a6d076ab408d944d1be3cba4a53d",
+      "caseId": "0IWE1329315_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405321424,
+      "payload": {
+        "Locator": "BELNR IWE1329315 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "4a85d4dd7e554cf88f4bfc616c2e96da",
+      "caseId": "0IWE1329315_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1410181288,
+      "payload": {
+        "Locator": "BELNR 1500009482 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658085,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329313_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324847,
+    "end": 1407400579,
+    "activities": [{
+      "id": "530e1d22609c406c9367e4c2b2312cea",
+      "caseId": "0IWE1329313_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324847,
+      "payload": {
+        "Locator": "BELNR IWE1329313 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "35148a008ab64b1393da76c2866b80c3",
+      "caseId": "0IWE1329313_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658086,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1380840_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1409733182,
+    "end": 1409819168,
+    "activities": [{
+      "id": "a09fd4c4af864ba789e561a869479687",
+      "caseId": "0IWE1380840_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409733182,
+      "payload": {
+        "Locator": "BELNR IWE1380840 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "16b42559341f4c7a809440972b0f66e8",
+      "caseId": "0IWE1380840_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1409819168,
+      "payload": {
+        "Locator": "BELNR 1500009275 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658087,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329316_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324865,
+    "end": 1410181288,
+    "activities": [{
+      "id": "c6b72098f9f443da85807f410425874e",
+      "caseId": "0IWE1329316_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324865,
+      "payload": {
+        "Locator": "BELNR IWE1329316 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "517b06fd1be140089efd53487c1dbbd4",
+      "caseId": "0IWE1329316_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1410181288,
+      "payload": {
+        "Locator": "BELNR 1500009482 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658088,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1381066_2703_2014",
+    "subjectId": 123,
+    "traceId": "33569c652a004a0c895e6f1c2019c03b",
+    "begin": 1409149995,
+    "end": 1409222699,
+    "activities": [{
+      "id": "dd051d1353ea4bfe9364276e8a360ded",
+      "caseId": "0IWE1381066_2703_2014",
+      "activity": "Create Vendor",
+      "timestamp": 1409149995,
+      "payload": {
+        "Locator": "OBJECTCLAS KRED  LIFNR 0086182732  CHANGNR 0628011380",
+        "TCODE": "XK01"
+      }
+    }, {
+      "id": "0a237d6b57cc49899a0dd2e23487737b",
+      "caseId": "0IWE1381066_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409222699,
+      "payload": {
+        "Locator": "BELNR IWE1381066 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658089,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329312_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324216,
+    "end": 1407400579,
+    "activities": [{
+      "id": "2d1849897b0840e29d123e4f45958d22",
+      "caseId": "0IWE1329312_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324216,
+      "payload": {
+        "Locator": "BELNR IWE1329312 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "a6412c786ed141ce88dae1f9f525b3e3",
+      "caseId": "0IWE1329312_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658090,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1380844_2703_2014",
+    "subjectId": 123,
+    "traceId": "0b8c8b0532cb4908844fcc1968794484",
+    "begin": 1393931305,
+    "end": 1410181293,
+    "activities": [{
+      "id": "cc7e7d1a58b54d1ba11eb04fbfd22e43",
+      "caseId": "0IWE1380844_2703_2014",
+      "activity": "Change Vendor Master Data",
+      "timestamp": 1393931305,
+      "payload": {
+        "Locator": "OBJECTCLAS KRED  LIFNR 0086158421  CHANGNR 0573758157",
+        "TCODE": "XK02"
+      }
+    }, {
+      "id": "6507b05227cc4055a5446e58e84313de",
+      "caseId": "0IWE1380844_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1409925179,
+      "payload": {
+        "Locator": "BELNR IWE1380844 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "9b9910ff74754e908789b76b591fa881",
+      "caseId": "0IWE1380844_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1410181293,
+      "payload": {
+        "Locator": "BELNR 1500009518 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658091,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329311_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324210,
+    "end": 1407400579,
+    "activities": [{
+      "id": "a11c75ef69984b90936302155b534acc",
+      "caseId": "0IWE1329311_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324210,
+      "payload": {
+        "Locator": "BELNR IWE1329311 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "3e3227dccaaf44748e1f60c88cedfcda",
+      "caseId": "0IWE1329311_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1407400579,
+      "payload": {
+        "Locator": "BELNR 1500008499 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }, {
+    "_id": {
+      "timestamp": 1462188438,
+      "machineIdentifier": 14621548,
+      "processIdentifier": 23199,
+      "counter": 8658092,
+      "timeSecond": 1462188438,
+      "time": 1462188438000,
+      "date": 1462188438000
+    },
+    "caseId": "0IWE1329317_2703_2014",
+    "subjectId": 123,
+    "traceId": "fa36a358574c4fd3a65d6f71d68f796f",
+    "begin": 1405324889,
+    "end": 1410181288,
+    "activities": [{
+      "id": "a0a2a6481fa84bc3b5774d507b295209",
+      "caseId": "0IWE1329317_2703_2014",
+      "activity": "Check Order",
+      "timestamp": 1405324889,
+      "payload": {
+        "Locator": "BELNR IWE1329317 GJAHR 2014 BUKRS 2703",
+        "TCODE": "OS_APPLICATION"
+      }
+    }, {
+      "id": "78d5d1a5c05d4033bcbd39630a788246",
+      "caseId": "0IWE1329317_2703_2014",
+      "activity": "Create Order",
+      "timestamp": 1410181288,
+      "payload": {
+        "Locator": "BELNR 1500009482 GJAHR 2014 BUKRS 2703",
+        "TCODE": "F110"
+      }
+    }]
+  }]
+}

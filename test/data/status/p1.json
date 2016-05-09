@@ -1,0 +1,75 @@
+{
+    "id": "p1",
+    "all": {
+        "critical": {
+            "count": 53,
+            "items": [
+                "Support contract volumne $10.6m",
+                "45 without Incident classification",
+                "20 open for more than 2 days"]
+        },
+        "medium": {
+            "count": 5,
+            "items": [
+                "5 cases with suspicious incidents",
+                "Support contract volumne 5M",
+                "5 cases waiting for more than 1 day"
+            ]
+        },
+        "normal": {
+            "count": 200,
+            "items": [
+                "200 cases",
+                "Support contract volumne $60M"
+            ]
+        }
+    },
+    "february": {
+        "critical": {
+            "count": 53,
+            "items": [
+                "Support contract volumne 1M",
+                "45 without incident classification",
+                "20 open for 2 weeks"]
+        },
+        "medium": {
+            "count": 5,
+            "items": [
+                "5 cases with suspicious incidents",
+                "Support contract volumne 5M",
+                "5 cases waiting for more than 1 day"
+            ]
+        },
+        "normal": {
+            "count": 100,
+            "items": [
+                "100 cases",
+                "Support contract volumne 60M"
+            ]
+        }
+    },
+    "march": {
+        "critical": {
+            "count": 53,
+            "items": ["53 cases with critial incidents",
+                "Support contract volumne 1M",
+                "45 without incident classification",
+                "20 open for 2 weeks"]
+        },
+        "medium": {
+            "count": 5,
+            "items": [
+                "5 cases with suspicious incidents",
+                "Support contract volumne 5M",
+                "5 cases waiting for more than 1 day"
+            ]
+        },
+        "normal": {
+            "count": 100,
+            "items": [
+                "100 cases",
+                "Support contract volumne 60M"
+            ]
+        }
+    }
+}

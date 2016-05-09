@@ -1,0 +1,183 @@
+{
+  "subject": [{
+    "id": "p1",
+    "name": "Purchase Order to Invoice",
+    "mappings": {
+      "caseId": {
+        "name": "Case",
+        "type": "string",
+        "col": "case_ID"
+      },
+      "timestamp": {
+        "name": "Time",
+        "type": "number",
+        "col": "Timestamp"
+      },
+      "activity": {
+        "name": "Activity",
+        "type": "string",
+        "col": "Activity"
+      },
+      "payload": {
+        "Locator": {
+          "name": "Location",
+          "type": "string"
+        },
+        "TCODE": {
+          "name": "Transaction",
+          "type": "string"
+        }
+      }
+    }
+  }, {
+    "id": "p2",
+    "name": "Purchase Order to Invoice No2",
+    "mappings": {
+      "caseId": {
+        "name": "Case",
+        "type": "string",
+        "col": "case_ID"
+      },
+      "timestamp": {
+        "name": "Time",
+        "type": "number",
+        "col": "Timestamp"
+      },
+      "activity": {
+        "name": "Activity",
+        "type": "string",
+        "col": "Activity"
+      },
+      "payload": {
+        "Locator": {
+          "name": "Location",
+          "type": "string"
+        },
+        "TCODE": {
+          "name": "Transaction",
+          "type": "string"
+        }
+      }
+    }
+  }, {
+    "id": "p3",
+    "name": "Purchase Order to Invoice No3",
+    "mappings": {
+      "caseId": {
+        "name": "Case",
+        "type": "string",
+        "col": "case_ID"
+      },
+      "timestamp": {
+        "name": "Time",
+        "type": "number",
+        "col": "Timestamp"
+      },
+      "activity": {
+        "name": "Activity",
+        "type": "string",
+        "col": "Activity"
+      },
+      "payload": {
+        "Locator": {
+          "name": "Location",
+          "type": "string"
+        },
+        "TCODE": {
+          "name": "Transaction",
+          "type": "string"
+        }
+      }
+    }
+  }, {
+    "id": "p4",
+    "name": "Purchase Order to Invoice No4",
+    "mappings": {
+      "caseId": {
+        "name": "Case",
+        "type": "string",
+        "col": "case_ID"
+      },
+      "timestamp": {
+        "name": "Time",
+        "type": "number",
+        "col": "Timestamp"
+      },
+      "activity": {
+        "name": "Activity",
+        "type": "string",
+        "col": "Activity"
+      },
+      "payload": {
+        "Locator": {
+          "name": "Location",
+          "type": "string"
+        },
+        "TCODE": {
+          "name": "Transaction",
+          "type": "string"
+        }
+      }
+    }
+  }, {
+    "id": "p5",
+    "name": "Purchase Order to Invoice No5",
+    "mappings": {
+      "caseId": {
+        "name": "Case",
+        "type": "string",
+        "col": "case_ID"
+      },
+      "timestamp": {
+        "name": "Time",
+        "type": "number",
+        "col": "Timestamp"
+      },
+      "activity": {
+        "name": "Activity",
+        "type": "string",
+        "col": "Activity"
+      },
+      "payload": {
+        "Locator": {
+          "name": "Location",
+          "type": "string"
+        },
+        "TCODE": {
+          "name": "Transaction",
+          "type": "string"
+        }
+      }
+    }
+  }, {
+    "id": "p6",
+    "name": "Purchase Order to Invoice No6",
+    "mappings": {
+      "caseId": {
+        "name": "Case",
+        "type": "string",
+        "col": "case_ID"
+      },
+      "timestamp": {
+        "name": "Time",
+        "type": "number",
+        "col": "Timestamp"
+      },
+      "activity": {
+        "name": "Activity",
+        "type": "string",
+        "col": "Activity"
+      },
+      "payload": {
+        "Locator": {
+          "name": "Location",
+          "type": "string"
+        },
+        "TCODE": {
+          "name": "Transaction",
+          "type": "string"
+        }
+      }
+    }
+  }]
+}

@@ -1,0 +1,263 @@
+[
+    {
+        "id": "tg_1",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+            "sid-02982065-15FD-4BCF-90D0-A71BE15835F8",
+
+            "sid-D68EB790-6185-4C93-AF81-A9A4EBC1C67C",
+            "sid-6BC00981-E180-46F8-AFEB-8571EF0ED58C",
+            "sid-D962EDBE-5210-449F-AF80-11509E6D2A8C",
+            "sid-836A6701-9C08-4F96-BE82-21C651811104",
+            "sid-0B3F4129-D2A2-43B0-BBD7-B824E61C2D88",
+            "sid-F8B81CA5-C7F5-4592-9841-9DBE1F8A5A91",
+            "sid-BC71365E-85DB-4417-8B56-5F5546C50E7F",
+            "sid-7A3FC4D8-114A-4F3B-8C83-7EF69D72F844",
+
+
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 156,
+        "fields": {
+            "f1": "Books ERP, FinTech, GPSTracking, BOX Portal",
+            "f2": "$ 9.64 k",
+            "f3": "$ 143.34 m",
+            "f4": "$ 831.00 k",
+            "f5": "2016-01-10 08:35pm",
+            "f6": "2016-04-19 09:58pm",
+            "f7": 1.5,
+            "f8" : 0.8,
+            "f9" : 1214
+        }
+    },
+    {
+        "id": "tg_2",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+            "sid-02982065-15FD-4BCF-90D0-A71BE15835F8",
+
+            "sid-D68EB790-6185-4C93-AF81-A9A4EBC1C67C",
+            "sid-6BC00981-E180-46F8-AFEB-8571EF0ED58C",
+            "sid-D962EDBE-5210-449F-AF80-11509E6D2A8C",
+
+            "sid-0C55714B-4FFD-436E-865D-6F4839F9C248",
+            "sid-54F68C95-1417-4938-890B-4F702CD9DD09",
+            "sid-FFFF0B82-FB6F-4A4A-B38A-2E8F5300CD70",
+
+            "sid-BC71365E-85DB-4417-8B56-5F5546C50E7F",
+            "sid-7A3FC4D8-114A-4F3B-8C83-7EF69D72F844",
+
+
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 38,
+        "fields": {
+            "f1": "Connector, FinTech, shareBox, BOX Portal",
+            "f2": "$ 9.94 m",
+            "f3": "$ 543.34 m",
+            "f4": "$ 831.02 m",
+            "f5": "2016-02-08 06:48pm",
+            "f6": "2016-04-19 11:53pm",
+            "f7": 1.9,
+            "f8" : 0.3,
+            "f9" : 3214
+        }
+    },
+    {
+        "id": "tg_3",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+            "sid-02982065-15FD-4BCF-90D0-A71BE15835F8",
+
+            "sid-D68EB790-6185-4C93-AF81-A9A4EBC1C67C",
+            "sid-6BC00981-E180-46F8-AFEB-8571EF0ED58C",
+            "sid-D962EDBE-5210-449F-AF80-11509E6D2A8C",
+
+            "sid-BDAB6437-D4A7-493A-87D1-A81EEB39D41B",
+            "sid-01A9092E-F314-4098-A4B3-90CD9BDF06D7",
+            "sid-8D5E735C-AC3A-4F62-A095-642776A3D1D4",
+
+            "sid-BC71365E-85DB-4417-8B56-5F5546C50E7F",
+            "sid-7A3FC4D8-114A-4F3B-8C83-7EF69D72F844",
+
+
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 8,
+        "fields": {
+            "f1": "Connector, FinTech, GPSTracking",
+            "f2": "$ 5.94 k",
+            "f3": "$ 76.39 m",
+            "f4": "$ 31.00 k",
+            "f5": "2016-01-19 08:11pm",
+            "f6": "2016-03-07 11:28pm",
+            "f7": 1,
+            "f8" : 0.3,
+            "f9" : 532
+        }
+    },
+    {
+        "id": "t1",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+            "sid-02982065-15FD-4BCF-90D0-A71BE15835F8",
+            "sid-D68EB790-6185-4C93-AF81-A9A4EBC1C67C",
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 4,
+        "fields": {
+            "f1": "Connector, FinTech, GPSTracking",
+            "f2": "$ 5.94 k",
+            "f3": "$ 53.67 m",
+            "f4": "$ 31.00 k",
+            "f5": "2016-01-29 08:31pm",
+            "f6": "2016-03-07 11:28pm",
+            "f7": 1,
+            "f8" : 0.3,
+            "f9" : 321
+        }
+    },
+    {
+        "id": "t_no_classification1",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+
+
+            "sid-54F68C95-1417-4938-890B-4F702CD9DD09",
+
+            "sid-01A9092E-F314-4098-A4B3-90CD9BDF06D7",
+            "sid-8D5E735C-AC3A-4F62-A095-642776A3D1D4",
+
+            "sid-BC71365E-85DB-4417-8B56-5F5546C50E7F",
+            "sid-7A3FC4D8-114A-4F3B-8C83-7EF69D72F844",
+
+
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 27,
+        "fields": {
+            "f1": "FinTech, GPSTracking, BOX ERP",
+            "f2": "$ 3.94 k",
+            "f3": "$ 12.89 m",
+            "f4": "$ 31.00 k",
+            "f5": "2016-01-29 08:31pm",
+            "f6": "2016-03-07 11:28pm",
+            "f7": 7,
+            "f8" : 1,
+            "f9" : 621
+        }
+    },
+    {
+        "id": "t_no_classification2",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+
+
+
+            "sid-01A9092E-F314-4098-A4B3-90CD9BDF06D7",
+
+            "sid-0B3F4129-D2A2-43B0-BBD7-B824E61C2D88",
+            "sid-F8B81CA5-C7F5-4592-9841-9DBE1F8A5A91",
+            "sid-BC71365E-85DB-4417-8B56-5F5546C50E7F",
+            "sid-7A3FC4D8-114A-4F3B-8C83-7EF69D72F844",
+
+
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 18,
+        "fields": {
+            "f1": "FinTech, GPSTracking, BOX ERP",
+            "f2": "$ 5.23 k",
+            "f3": "$ 34.87 m",
+            "f4": "$ 31.00 k",
+            "f5": "2016-01-29 08:31pm",
+            "f6": "2016-03-07 11:28pm",
+            "f7": 8,
+            "f8" : 1,
+            "f9" : 214
+        }
+    },
+    {
+        "id": "t2",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 1,
+        "fields": {
+            "f1": "Connector, FinTech, GPSTracking",
+            "f2": "$ 5.94 k",
+            "f3": "$ 43.34 m",
+            "f4": "$ 31.00 k",
+            "f5": "2016-01-29 08:31pm",
+            "f6": "2016-03-07 11:28pm",
+            "f7": 1,
+            "f8" : 0.3,
+            "f9" : 314
+        }
+    },
+    {
+        "id": "t3",
+        "actions": [
+            "sid-E52733C4-146E-4C2A-AF31-32B0F9547998",
+            "sid-2EB962AB-43BF-44D2-8639-86CA8560FE69",
+            "sid-7B5AC9B3-B2D4-4CB9-830C-5BCFC5C62542",
+            "sid-E5F88578-ED82-4575-94D8-63668FE3AED1",
+            "sid-D68EB790-6185-4C93-AF81-A9A4EBC1C67C",
+            "sid-6BC00981-E180-46F8-AFEB-8571EF0ED58C",
+            "sid-D962EDBE-5210-449F-AF80-11509E6D2A8C",
+
+            "sid-0C55714B-4FFD-436E-865D-6F4839F9C248",
+            "sid-54F68C95-1417-4938-890B-4F702CD9DD09",
+            "sid-FFFF0B82-FB6F-4A4A-B38A-2E8F5300CD70",
+
+            "sid-BC71365E-85DB-4417-8B56-5F5546C50E7F",
+            "sid-7A3FC4D8-114A-4F3B-8C83-7EF69D72F844",
+
+
+            "sid-4C976F94-7999-41CF-B6D4-CD7491A7FE49",
+            "sid-04329855-1DDD-4803-B5B8-31BCEC84B020",
+            "sid-2FA195E5-D13D-4095-962F-870D0AFD18C9"
+        ],
+        "cases": 2,
+        "fields": {
+            "f1": "Connector",
+            "f2": "$ 9.64 k",
+            "f3": "$ 43.34 k",
+            "f4": "$ 1431.00 ",
+            "f5": "2016-02-10 09:23pm",
+            "f6": "2016-03-19 08:56pm",
+            "f7": 1.5,
+            "f8": 1,
+            "f9": 34
+        }
+    }
+]
