@@ -1,4 +1,4 @@
-import { Component, createElement } from 'react'
+import { Component, createElement, PropTypes } from 'react'
 import { connect as reduxConnect } from 'react-redux'
 import invariant from 'invariant'
 import compose from 'lodash/fp/compose'
@@ -17,97 +17,110 @@ function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
-const mapIdToQuery = mapValues(({ id, query, type, ...rest }) => {
+const mapIdToQuery = (types) => mapValues(({ id, query, type, ...rest }) => {
   invariant(!(id && query), `Must only define one of the 'id' and 'query' parameters`)
-  if (id) query = { [getIdAttribute(type)]: id }
+  if (id) {
+    query = { [getIdAttribute(types, type)]: id }
+  }
+  if (!query) {
+    query = {}
+  }
   return { query, type, ...rest }
 })
 
-export default function connect(mapPropsToPromiseProps = () => ({}), options = {}) {
-  const { withRef = false } = options
+export default (types) => {
+  return (mapPropsToPromiseProps = () => ({}), options = {}) => {
+    const { withRef = false } = options
 
-  mapPropsToPromiseProps = compose(mapIdToQuery, pickBy(Boolean), mapPropsToPromiseProps)
+    mapPropsToPromiseProps = compose(mapIdToQuery(types), pickBy(Boolean), mapPropsToPromiseProps)
 
-  function wrapWithApiConnect(WrappedComponent) {
-    class ApiConnect extends Component {
+    function wrapWithApiConnect(WrappedComponent) {
+      class ApiConnect extends Component {
 
-      componentWillMount() {
-        this.loadEntities(this.props)
+        static propTypes = {
+          loadEntity: PropTypes.func.isRequired,
+        }
+
+        componentWillMount() {
+          this.loadEntities(this.props)
+        }
+
+        render() {
+          const { loadEntity, ...props } = this.props
+          return createElement(
+            WrappedComponent, {
+              ...props,
+              ...(withRef ? { ref: 'wrappedInstance' } : {}),
+            }
+          )
+        }
+
+        loadEntities(props = this.props) {
+          const { loadEntity, ...rest } = props
+          forEach(mapPropsToPromiseProps(rest),
+            ({ type, query, requiredFields }) => loadEntity(type, query, requiredFields)
+          )
+        }
+
+        getWrappedInstance() {
+          invariant(withRef,
+            `To access the wrapped instance, you need to specify ` +
+            `{ withRef: true } as the second argument of the connect() call.`
+          )
+
+          return this.refs.wrappedInstance
+        }
       }
 
-      loadEntities(props = this.props) {
-        const { loadEntity, ...rest } = props
-        forEach(mapPropsToPromiseProps(rest),
-          ({ type, query, requiredFields }) => loadEntity(type, query, requiredFields)
-        )
+      ApiConnect.displayName = `ApiConnect(${getDisplayName(WrappedComponent)})`
+      ApiConnect.WrappedComponent = WrappedComponent
+      return hoistStatics(ApiConnect, WrappedComponent)
+    }
+
+    function mapStateToProps(state, props) {
+      invariant(
+        !!state.cache,
+        'Could not find an API cache in the state (looking at: `state.cache`)'
+      )
+      const promiseProps = mapPropsToPromiseProps(props)
+      // keep promise and entity states in separate props, so that react-redux' connect function can
+      // figure out whether s.th. has changed
+      return {
+        ...mapKeys((val, propName) => `${propName}_promise`,
+          mapValues(({ query, type }) => getPromiseState(state, type, query, types), promiseProps),
+        ),
+        ...mapKeys((val, propName) => `${propName}_entity`,
+          mapValues(({ query, type }) => getEntityState(state, type, query, types), promiseProps),
+        ),
       }
 
-      render() {
-        const { loadEntity, ...props } = this.props
-        return createElement(
-          WrappedComponent, {
-            ...props,
-            ...(withRef ? { ref: 'wrappedInstance' } : {}),
-          }
-        )
+    }
+
+    function mergeProps(stateProps, dispatchProps, ownProps) {
+      const promiseProps = mapPropsToPromiseProps(ownProps)
+      const joinPromiseValue = propName => {
+        const promise = stateProps[`${propName}_promise`]
+        const entity = stateProps[`${propName}_entity`]
+
+        return promise ? {
+          ...promise,
+          value: entity,
+        } : {
+          pending: !entity,
+          fulfilled: !!entity,
+          value: entity,
+        }
       }
 
-      getWrappedInstance() {
-        invariant(withRef,
-          `To access the wrapped instance, you need to specify ` +
-          `{ withRef: true } as the second argument of the connect() call.`
-        )
-
-        return this.refs.wrappedInstance
+      // now it's time to join the `${propName}_entity` with the `${propName}_promise` props
+      return {
+        ...ownProps,
+        ...mapValues((value, propName) => joinPromiseValue(propName), promiseProps),
+        ...dispatchProps,
       }
     }
 
-    ApiConnect.displayName = `ApiConnect(${getDisplayName(WrappedComponent)})`
-    ApiConnect.WrappedComponent = WrappedComponent
-    return hoistStatics(ApiConnect, WrappedComponent)
-  }
 
-  function mapStateToProps(state, props) {
-    invariant(!!state.cache, 'Could not find an API cache in the state (looking at: `state.cache`)')
-    const promiseProps = mapPropsToPromiseProps(props)
-    // keep promise and entity states in separate props, so that react-redux' connect function can
-    // figure out whether s.th. has changed
-    return {
-      ...mapKeys((val, propName) => `${propName}_promise`,
-        mapValues(({ query, type }) => getPromiseState(state, type, query), promiseProps),
-      ),
-      ...mapKeys((val, propName) => `${propName}_entity`,
-        mapValues(({ query, type }) => getEntityState(state, type, query), promiseProps),
-      ),
-    }
-
-  }
-
-  function mergeProps(stateProps, dispatchProps, ownProps) {
-    const promiseProps = mapPropsToPromiseProps(ownProps)
-    const joinPromiseValue = propName => {
-      const promise = stateProps[`${propName}_promise`]
-      const entity = stateProps[`${propName}_entity`]
-
-      return promise ? {
-        ...promise,
-        value: entity,
-      } : {
-        pending: !entity,
-        fulfilled: !!entity,
-        value: entity,
-      }
-    }
-
-    // now it's time to join the `${propName}_entity` with the `${propName}_promise` props
-    return {
-      ...ownProps,
-      ...mapValues((value, propName) => joinPromiseValue(propName), promiseProps),
-      ...dispatchProps,
-    }
-  }
-
-  return types => {
     const { loadEntity } = actionsCreator(types)
     return compose(
       reduxConnect(mapStateToProps, { loadEntity }, mergeProps, options),

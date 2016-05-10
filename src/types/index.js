@@ -1,12 +1,7 @@
 import isString from 'lodash/isString'
+import mapValues from 'lodash/mapValues'
 import isFunction from 'lodash/isFunction'
 import { Schema as EntitySchema } from 'normalizr'
-
-// TODO: maybe switch to a proper hashing to make sure to not have key
-// collision when queries with differnet key sets are used for the same type
-const stringifyQuery = (query) => JSON.stringify(query)
-
-const createDefaultPromiseMapper = (type) => (query) => `${type}_${stringifyQuery(query)}`
 
 // ... while type definitions are accessed through getters
 export const getCollection = (types, type) => {
@@ -21,10 +16,12 @@ export const getFetch = (types, type) => {
   return fetch
 }
 
-export const getPromiseMapper = (types, type) => {
-  return types[type].mapPromise || createDefaultPromiseMapper(type)
-}
+// TODO: maybe switch to a proper hashing to make sure to not have key
+// collision when queries with differnet key sets are used for the same type
+export const stringifyQuery = (query) => JSON.stringify(query)
 
 export const hasEntitySchema = (types, type) => types[type].schema instanceof EntitySchema
 
 export const getIdAttribute = (types, type) => types[type].schema.getIdAttribute()
+
+export const simplifyTypes = (types) => mapValues(types, (val, key) => key)

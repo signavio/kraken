@@ -5,7 +5,6 @@ import { callApi } from '../../src'
 export const collection = 'case'
 
 const caseSchema = new Schema(collection, { idAttribute: 'caseId' })
-
 export const schema = arrayOf(caseSchema)
 
 export const fetch = ({ subjectId }) => callApi(`subjects/${subjectId}/cases/`, schema)

@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "babel src --out-dir lib",
+    "build:watch": "babel src --out-dir lib -w",
     "lint": "eslint src test",
     "test": "NODE_ENV=test mocha",
     "test:watch": "NODE_ENV=test mocha --watch",
@@ -22,7 +23,7 @@
     "react-redux": "^4.4.0",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.3.1",
-    "redux-saga": "^0.9.5"
+    "redux-saga": "^0.10.2"
   },
   "devDependencies": {
     "@signavio/effektif-testing": "^0.0.2",

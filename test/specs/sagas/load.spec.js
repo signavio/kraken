@@ -39,8 +39,8 @@ const genericTest = (type, data) => {
         promises: {
           ...Object.keys(types).reduce((pre, key) => ({
             ...pre,
-            [typeUtils.getCollection(types, key)]: {
-              [typeUtils.getPromiseMapper(types, type)(query)]: {
+            [key]: {
+              [typeUtils.stringifyQuery(query)]: {
                 outstanding: true,
               },
             },
@@ -81,8 +81,8 @@ const genericTest = (type, data) => {
         promises: {
           ...Object.keys(types).reduce((pre, key) => ({
             ...pre,
-            [typeUtils.getCollection(types, key)]: {
-              [typeUtils.getPromiseMapper(types, type)(query)]: {
+            [key]: {
+              [typeUtils.stringifyQuery(query)]: {
                 outstanding: true,
               },
             },

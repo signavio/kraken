@@ -3,24 +3,28 @@ import mapValues from 'lodash/mapValues'
 import groupBy from 'lodash/groupBy'
 import reduceReducers from 'reduce-reducers'
 
-import { getPromiseMapper, getCollection } from '../types'
-import { actionTypes } from '../actions'
+import invariant from 'invariant'
 
-const {
+import { stringifyQuery, simplifyTypes } from '../types'
+import {
   LOAD_ENTITY,
   CACHE_HIT,
   REQUEST,
   SUCCESS,
   FAILURE,
-} = actionTypes
+} from '../actions'
 
-export const createEntitiesReducer = types => type => (state = {}, action) => {
+export const createEntitiesReducer = type => (state = {}, action) => {
+  invariant(
+    !!type.key,
+    `type.key must be set.`
+  )
   const { payload = {} } = action
-  if (payload.entity !== type) return state
+  if (payload.entity !== type.key) return state
 
   switch (action.type) {
     case SUCCESS:
-      const entities = payload.entities[getCollection(types, type)]
+      const entities = payload.entities[type.collection]
       return entities ? {
         ...state,
         ...entities,
@@ -31,10 +35,10 @@ export const createEntitiesReducer = types => type => (state = {}, action) => {
 }
 
 
-export const createPromisesReducer = types => type => (state = {}, action) => {
+export const createPromisesReducer = type => (state = {}, action) => {
   const { payload = {} } = action
   if (payload.entity !== type) return state
-  const key = getPromiseMapper(types, type)(payload.query)
+  const key = stringifyQuery(payload.query)
   const promise = state[key]
 
   switch (action.type) {
@@ -97,19 +101,21 @@ export const createPromisesReducer = types => type => (state = {}, action) => {
 
 
 export default (apiTypes) => {
-  const typesGroupedByCollection = groupBy(apiTypes, (apiType) => apiType.collection)
+  const typesGroupedByCollection = groupBy(
+    Object.keys(apiTypes).map( key => ({ ...apiTypes[key], key })),
+    (apiType) => apiType.collection
+  )
   return combineReducers({
 
     entities: combineReducers(
-      mapValues(typesGroupedByCollection,
-        types => reduceReducers(...types.map(createEntitiesReducer(types)))
+      mapValues(
+        typesGroupedByCollection,
+        types => reduceReducers(
+          ...types.map(createEntitiesReducer)
+        )
       )
     ),
 
-    promises: combineReducers(
-      mapValues(typesGroupedByCollection,
-        types => reduceReducers(...types.map(createPromisesReducer(types)))
-      )
-    ),
+    promises: combineReducers(mapValues(simplifyTypes(apiTypes), createPromisesReducer)),
   })
 }

@@ -1,26 +1,24 @@
 import invariant from 'invariant'
 
-export const actionTypes = {
-  LOAD_ENTITY: 'API_LOAD_ENTITY',
-  BATCHED_REQUEST: 'API_BATCHED_REQUEST',
-  CACHE_HIT: 'API_CACHE_HIT',
-  REQUEST: 'API_REQUEST',
-  SUCCESS: 'API_SUCCESS',
-  FAILURE: 'API_FAILURE',
-}
+export const LOAD_ENTITY = 'API_LOAD_ENTITY'
+export const BATCHED_REQUEST = 'API_BATCHED_REQUEST'
+export const CACHE_HIT = 'API_CACHE_HIT'
+export const REQUEST = 'API_REQUEST'
+export const SUCCESS = 'API_SUCCESS'
+export const FAILURE = 'API_FAILURE'
 
 export default (types) => ({
-  ...actionTypes,
   // If requiredFields is set to `true` the entity will always be refetched,
   // even it is already in the cache,
   loadEntity: (entityType, query, requiredFields) => {
     invariant(
       !!types[entityType],
-      'First argument of loadEntity action creator must be one of the following constants: ' +
-      Object.keys(types).join(', ') + ' (is: ' + entityType + ')'
-    )
+`First argument of loadEntity action creator must be one of the following constants:
+\`${Object.keys(types).join(', ')}\`
+(is: \`${entityType}\`)
+`)
     return {
-      type: actionTypes.LOAD_ENTITY,
+      type: LOAD_ENTITY,
       payload: {
         entity: entityType,
         query,
@@ -30,11 +28,11 @@ export default (types) => ({
   },
 
   batchedRequest: () => ({
-    type: actionTypes.BATCHED_REQUEST,
+    type: BATCHED_REQUEST,
   }),
 
   cacheHit: (type, query, value) => ({
-    type: actionTypes.CACHE_HIT,
+    type: CACHE_HIT,
     payload: {
       entity: type,
       query,
@@ -43,15 +41,15 @@ export default (types) => ({
   }),
 
   request: (type, query) => ({
-    type: actionTypes.REQUEST,
-    entity: type,
+    type: REQUEST,
     payload: {
+      entity: type,
       query,
     },
   }),
 
   success: (type, query, value, entities) => ({
-    type: actionTypes.SUCCESS,
+    type: SUCCESS,
     payload: {
       entity: type,
       query,
@@ -61,7 +59,7 @@ export default (types) => ({
   }),
 
   failure: (type, query, error) => ({
-    type: actionTypes.FAILURE,
+    type: FAILURE,
     payload: {
       entity: type,
       query,

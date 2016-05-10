@@ -4,7 +4,7 @@ import { callApi } from '../../src'
 
 export const collection = 'trace'
 
-const traceSchema = new Schema(collection)
+const traceSchema = new Schema(collection, { idAttribute: 'traceId' })
 
 export const schema = arrayOf(traceSchema)
 

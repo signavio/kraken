@@ -3,7 +3,7 @@ import { normalize, arrayOf } from 'normalizr'
 import types from '../types'
 
 import caseData from './cases/new-p1'
-import subjectData from './subjects/p1'
+import subjectData from './subjects/new-p1'
 import traceData from './traces/new-p1'
 // import Diagram from './diagrams/p1'
 // import Deviation from './deviations/p1'

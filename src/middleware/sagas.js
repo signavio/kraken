@@ -1,19 +1,19 @@
 import { takeEvery, delay } from 'redux-saga'
+import { put, call, spawn } from 'redux-saga/effects'
 
-import { put, call, fork } from 'redux-saga/effects'
-import actionsCreator from '../actions'
+import createActionCreators, { LOAD_ENTITY } from '../actions'
 import { getFetch } from '../types'
 import { getPromiseState, getPromiseValue, getEntityState } from '../utils'
 
 export const createFetchEntity = (types) => {
 
-  const actions = actionsCreator(types)
+  const actions = createActionCreators(types)
 
   return function* fetchEntity(type, query, getPromise) {
-    // console.log(type);
+
     const promise = getPromise(type, query)
 
-    if (!promise.outstanding) {
+    if (promise && !promise.outstanding) {
       return
     }
 
@@ -31,7 +31,7 @@ export const createFetchEntity = (types) => {
 
 export const createLoadEntity = (types) => {
 
-  const actions = actionsCreator(types)
+  const actions = createActionCreators(types)
 
   const fetchEntity = createFetchEntity(types)
 
@@ -52,17 +52,19 @@ export const createLoadEntity = (types) => {
 }
 
 export const createWatchLoadEntity = (types) => {
-  const actions = actionsCreator(types)
 
   const loadEntity = createLoadEntity(types)
 
   return function* watchLoadEntity(getEntity, getValue, getPromise) {
     yield* takeEvery(
-      actions.LOAD_ENTITY,
-      action => loadEntity(
-        action.entity, action.query,
-        action.requiredFields,
-        getEntity, getValue, getPromise
+      LOAD_ENTITY,
+      ({ payload = {} }) => loadEntity(
+        payload.entity,
+        payload.query,
+        payload.requiredFields,
+        getEntity,
+        getValue,
+        getPromise,
       )
     )
   }
@@ -73,11 +75,12 @@ export default (types) => {
   const watchLoadEntity = createWatchLoadEntity(types)
 
   return function* root(getState) {
+    console.log('sagas.root.getState', getState)
     const getEntity = (type, query) => getEntityState(getState(), type, query, types)
     const getValue = (type, query) => getPromiseValue(getState(), type, query, types)
     const getPromise = (type, query) => getPromiseState(getState(), type, query, types)
 
-    yield fork(watchLoadEntity, getEntity, getValue, getPromise)
+    yield spawn(watchLoadEntity, getEntity, getValue, getPromise)
       // yield form(watchBatchedRequest)
   }
 }

@@ -1,13 +1,13 @@
-import reducerCreator from './reducers'
-import middlewareCreator from './middleware'
-import connectCreator from './components/connect'
-import actionsCreator from './actions'
+import createReducer from './reducers'
+import createSagaMiddleware from './middleware'
+import createConnect from './components/connect'
+import createActions from './actions'
 
 export default (types) => ({
-  reducer: reducerCreator(types),
-  middleware: middlewareCreator(types),
-  connect: connectCreator(types),
-  actions: actionsCreator(types),
+  reducer: createReducer(types),
+  saga: createSagaMiddleware(types),
+  connect: createConnect(types),
+  actions: createActions(types),
 })
 
 export * as promise from './utils/promise'

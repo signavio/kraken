@@ -1,9 +1,14 @@
 import expect from '../../expect'
 
-import actionsCreator from '../../../src/actions'
+import createActionCreators, {
+  LOAD_ENTITY,
+  SUCCESS,
+  FAILURE,
+  REQUEST,
+  CACHE_HIT,
+} from '../../../src/actions'
 import { typeUtils } from '../../../src'
-import createRootReducer,
-{
+import {
   createEntitiesReducer,
   createPromisesReducer,
 } from '../../../src/reducers'
@@ -14,15 +19,11 @@ import * as sampleData from '../../data'
 
 import types from '../../types'
 
-const actions = actionsCreator(types)
-const reducer = createRootReducer(types)
-const entityReducer = createEntitiesReducer(types)
-const promiseReducer = createPromisesReducer(types)
-
 export default () => {
   Object.keys(types).forEach((type) => {
     describe(type, () => {
       dataTest(
+        { ...types[type], key: type },
         type,
         sampleData[type],
       )
@@ -35,30 +36,40 @@ const createCleanState = (query) => ({
     promises: {
       ...Object.keys(types).reduce((prev, key) => ({
         ...prev,
-        [typeUtils.getCollection(types, key)]: {
-          [typeUtils.getPromiseMapper(types, key)(query)]: {},
+        [key]: {
+          [typeUtils.stringifyQuery(query)]: {},
         },
+      }), {}),
+    },
+    entities: {
+      ...Object.keys(types).reduce((prev, key) => ({
+        ...prev,
+        [typeUtils.getCollection(types, key)]: {},
       }), {}),
     },
   },
 })
-const dataTest = (entity, value) => {
+const dataTest = (entity, type, value) => {
 
+  const query = { id: testId }
+  const typeKey = typeUtils.stringifyQuery(query)
+  const collection = typeUtils.getCollection(types, type)
   // const entityReducerForEntity = entityReducer(entity)
   describe('promiseReducer', () => {
-    const promiseReducerForEntity = promiseReducer(entity)
-    const query = { id: testId }
-    const typeKey = typeUtils.getPromiseMapper(types, entity)(query)
+    const promiseReducerForEntity = createPromisesReducer(entity)
 
     it('LOAD_ENTITY', () => {
       const loadAction = {
-        type: actions.LOAD_ENTITY,
+        type: LOAD_ENTITY,
         payload: {
           entity,
           query,
         },
       }
-      const newState = promiseReducerForEntity(createCleanState(query), loadAction)
+      const newState = promiseReducerForEntity(
+        createCleanState(query).cache.promises[entity],
+        loadAction,
+      )
       expect(newState).to.have.property(typeKey)
       expect(newState[typeKey]).to.have.property('outstanding', true)
       expect(newState[typeKey]).to.have.property('pending', true)
@@ -66,27 +77,33 @@ const dataTest = (entity, value) => {
 
     it('REQUEST', () => {
       const loadAction = {
-        type: actions.REQUEST,
+        type: REQUEST,
         payload: {
           entity,
           query,
         },
       }
-      const newState = promiseReducerForEntity(createCleanState(query), loadAction)
+      const newState = promiseReducerForEntity(
+        createCleanState(query).cache.promises[typeKey],
+        loadAction,
+      )
       expect(newState).to.have.property(typeKey)
       expect(newState[typeKey]).to.have.property('outstanding', false)
     })
 
     it('CACHE_HIT', () => {
       const loadAction = {
-        type: actions.CACHE_HIT,
+        type: CACHE_HIT,
         payload: {
           entity,
           query,
           value,
         },
       }
-      const newState = promiseReducerForEntity(createCleanState(query), loadAction)
+      const newState = promiseReducerForEntity(
+        createCleanState(query).cache.promises[typeKey],
+        loadAction,
+      )
       expect(newState).to.have.property(typeKey)
       expect(newState[typeKey]).to.have.property('outstanding', false)
       expect(newState[typeKey]).to.have.property('pending', false)
@@ -98,14 +115,17 @@ const dataTest = (entity, value) => {
 
     it('SUCCESS', () => {
       const loadAction = {
-        type: actions.SUCCESS,
+        type: SUCCESS,
         payload: {
           entity,
           query,
           value,
         },
       }
-      const newState = promiseReducerForEntity(createCleanState(query), loadAction)
+      const newState = promiseReducerForEntity(
+        createCleanState(query).cache.promises[typeKey],
+        loadAction,
+      )
       expect(newState).to.have.property(typeKey)
       expect(newState[typeKey]).to.have.property('pending', false)
       expect(newState[typeKey]).to.have.property('fulfilled', true)
@@ -116,14 +136,17 @@ const dataTest = (entity, value) => {
     it('FAILURE', () => {
       const error = 'the error message'
       const loadAction = {
-        type: actions.FAILURE,
+        type: FAILURE,
         payload: {
           entity,
           query,
           error,
         },
       }
-      const newState = promiseReducerForEntity(createCleanState(query), loadAction)
+      const newState = promiseReducerForEntity(
+        createCleanState(query).cache.promises[typeKey],
+        loadAction,
+      )
       expect(newState).to.have.property(typeKey)
       expect(newState[typeKey]).to.have.property('pending', false)
       expect(newState[typeKey]).to.have.property('fulfilled', false)
@@ -133,40 +156,25 @@ const dataTest = (entity, value) => {
 
   })
 
+  describe('entityReducer', () => {
+    const entityReducerForEntity = createEntitiesReducer(entity)
 
-  //
-  // it('should return success state', () => {
-  //   const loadAction = {
-  //     type: actions.SUCCESS,
-  //     payload: {
-  //       entity,
-  //       subjectId: testId,
-  //       value: data,
-  //     },
-  //   }
-  //
-  //   const newState = entityReducer({}, loadAction)
-  //   expect(newState).to.have.property(testId)
-  //   expect(newState[testId]).to.have.property('entity', entity)
-  //   expect(newState[testId]).to.have.property('value', data)
-  // })
-  // //
-  // it('should return error state', () => {
-  //   const error = 'something went wrong'
-  //   const loadAction = {
-  //     type: actions.FAILURE,
-  //     payload: {
-  //       entity,
-  //       error,
-  //       subjectId: testId,
-  //     },
-  //     error: true,
-  //   }
-  //
-  //   const newState = entityReducer({}, loadAction)
-  //   expect(newState).to.have.property(testId)
-  //   expect(newState[testId]).to.have.property('entity', entity)
-  //   expect(newState[testId]).to.have.property('error', error)
-  //
-  // })
+    it('SUCCESS with entities', () => {
+      const loadAction = {
+        type: SUCCESS,
+        payload: {
+          entity: type,
+          entities: value.response.entities,
+        },
+      }
+
+      const newState = entityReducerForEntity(
+        createCleanState(query).cache.entities[collection],
+        loadAction,
+      )
+
+      expect(newState).to.deep.equal(value.response.entities[collection])
+    })
+
+  })
 }
