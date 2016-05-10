@@ -101,10 +101,7 @@ export const createPromisesReducer = type => (state = {}, action) => {
 
 
 export default (apiTypes) => {
-  const typesGroupedByCollection = groupBy(
-    Object.keys(apiTypes).map( key => ({ ...apiTypes[key], key })),
-    (apiType) => apiType.collection
-  )
+  const typesGroupedByCollection = groupBy( apiTypes, (apiType) => apiType.collection )
   return combineReducers({
 
     entities: combineReducers(

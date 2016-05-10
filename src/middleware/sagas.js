@@ -75,7 +75,6 @@ export default (types) => {
   const watchLoadEntity = createWatchLoadEntity(types)
 
   return function* root(getState) {
-    console.log('sagas.root.getState', getState)
     const getEntity = (type, query) => getEntityState(getState(), type, query, types)
     const getValue = (type, query) => getPromiseValue(getState(), type, query, types)
     const getPromise = (type, query) => getPromiseState(getState(), type, query, types)
