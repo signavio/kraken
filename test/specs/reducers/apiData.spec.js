@@ -1,6 +1,6 @@
 import expect from '../../expect'
 
-import createActionCreators, {
+import {
   LOAD_ENTITY,
   SUCCESS,
   FAILURE,
