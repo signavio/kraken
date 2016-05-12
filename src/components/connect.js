@@ -1,12 +1,14 @@
 import { Component, createElement, PropTypes } from 'react'
 import { connect as reduxConnect } from 'react-redux'
 import invariant from 'invariant'
-import compose from 'lodash/fp/compose'
-import pickBy from 'lodash/fp/pickBy'
 import hoistStatics from 'hoist-non-react-statics'
 import forEach from 'lodash/forEach'
-import mapValues from 'lodash/fp/mapValues'
-import mapKeys from 'lodash/fp/mapKeys'
+import mapValues from 'lodash/mapValues'
+import mapKeys from 'lodash/mapKeys'
+
+import fpMapValues from 'lodash/fp/mapValues'
+import compose from 'lodash/fp/compose'
+import pickBy from 'lodash/fp/pickBy'
 
 import actionsCreator from '../actions'
 import { getPromiseState, getEntityState } from '../utils'
@@ -17,7 +19,7 @@ function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
-const mapIdToQuery = (types) => mapValues(({ id, query, type, ...rest }) => {
+const mapIdToQuery = (types) => fpMapValues(({ id, query, type, ...rest }) => {
   invariant(!(id && query), `Must only define one of the 'id' and 'query' parameters`)
   if (id) {
     query = { [getIdAttribute(types, type)]: id }
@@ -34,7 +36,7 @@ export default (types) => {
 
     mapPropsToPromiseProps = compose(mapIdToQuery(types), pickBy(Boolean), mapPropsToPromiseProps)
 
-    function wrapWithApiConnect(WrappedComponent) {
+    const wrapWithApiConnect = (WrappedComponent) => {
       class ApiConnect extends Component {
 
         static propTypes = {
@@ -77,7 +79,7 @@ export default (types) => {
       return hoistStatics(ApiConnect, WrappedComponent)
     }
 
-    function mapStateToProps(state, props) {
+    const mapStateToProps = (state, props) => {
       invariant(
         !!state.cache,
         'Could not find an API cache in the state (looking at: `state.cache`)'
@@ -86,17 +88,25 @@ export default (types) => {
       // keep promise and entity states in separate props, so that react-redux' connect function can
       // figure out whether s.th. has changed
       return {
-        ...mapKeys((val, propName) => `${propName}_promise`,
-          mapValues(({ query, type }) => getPromiseState(state, type, query, types), promiseProps),
+        ...mapKeys(
+          mapValues(
+            promiseProps,
+            ({ query, type }) => getPromiseState(state, type, query, types)
+          ),
+          (val, propName) => `${propName}_promise`,
         ),
-        ...mapKeys((val, propName) => `${propName}_entity`,
-          mapValues(({ query, type }) => getEntityState(state, type, query, types), promiseProps),
+        ...mapKeys(
+          mapValues(
+            promiseProps,
+            ({ query, type }) => getEntityState(state, type, query, types)
+          ),
+          (val, propName) => `${propName}_entity`,
         ),
       }
 
     }
 
-    function mergeProps(stateProps, dispatchProps, ownProps) {
+    const mergeProps = (stateProps, dispatchProps, ownProps) => {
       const promiseProps = mapPropsToPromiseProps(ownProps)
       const joinPromiseValue = propName => {
         const promise = stateProps[`${propName}_promise`]
@@ -115,7 +125,7 @@ export default (types) => {
       // now it's time to join the `${propName}_entity` with the `${propName}_promise` props
       return {
         ...ownProps,
-        ...mapValues((value, propName) => joinPromiseValue(propName), promiseProps),
+        ...mapValues(promiseProps, (value, propName) => joinPromiseValue(propName)),
         ...dispatchProps,
       }
     }
