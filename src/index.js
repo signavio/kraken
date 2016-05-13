@@ -1,5 +1,5 @@
 import createReducer from './reducers'
-import createSagaMiddleware from './middleware'
+import createSaga from './sagas'
 import createConnect from './components'
 import createActions from './actions'
 
@@ -16,7 +16,7 @@ export default (types) => {
   )
   return {
     reducer: createReducer(types),
-    saga: createSagaMiddleware(types),
+    saga: createSaga(types),
     connect: createConnect(types),
     actions: createActions(types),
   }
