@@ -13,6 +13,7 @@
     "semi": [2, "never"],
     "quotes": 0,
     "object-shorthand": 0,
+    "space-in-parens": 0,
     "padded-blocks": 0,
     "react/prop-types": 1,
     "no-use-before-define": 0,

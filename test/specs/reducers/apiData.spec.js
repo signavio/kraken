@@ -4,7 +4,7 @@ import {
   LOAD_ENTITY,
   SUCCESS,
   FAILURE,
-  REQUEST,
+  FETCH,
   CACHE_HIT,
 } from '../../../src/actions'
 
@@ -77,9 +77,9 @@ const dataTest = (entity, type, value) => {
       expect(newState[typeKey]).to.have.property('pending', true)
     })
 
-    it('REQUEST', () => {
+    it('FETCH', () => {
       const loadAction = {
-        type: REQUEST,
+        type: FETCH,
         payload: {
           entity,
           query,

@@ -9,7 +9,7 @@ import { stringifyQuery, simplifyTypes } from '../types'
 import {
   LOAD_ENTITY,
   CACHE_HIT,
-  REQUEST,
+  FETCH,
   SUCCESS,
   FAILURE,
 } from '../actions'
@@ -51,7 +51,7 @@ export const createPromisesReducer = type => (state = {}, action) => {
           pending: true,
         },
       }
-    case REQUEST:
+    case FETCH:
       return {
         ...state,
         [key]: {

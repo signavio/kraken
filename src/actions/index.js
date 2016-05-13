@@ -2,7 +2,6 @@ import invariant from 'invariant'
 import mapValues from 'lodash/mapValues'
 
 export const LOAD_ENTITY = 'API_LOAD_ENTITY'
-export const BATCHED_REQUEST = 'API_BATCHED_REQUEST'
 export const CACHE_HIT = 'API_CACHE_HIT'
 export const FETCH = 'API_FETCH'
 export const CREATE = 'API_CREATE'
@@ -23,10 +22,6 @@ const actionCreators = {
     },
   }),
 
-  batchedRequest: () => ({
-    type: BATCHED_REQUEST,
-  }),
-
   cacheHit: (entityType, query, value) => ({
     type: CACHE_HIT,
     payload: {
@@ -37,7 +32,7 @@ const actionCreators = {
   }),
 
   fetch: (entityType, query) => ({
-    type: REQUEST,
+    type: FETCH,
     payload: {
       entity: entityType,
       query,
@@ -54,12 +49,12 @@ const actionCreators = {
   }),
 
   update: (entityType, requestId, body) => ({
-      type: UPDATE,
-      payload: {
-        entity: entityType,
-        requestId,
-        body,
-      },
+    type: UPDATE,
+    payload: {
+      entity: entityType,
+      requestId,
+      body,
+    },
   }),
 
   success: (entityType, query, value, entities) => ({
@@ -97,7 +92,6 @@ const enhanceWithEntityTypeValidation = (types, actionCreator) => (entityType, .
 }
 
 export default (types) => mapValues(
-  actionCreators, 
+  actionCreators,
   enhanceWithEntityTypeValidation.bind(null, types)
 )
-

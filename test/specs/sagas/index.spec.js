@@ -1,5 +1,5 @@
-import load from './load.spec'
+import watchLoadEntity from './watchLoadEntity.spec'
 
 describe('sagas', () => {
-  describe('load', load)
+  describe('watchLoadEntity', watchLoadEntity)
 })
