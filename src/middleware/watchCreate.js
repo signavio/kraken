@@ -2,28 +2,37 @@ import { takeEvery } from 'redux-saga'
 import { put, call } from 'redux-saga/effects'
 import uniqueId from 'lodash/uniqueId'
 
-import { CREATE_ENTITY } from '../actions'
-import * as actions from '../actions'
+import createActionCreators, { CREATE_ENTITY } from '../actions'
 import { getCreate } from '../types'
 
 
-function* createEntity(type, body) {
-  const create = getCreate(type)
-  const requestId = uniqueId('create_')
-  yield put( actions.create(type, requestId, body) )
+export const createCreateEntity = (types) => {
+  const actions = createActionCreators(types)
 
-  const {response, error} = yield call(create, body)
-  if(response)
-    yield put( actions.success(type, requestId, response.result, response.entities) )
-  else
-    yield put( actions.failure(type, requestId, error) )
+  return function* createEntity(type, body) {
+    const create = getCreate(type)
+    const requestId = uniqueId('create_')
+    yield put(actions.create(type, requestId, body))
+
+    const { response, error } = yield call(create, body)
+    if (response) {
+      yield put(actions.success(type, requestId, response.result, response.entities))
+    } else {
+      yield put(actions.failure(type, requestId, error))
+    }
+  }
 }
 
-export default function* watchCreateEntity() {
-  yield* takeEvery(
-    CREATE_ENTITY, 
-    ({ payload }) => createEntity(
-      payload.entity, payload.body
+
+export default function createWatchCreateEntity(types) {
+  const createEntity = createCreateEntity(types)
+
+  return function* watchCreateEntity() {
+    yield* takeEvery(
+      CREATE_ENTITY,
+      ({ payload }) => createEntity(
+        payload.entity, payload.body
+      )
     )
-  )
+  }
 }
