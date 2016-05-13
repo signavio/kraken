@@ -8,22 +8,22 @@ import { getCreate } from '../types'
 
 
 function* createEntity(type, body) {
-    const create = getCreate(type)
-    const requestId = uniqueId('create_')
-    yield put( actions.create(type, requestId, body) )
+  const create = getCreate(type)
+  const requestId = uniqueId('create_')
+  yield put( actions.create(type, requestId, body) )
 
-    const {response, error} = yield call(create, body)
-    if(response)
-        yield put( actions.success(type, requestId, response.result, response.entities) )
-    else
-        yield put( actions.failure(type, requestId, error) )
+  const {response, error} = yield call(create, body)
+  if(response)
+    yield put( actions.success(type, requestId, response.result, response.entities) )
+  else
+    yield put( actions.failure(type, requestId, error) )
 }
 
 export default function* watchCreateEntity() {
-    yield* takeEvery(
-        CREATE_ENTITY, 
-        ({ payload }) => createEntity(
-            payload.entity, payload.body
-        )
+  yield* takeEvery(
+    CREATE_ENTITY, 
+    ({ payload }) => createEntity(
+      payload.entity, payload.body
     )
+  )
 }
