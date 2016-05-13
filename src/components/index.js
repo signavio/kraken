@@ -1,1 +1,1 @@
-export connect from './connect'
+export default from './connect'

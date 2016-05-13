@@ -1,32 +1,23 @@
-import { normalize, arrayOf } from 'normalizr'
+import { normalize } from 'normalizr'
 
-import types from '../types'
+import { apiTypes as types } from '../types'
 
 import caseData from './cases/new-p1'
 import subjectData from './subjects/new-p1'
 import traceData from './traces/new-p1'
-// import Diagram from './diagrams/p1'
-// import Deviation from './deviations/p1'
-// import Status from './status/p1'
 
-export const Case = {
-  response: normalize(caseData, types.Case.schema),
+const Cases = { response: normalize(caseData, types.Cases.schema) }
+const Traces = { response: normalize(traceData, types.Traces.schema) }
+const Subjects = { response: normalize(subjectData, types.Subjects.schema) }
+const Case = { response: normalize(caseData[0], types.Case.schema) }
+const Trace = { response: normalize(traceData[0], types.Trace.schema) }
+const Subject = { response: normalize(subjectData[0], types.Subject.schema) }
+
+export {
+  Cases,
+  Traces,
+  Subjects,
+  Case,
+  Trace,
+  Subject,
 }
-export const Trace = {
-  response: normalize(traceData, types.Trace.schema),
-}
-export const Subject = {
-  response: normalize(subjectData, types.Subject.schema),
-}
-// export const diagram = {
-//   response: normalize(diagramData, diagramSchema),
-// }
-// export const deviations = {
-//   response: normalize(deviationsData, deviationsSchema),
-// }
-// export const status = {
-//   response: normalize(statusData, statusSchema),
-// }
-// export const process = {
-//   response: normalize(_.find(processData, (o) => o.id === 'p1'), processSchema),
-// }

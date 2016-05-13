@@ -7,7 +7,9 @@ import {
   REQUEST,
   CACHE_HIT,
 } from '../../../src/actions'
+
 import { typeUtils } from '../../../src'
+
 import {
   createEntitiesReducer,
   createPromisesReducer,
@@ -17,13 +19,13 @@ const testId = 'testSubjectId'
 
 import * as sampleData from '../../data'
 
-import types from '../../types'
+import { apiTypes } from '../../types'
 
 export default () => {
-  Object.keys(types).forEach((type) => {
+  Object.keys(apiTypes).forEach((type) => {
     describe(type, () => {
       dataTest(
-        { ...types[type], key: type },
+        { ...apiTypes[type], key: type },
         type,
         sampleData[type],
       )
@@ -34,7 +36,7 @@ export default () => {
 const createCleanState = (query) => ({
   cache: {
     promises: {
-      ...Object.keys(types).reduce((prev, key) => ({
+      ...Object.keys(apiTypes).reduce((prev, key) => ({
         ...prev,
         [key]: {
           [typeUtils.stringifyQuery(query)]: {},
@@ -42,9 +44,9 @@ const createCleanState = (query) => ({
       }), {}),
     },
     entities: {
-      ...Object.keys(types).reduce((prev, key) => ({
+      ...Object.keys(apiTypes).reduce((prev, key) => ({
         ...prev,
-        [typeUtils.getCollection(types, key)]: {},
+        [typeUtils.getCollection(apiTypes, key)]: {},
       }), {}),
     },
   },
@@ -53,7 +55,7 @@ const dataTest = (entity, type, value) => {
 
   const query = { id: testId }
   const typeKey = typeUtils.stringifyQuery(query)
-  const collection = typeUtils.getCollection(types, type)
+  const collection = typeUtils.getCollection(apiTypes, type)
   // const entityReducerForEntity = entityReducer(entity)
   describe('promiseReducer', () => {
     const promiseReducerForEntity = createPromisesReducer(entity)

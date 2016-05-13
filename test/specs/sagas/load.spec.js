@@ -10,17 +10,17 @@ import { createFetchEntity } from '../../../src/middleware/sagas'
 import actionsCreator from '../../../src/actions'
 
 import { getPromiseState } from '../../../src/utils'
-import { promise, typeUtils } from '../../../src'
+import { typeUtils } from '../../../src'
 
 import * as sampleData from '../../data'
 
-import types from '../../types'
+import { apiTypes } from '../../types'
 
-const fetchEntity = createFetchEntity(types)
-const actions = actionsCreator(types)
+const fetchEntity = createFetchEntity(apiTypes)
+const actions = actionsCreator(apiTypes)
 
 export default () => {
-  Object.keys(types).forEach((type) => {
+  Object.keys(apiTypes).forEach((type) => {
     describe(type, () => {
       genericTest(
         type,
@@ -37,7 +37,7 @@ const genericTest = (type, data) => {
     const state = {
       cache: {
         promises: {
-          ...Object.keys(types).reduce((pre, key) => ({
+          ...Object.keys(apiTypes).reduce((pre, key) => ({
             ...pre,
             [key]: {
               [typeUtils.stringifyQuery(query)]: {
@@ -49,7 +49,7 @@ const genericTest = (type, data) => {
       },
     }
     const getPromise = (entity, promiseQuery) => {
-      return getPromiseState(state, entity, promiseQuery, types)
+      return getPromiseState(state, entity, promiseQuery, apiTypes)
     }
 
     const gen = fetchEntity(type, query, getPromise)
@@ -63,7 +63,7 @@ const genericTest = (type, data) => {
     it('should call fetch', () => {
       const genNext = gen.next()
       expect(genNext.value)
-      .to.deep.equal( call(typeUtils.getFetch(types, type), query) )
+      .to.deep.equal( call(typeUtils.getFetch(apiTypes, type), query) )
     })
 
     it('should put success action', () => {
@@ -79,7 +79,7 @@ const genericTest = (type, data) => {
     const state = {
       cache: {
         promises: {
-          ...Object.keys(types).reduce((pre, key) => ({
+          ...Object.keys(apiTypes).reduce((pre, key) => ({
             ...pre,
             [key]: {
               [typeUtils.stringifyQuery(query)]: {
@@ -91,7 +91,7 @@ const genericTest = (type, data) => {
       },
     }
     const getPromise = (entity, promiseQuery) => {
-      return getPromiseState(state, entity, promiseQuery, types)
+      return getPromiseState(state, entity, promiseQuery, apiTypes)
     }
 
     const gen = fetchEntity(type, query, getPromise)
@@ -105,7 +105,7 @@ const genericTest = (type, data) => {
     it('should call fetch', () => {
       const genNext = gen.next()
       expect(genNext.value)
-      .to.deep.equal( call(typeUtils.getFetch(types, type), query) )
+      .to.deep.equal( call(typeUtils.getFetch(apiTypes, type), query) )
     })
 
     it('should put error', () => {

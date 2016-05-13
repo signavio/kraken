@@ -1,6 +1,6 @@
 import createReducer from './reducers'
 import createSagaMiddleware from './middleware'
-import createConnect from './components/connect'
+import createConnect from './components'
 import createActions from './actions'
 
 export default (types) => {
