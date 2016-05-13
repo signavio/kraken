@@ -60,7 +60,7 @@ const actionCreators = {
         requestId,
         body,
       },
-  })
+  }),
 
   success: (entityType, query, value, entities) => ({
     type: SUCCESS,
