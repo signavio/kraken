@@ -3,7 +3,7 @@ import { put, call, spawn } from 'redux-saga/effects'
 
 import createActionCreators, { LOAD_ENTITY } from '../actions'
 import { getFetch } from '../types'
-import { getPromiseState, getPromiseValue, getEntityState } from '../utils'
+import { getPromiseState, getPromiseValue, getEntityState, getEntityCollectionState } from '../utils'
 
 export const createFetchEntity = (types) => {
 
@@ -76,10 +76,14 @@ export default (types) => {
 
   return function* root(getState) {
     const getEntity = (type, query) => getEntityState(getState(), type, query, types)
+    const getEntityById = (type, id) => getEntityCollectionState(getState(), type)[id]
     const getValue = (type, query) => getPromiseValue(getState(), type, query, types)
     const getPromise = (type, query) => getPromiseState(getState(), type, query, types)
 
     yield spawn(watchLoadEntity, getEntity, getValue, getPromise)
+
+    yield spawn(watchCreateEntity)
+    yield spawn(watchUpdateEntity, getEntityById, getPromise)
       // yield form(watchBatchedRequest)
   }
 }

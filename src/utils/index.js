@@ -18,13 +18,15 @@ export const getPromiseValue = (state, type, query, types) => {
   return value
 }
 
+export const getEntityCollectionState = (state, type) => state.cache.entities[getCollection(type)]
+
 export const getEntityState = (state, type, query, types) => {
-  const entityCollection = state.cache.entities[getCollection(types, type)]
-  const value = getPromiseValue(state, type, query, types)
+  const entityCollection = getEntityCollectionState(state, type)
+  const value = getPromiseValue(state, type, query)
 
-  if (hasEntitySchema(types, type)) {
+  if(hasEntitySchema(type)) {
     return value && entityCollection[value]
+  } else {
+    return value && value.map(id => entityCollection[id])
   }
-
-  return value && value.map(id => entityCollection[id])
 }

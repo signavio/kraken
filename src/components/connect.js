@@ -131,9 +131,9 @@ export default (types) => {
     }
 
 
-    const { loadEntity } = actionsCreator(types)
+    const { loadEntity, createEntity, updateEntity, deleteEntity } = actionsCreator(types)
     return compose(
-      reduxConnect(mapStateToProps, { loadEntity }, mergeProps, options),
+      reduxConnect(mapStateToProps, { loadEntity, createEntity, updateEntity, deleteEntity }, mergeProps, options),
       wrapWithApiConnect,
     )
   }

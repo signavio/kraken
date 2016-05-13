@@ -1,70 +1,103 @@
 import invariant from 'invariant'
+import mapValues from 'lodash/mapValues'
 
 export const LOAD_ENTITY = 'API_LOAD_ENTITY'
 export const BATCHED_REQUEST = 'API_BATCHED_REQUEST'
 export const CACHE_HIT = 'API_CACHE_HIT'
-export const REQUEST = 'API_REQUEST'
+export const FETCH = 'API_FETCH'
+export const CREATE = 'API_CREATE'
+export const UPDATE = 'API_UPDATE'
 export const SUCCESS = 'API_SUCCESS'
 export const FAILURE = 'API_FAILURE'
 
-export default (types) => ({
+const actionCreators = {
+
   // If requiredFields is set to `true` the entity will always be refetched,
   // even it is already in the cache,
-  loadEntity: (entityType, query, requiredFields) => {
-    invariant(
-      !!types[entityType],
-`First argument of loadEntity action creator must be one of the following constants:
-\`${Object.keys(types).join(', ')}\`
-(is: \`${entityType}\`)
-`)
-    return {
-      type: LOAD_ENTITY,
-      payload: {
-        entity: entityType,
-        query,
-        requiredFields,
-      },
-    }
-  },
+  loadEntity: (entityType, query, requiredFields) => ({
+    type: LOAD_ENTITY,
+    payload: {
+      entity: entityType,
+      query,
+      requiredFields,
+    },
+  }),
 
   batchedRequest: () => ({
     type: BATCHED_REQUEST,
   }),
 
-  cacheHit: (type, query, value) => ({
+  cacheHit: (entityType, query, value) => ({
     type: CACHE_HIT,
     payload: {
-      entity: type,
+      entity: entityType,
       query,
       value,
     },
   }),
 
-  request: (type, query) => ({
+  fetch: (entityType, query) => ({
     type: REQUEST,
     payload: {
-      entity: type,
+      entity: entityType,
       query,
     },
   }),
 
-  success: (type, query, value, entities) => ({
+  create: (entityType, requestId, body) => ({
+    type: CREATE,
+    payload: {
+      entity: entityType,
+      requestId,
+      body,
+    },
+  }),
+
+  update: (entityType, requestId, body) => ({
+      type: UPDATE,
+      payload: {
+        entity: entityType,
+        requestId,
+        body,
+      },
+  })
+
+  success: (entityType, query, value, entities) => ({
     type: SUCCESS,
     payload: {
-      entity: type,
+      entity: entityType,
       query,
       value,
       entities,
     },
   }),
 
-  failure: (type, query, error) => ({
+  failure: (entityType, query, error) => ({
     type: FAILURE,
     payload: {
-      entity: type,
+      entity: entityType,
       query,
       error,
     },
     error: true,
   }),
-})
+
+}
+
+
+const enhanceWithEntityTypeValidation = (types, actionCreator) => (entityType, ...args) => {
+  invariant(
+    !!types[entityType],
+`First argument of loadEntity action creator must be one of the following constants:
+\`${Object.keys(types).join(', ')}\`
+(is: \`${entityType}\`)
+`
+  )
+  return actionCreator(entityType, ...args)
+}
+
+export default (types) => mapValues(
+  actionCreators, 
+  enhanceWithEntityTypeValidation.bind(null, types)
+)
+
