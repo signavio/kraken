@@ -1,15 +1,19 @@
 import findKey from 'lodash/find'
-import { getCollection, stringifyQuery, hasEntitySchema } from '../types'
+import { getCollection, hasEntitySchema } from '../types'
 
 
-export const getPromiseState = (state, type, query) => {
+// TODO: maybe switch to a proper hashing to make sure to not have key
+// collision when queries with different key sets are used for the same type
+export const stringifyQuery = (query) => JSON.stringify(query)
+
+
+export const getPromiseState = (types, state, type, query) => {
   const promiseKey = stringifyQuery(query)
-  console.log("l", state);
   return state.cache.promises[type][promiseKey]
 }
 
 export const getPromiseValue = (types, state, type, query) => {
-  const { value } = getPromiseState(state, type, query) || {}
+  const { value } = getPromiseState(types, state, type, query) || {}
   const entityCollection = state.cache.entities[getCollection(types, type)]
 
   if (hasEntitySchema(types, type)) {

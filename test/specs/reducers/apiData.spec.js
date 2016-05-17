@@ -9,6 +9,7 @@ import {
 } from '../../../src/actions'
 
 import { typeUtils } from '../../../src'
+import { stringifyQuery } from '../../../src/utils'
 
 import {
   createEntitiesReducer,
@@ -39,7 +40,7 @@ const createCleanState = (query) => ({
       ...Object.keys(apiTypes).reduce((prev, key) => ({
         ...prev,
         [key]: {
-          [typeUtils.stringifyQuery(query)]: {},
+          [stringifyQuery(query)]: {},
         },
       }), {}),
     },
@@ -54,7 +55,7 @@ const createCleanState = (query) => ({
 const dataTest = (entity, type, value) => {
 
   const query = { id: testId }
-  const typeKey = typeUtils.stringifyQuery(query)
+  const typeKey = stringifyQuery(query)
   const collection = typeUtils.getCollection(apiTypes, type)
   // const entityReducerForEntity = entityReducer(entity)
   describe('promiseReducer', () => {

@@ -5,7 +5,8 @@ import reduceReducers from 'reduce-reducers'
 
 import invariant from 'invariant'
 
-import { stringifyQuery, simplifyTypes } from '../types'
+import { typeConstants } from '../types'
+import { stringifyQuery } from '../utils'
 import {
   LOAD_ENTITY,
   CACHE_HIT,
@@ -113,6 +114,9 @@ export default (apiTypes) => {
       )
     ),
 
-    promises: combineReducers(mapValues(simplifyTypes(apiTypes), createPromisesReducer)),
+    promises: combineReducers(
+      mapValues(typeConstants(apiTypes), createPromisesReducer)
+    ),
+
   })
 }

@@ -18,7 +18,7 @@ export default (types) => {
 
   return function* rootSaga(getState) {
     const getEntity = (type, query) => getEntityState(types, getState(), type, query)
-    const getEntityById = (type, id) => getEntityCollectionState(getState(), type)[id]
+    const getEntityById = (type, id) => getEntityCollectionState(types, getState(), type)[id]
     const getValue = (type, query) => getPromiseValue(types, getState(), type, query)
     const getPromise = (type, query) => getPromiseState(types, getState(), type, query)
 

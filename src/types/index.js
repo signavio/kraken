@@ -16,12 +16,8 @@ export const getFetch = (types, type) => {
   return fetch
 }
 
-// TODO: maybe switch to a proper hashing to make sure to not have key
-// collision when queries with differnet key sets are used for the same type
-export const stringifyQuery = (query) => JSON.stringify(query)
-
 export const hasEntitySchema = (types, type) => types[type].schema instanceof EntitySchema
 
 export const getIdAttribute = (types, type) => types[type].schema.getIdAttribute()
 
-export const simplifyTypes = (types) => mapValues(types, (val, key) => key)
+export const typeConstants = (types) => mapValues(types, (val, key) => key)

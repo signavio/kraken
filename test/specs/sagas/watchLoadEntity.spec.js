@@ -11,6 +11,7 @@ import actionsCreator from '../../../src/actions'
 
 import { getPromiseState } from '../../../src/utils'
 import { typeUtils } from '../../../src'
+import { stringifyQuery } from '../../../src/utils'
 
 import * as sampleData from '../../data'
 
@@ -47,7 +48,7 @@ const genericTest = (type, data) => {
             ...Object.keys(apiTypes).reduce((pre, key) => ({
               ...pre,
               [key]: {
-                [typeUtils.stringifyQuery(query)]: {
+                [stringifyQuery(query)]: {
                   outstanding: true,
                 },
               },
@@ -58,7 +59,7 @@ const genericTest = (type, data) => {
       const getPromise = (entity, promiseQuery) => {
         return getPromiseState(apiTypes, state, entity, promiseQuery)
       }
-console.log("s", state);
+
       const gen = fetchEntity(type, query, getPromise)
 
       it('should dispatch a `request` action', () => {
@@ -89,7 +90,7 @@ console.log("s", state);
             ...Object.keys(apiTypes).reduce((pre, key) => ({
               ...pre,
               [key]: {
-                [typeUtils.stringifyQuery(query)]: {
+                [stringifyQuery(query)]: {
                   outstanding: true,
                 },
               },
