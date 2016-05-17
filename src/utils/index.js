@@ -4,10 +4,11 @@ import { getCollection, stringifyQuery, hasEntitySchema } from '../types'
 
 export const getPromiseState = (state, type, query) => {
   const promiseKey = stringifyQuery(query)
+  console.log("l", state);
   return state.cache.promises[type][promiseKey]
 }
 
-export const getPromiseValue = (state, type, query, types) => {
+export const getPromiseValue = (types, state, type, query) => {
   const { value } = getPromiseState(state, type, query) || {}
   const entityCollection = state.cache.entities[getCollection(types, type)]
 
@@ -18,15 +19,15 @@ export const getPromiseValue = (state, type, query, types) => {
   return value
 }
 
-export const getEntityCollectionState = (state, type) => state.cache.entities[getCollection(type)]
+export const getEntityCollectionState = (types, state, type) => state.cache.entities[getCollection(types, type)]
 
-export const getEntityState = (state, type, query, types) => {
-  const entityCollection = getEntityCollectionState(state, type)
-  const value = getPromiseValue(state, type, query)
+export const getEntityState = (types, state, type, query) => {
+  const entityCollection = getEntityCollectionState(types, state, type)
+  const value = getPromiseValue(types, state, type, query)
 
-  if(hasEntitySchema(type)) {
+  if (hasEntitySchema(types, type)) {
     return value && entityCollection[value]
-  } else {
-    return value && value.map(id => entityCollection[id])
   }
+
+  return value && value.map(id => entityCollection[id])
 }

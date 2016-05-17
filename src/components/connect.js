@@ -91,14 +91,14 @@ export default (types) => {
         ...mapKeys(
           mapValues(
             promiseProps,
-            ({ query, type }) => getPromiseState(state, type, query, types)
+            ({ query, type }) => getPromiseState(types, state, type, query)
           ),
           (val, propName) => `${propName}_promise`,
         ),
         ...mapKeys(
           mapValues(
             promiseProps,
-            ({ query, type }) => getEntityState(state, type, query, types)
+            ({ query, type }) => getEntityState(types, state, type, query)
           ),
           (val, propName) => `${propName}_entity`,
         ),

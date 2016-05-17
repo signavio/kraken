@@ -17,10 +17,10 @@ export default (types) => {
   const watchRemoveEntity = createWatchRemoveEntity(types)
 
   return function* rootSaga(getState) {
-    const getEntity = (type, query) => getEntityState(getState(), type, query, types)
+    const getEntity = (type, query) => getEntityState(types, getState(), type, query)
     const getEntityById = (type, id) => getEntityCollectionState(getState(), type)[id]
-    const getValue = (type, query) => getPromiseValue(getState(), type, query, types)
-    const getPromise = (type, query) => getPromiseState(getState(), type, query, types)
+    const getValue = (type, query) => getPromiseValue(types, getState(), type, query)
+    const getPromise = (type, query) => getPromiseState(types, getState(), type, query)
 
     yield spawn(watchLoadEntity, getEntity, getValue, getPromise)
     yield spawn(watchCreateEntity)

@@ -56,9 +56,9 @@ const genericTest = (type, data) => {
         },
       }
       const getPromise = (entity, promiseQuery) => {
-        return getPromiseState(state, entity, promiseQuery, apiTypes)
+        return getPromiseState(apiTypes, state, entity, promiseQuery)
       }
-
+console.log("s", state);
       const gen = fetchEntity(type, query, getPromise)
 
       it('should dispatch a `request` action', () => {
@@ -98,7 +98,7 @@ const genericTest = (type, data) => {
         },
       }
       const getPromise = (entity, promiseQuery) => {
-        return getPromiseState(state, entity, promiseQuery, apiTypes)
+        return getPromiseState(apiTypes, state, entity, promiseQuery)
       }
 
       const gen = fetchEntity(type, query, getPromise)
@@ -115,5 +115,5 @@ const genericTest = (type, data) => {
     })
 
   })
-  
+
 }
