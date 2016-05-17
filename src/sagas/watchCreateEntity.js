@@ -10,7 +10,7 @@ export const createCreateEntity = (types) => {
   const actions = createActionCreators(types)
 
   return function* createEntity(type, body) {
-    const create = getCreate(type)
+    const create = getCreate(types, type)
     const requestId = uniqueId('create_')
     yield put(actions.create(type, requestId, body))
 

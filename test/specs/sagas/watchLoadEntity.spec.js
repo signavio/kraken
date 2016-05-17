@@ -62,7 +62,7 @@ const genericTest = (type, data) => {
 
       const gen = fetchEntity(type, query, getPromise)
 
-      it('should dispatch a `request` action', () => {
+      it('should dispatch a `fetch` action', () => {
         const genNext = gen.next()
         expect(genNext.value)
           .to.deep.equal( put(actions.fetch(type, query)) )
@@ -103,7 +103,7 @@ const genericTest = (type, data) => {
       }
 
       const gen = fetchEntity(type, query, getPromise)
-      gen.next() // dispatch `request` action
+      gen.next() // dispatch `fetch` action
       gen.next() // call `fetch` function
 
       it('should dispatch an `error` action if the server request fails', () => {

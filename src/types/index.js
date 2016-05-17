@@ -10,11 +10,18 @@ export const getCollection = (types, type) => {
   return collection
 }
 
-export const getFetch = (types, type) => {
-  const fetch = types[type].fetch
-  if (!isFunction(fetch)) throw new Error(`fetch of type: '${type}' must be a function`)
-  return fetch
+const createMethodFunctionGetter = method => (types, type) => {
+  const methodFn = types[type][method]
+  if (!isFunction(methodFn)) {
+    throw new Error(`Implementation of '${type}' type does not provide a ${method} function`)
+  }
+  return methodFn
 }
+
+export const getFetch = createMethodFunctionGetter('fetch')
+export const getCreate = createMethodFunctionGetter('create')
+export const getUpdate = createMethodFunctionGetter('update')
+export const getRemove = createMethodFunctionGetter('remove')
 
 export const hasEntitySchema = (types, type) => types[type].schema instanceof EntitySchema
 
