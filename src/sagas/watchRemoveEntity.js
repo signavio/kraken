@@ -17,7 +17,7 @@ export function createRemoveEntity(types) {
     // }
 
     const remove = getRemove(type)
-    yield put(actions.remove(type, requestId))
+    yield put(actions.request(type, requestId))
 
     // TODO to be cool, do an optimistic remove of the entity cache and revert to
     // previous state stored in `entity` var if the request fails

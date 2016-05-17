@@ -6,11 +6,14 @@ import reduceReducers from 'reduce-reducers'
 import invariant from 'invariant'
 
 import { typeConstants } from '../types'
-import { stringifyQuery } from '../utils'
+import { deriveRequestId } from '../utils'
 import {
   LOAD_ENTITY,
   CACHE_HIT,
-  FETCH,
+  CREATE_ENTITY,
+  UPDATE_ENTITY,
+  REMOVE_ENTITY,
+  REQUEST,
   SUCCESS,
   FAILURE,
 } from '../actions'
@@ -39,26 +42,21 @@ export const createEntitiesReducer = type => (state = {}, action) => {
 export const createPromisesReducer = type => (state = {}, action) => {
   const { payload = {} } = action
   if (payload.entity !== type) return state
-  const key = stringifyQuery(payload.query)
+
+  const key = deriveRequestId(action)
   const promise = state[key]
 
   switch (action.type) {
     case LOAD_ENTITY:
+    case CREATE_ENTITY:
+    case UPDATE_ENTITY:
+    case REMOVE_ENTITY:
       return {
         ...state,
         [key]: {
           ...promise,
           outstanding: true,
           pending: true,
-        },
-      }
-    case FETCH:
-      return {
-        ...state,
-        [key]: {
-          ...promise,
-          outstanding: false,
-          ...(promise && promise.fulfilled && { refreshing: true }),
         },
       }
     case CACHE_HIT:
@@ -71,6 +69,15 @@ export const createPromisesReducer = type => (state = {}, action) => {
           fulfilled: true,
           rejected: false,
           value: payload.value,
+        },
+      }
+    case REQUEST:
+      return {
+        ...state,
+        [key]: {
+          ...promise,
+          outstanding: false,
+          ...(promise && promise.fulfilled && { refreshing: true }),
         },
       }
     case SUCCESS:

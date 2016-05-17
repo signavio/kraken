@@ -1,4 +1,4 @@
-/* setup.js */
+/* eslint-disable */
 
 var jsdom = require('jsdom').jsdom;
 

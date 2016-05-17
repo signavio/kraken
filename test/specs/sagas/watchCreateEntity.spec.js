@@ -11,9 +11,7 @@ import { createCreateEntity } from '../../../src/sagas/watchCreateEntity'
 
 import actionsCreator from '../../../src/actions'
 
-import { getPromiseState } from '../../../src/utils'
 import { typeUtils } from '../../../src'
-import { stringifyQuery } from '../../../src/utils'
 
 import * as sampleData from '../../data'
 
@@ -46,12 +44,12 @@ const genericTest = (type, data) => {
 
       const gen = createEntity(type, body)
 
-      it('should dispatch a `create` action, generating a unique request id', () => {
+      it('should dispatch a `request` action, generating a unique request id', () => {
         const genNext = gen.next()
         requestId = genNext.value.PUT.action.payload.requestId
         expect(requestId).to.exist
         expect(genNext.value).to.deep.equal(
-          put(actions.create(type, requestId, body))
+          put(actions.request(type, requestId))
         )
       })
 

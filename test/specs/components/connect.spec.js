@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable react/no-multi-comp */
+
 import React, { Component } from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
@@ -14,9 +17,9 @@ import types, { apiTypes } from '../../types'
 
 const connect = createConnect(apiTypes)
 
-import { LOAD_ENTITY } from '../../../src/actions'
+import { LOAD_ENTITY, CREATE_ENTITY } from '../../../src/actions'
 
-const { Trace } = types
+const { Trace, Subject } = types
 
 const renderSpy = sinon.spy()
 
@@ -53,10 +56,10 @@ export default () => {
     const traceId = 'trace1'
 
     const TestComponent = connect(props => ({
-      userFetch: { type: Trace, id: props.traceId },
+      fetchUser: { type: Trace, id: props.traceId },
     }))(MyComp)
 
-    const wrapper = mount(
+    mount(
         <Provider store={testStore}>
             <TestComponent traceId={traceId} />
         </Provider>
@@ -77,14 +80,49 @@ export default () => {
     )
   })
 
+  it.only('should provide a pre-configured action creator when using a `create` method ', () => {
+    const TestComponent = connect(() => ({
+      createSubject: { type: Subject, method: 'create' },
+    }))(MyComp)
+
+    mount(
+        <Provider store={testStore}>
+            <TestComponent />
+        </Provider>
+    )
+
+    // should pass in action creator function as createSubject prop
+    expect(renderSpy).to.have.been.calledOnce
+    const { createSubject } = renderSpy.args[0]
+    expect(createSubject).to.be.a.function
+
+    // dispatch action
+    const body = { foo: 'bar' }
+    createSubject(body)
+
+    // reducer should have been called with that action
+    expect(reducerSpy).to.have.been.calledOnce
+    expect(reducerSpy).to.have.been.calledWithMatch(
+      {},
+      {
+        type: CREATE_ENTITY,
+        payload: {
+          entity: Subject,
+          body,
+        },
+      }
+    )
+  })
+
   it('should not rerender if the used state did not change', () => {
     const traceId = 'trace1'
 
     const TestComponent = connect(props => ({
       userFetch: { type: Trace, id: props.traceId },
+
     }))(MyComp)
 
-    const wrapper = mount(
+    mount(
         <Provider store={testStore}>
             <TestComponent traceId={traceId} />
         </Provider>
@@ -100,21 +138,21 @@ export default () => {
     class CompWithRefs extends Component {
       render() {
         return (
-          <div ref="myRef">
-            Text
-          </div>
+            <div ref="myRef">
+              Text
+            </div>
         )
       }
     }
     CompWithRefs = connect(props => ({
-      userFetch: { type: Trace, id: props.userId }
+      userFetch: { type: Trace, id: props.userId },
     }), { withRef: true })(CompWithRefs)
 
     it('should return the wrapped instance', () => {
       const wrapper = mount(
-        <Provider store={testStore}>
-            <CompWithRefs userId="user1" />
-        </Provider>
+          <Provider store={testStore}>
+              <CompWithRefs userId="user1" />
+          </Provider>
       )
       // first getWrappedInstance() is from reduxConnect
       // second getWrappedInstance() is from own connect

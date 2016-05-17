@@ -42,6 +42,7 @@ const genericTest = (type, data) => {
 
     describe('happy path', () => {
       const query = { id: 'p1' }
+      const requestId = stringifyQuery({ id: 'p1' })
       const state = {
         cache: {
           promises: {
@@ -62,35 +63,38 @@ const genericTest = (type, data) => {
 
       const gen = fetchEntity(type, query, getPromise)
 
-      it('should dispatch a `fetch` action', () => {
+      it('should dispatch a `request` action', () => {
         const genNext = gen.next()
         expect(genNext.value)
-          .to.deep.equal( put(actions.fetch(type, query)) )
+          .to.deep.equal( put(actions.request(type, requestId)) )
       })
 
       it('should call the `fetch` function of the entity type passing in the query object', () => {
         const genNext = gen.next()
-        expect(genNext.value)
-          .to.deep.equal( call(typeUtils.getFetch(apiTypes, type), query) )
+        expect(genNext.value).to.deep.equal(
+          call(typeUtils.getFetch(apiTypes, type), query)
+        )
       })
 
       it('should dispatch the `success` action with the server response data', () => {
         const { response } = data
         const genNext = gen.next(data)
-        expect(genNext.value)
-          .to.deep.equal( put(actions.success(type, query, response.result, response.entities)) )
+        expect(genNext.value).to.deep.equal(
+          put(actions.success(type, requestId, response.result, response.entities))
+        )
       })
     })
 
     describe('server failure', () => {
       const query = { id: 'p3' }
+      const requestId = stringifyQuery(query)
       const state = {
         cache: {
           promises: {
             ...Object.keys(apiTypes).reduce((pre, key) => ({
               ...pre,
               [key]: {
-                [stringifyQuery(query)]: {
+                [requestId]: {
                   outstanding: true,
                 },
               },
@@ -111,7 +115,7 @@ const genericTest = (type, data) => {
         const error = 'Some error message'
         const genNext = gen.next({ error }) // simulate server error
         expect(genNext.value)
-          .to.deep.equal( put(actions.failure(type, query, error)) )
+          .to.deep.equal( put(actions.failure(type, requestId, error)) )
       })
     })
 

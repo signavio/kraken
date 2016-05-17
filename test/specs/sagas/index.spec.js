@@ -3,5 +3,5 @@ import watchCreateEntity from './watchCreateEntity.spec'
 
 describe('sagas', () => {
   describe('watchLoadEntity', watchLoadEntity)
-  describe.only('watchCreateEntity', watchCreateEntity)
+  describe('watchCreateEntity', watchCreateEntity)
 })

@@ -1,18 +1,17 @@
 import { takeEvery } from 'redux-saga'
 import { put, call } from 'redux-saga/effects'
-import uniqueId from 'lodash/uniqueId'
 
 import createActionCreators, { CREATE_ENTITY } from '../actions'
 import { getCreate } from '../types'
+import { deriveRequestId } from '../utils'
 
 
 export const createCreateEntity = (types) => {
   const actions = createActionCreators(types)
 
-  return function* createEntity(type, body) {
+  return function* createEntity(type, body, requestId) {
     const create = getCreate(types, type)
-    const requestId = uniqueId('create_')
-    yield put(actions.create(type, requestId, body))
+    yield put(actions.request(type, requestId))
 
     const { response, error } = yield call(create, body)
     if (response) {
@@ -30,8 +29,8 @@ export default function createWatchCreateEntity(types) {
   return function* watchCreateEntity() {
     yield* takeEvery(
       CREATE_ENTITY,
-      ({ payload }) => createEntity(
-        payload.entity, payload.body
+      (action) => createEntity(
+        action.payload.entity, action.payload.body, deriveRequestId(action)
       )
     )
   }

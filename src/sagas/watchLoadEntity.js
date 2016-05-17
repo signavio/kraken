@@ -3,13 +3,14 @@ import { put, call } from 'redux-saga/effects'
 
 import createActionCreators, { LOAD_ENTITY } from '../actions'
 import { getFetch } from '../types'
+import { stringifyQuery } from '../utils'
 
 export const createFetchEntity = (types) => {
 
   const actions = createActionCreators(types)
 
   return function* fetchEntity(type, query, getPromise) {
-
+    const requestId = stringifyQuery(query)
     const promise = getPromise(type, query)
 
     if (promise && !promise.outstanding) {
@@ -17,13 +18,13 @@ export const createFetchEntity = (types) => {
     }
 
     const fetch = getFetch(types, type)
-    yield put(actions.fetch(type, query))
+    yield put(actions.request(type, requestId))
 
     const { response, error } = yield call(fetch, query)
     if (response) {
-      yield put(actions.success(type, query, response.result, response.entities))
+      yield put(actions.success(type, requestId, response.result, response.entities))
     } else {
-      yield put(actions.failure(type, query, error))
+      yield put(actions.failure(type, requestId, error))
     }
   }
 }
