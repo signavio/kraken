@@ -5,7 +5,7 @@ import reduceReducers from 'reduce-reducers'
 
 import invariant from 'invariant'
 
-import { typeConstants } from '../types'
+import { typeConstants, getCollection } from '../types'
 import { deriveRequestId } from '../utils'
 import {
   LOAD_ENTITY,
@@ -18,17 +18,13 @@ import {
   FAILURE,
 } from '../actions'
 
-export const createEntitiesReducer = type => (state = {}, action) => {
-  invariant(
-    !!type.key,
-    `type.key must be set.`
-  )
+export const createEntitiesReducer = (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
-  if (payload.entity !== type.key) return state
+  if (payload.entity !== typeConstant) return state
 
   switch (action.type) {
     case SUCCESS:
-      const entities = payload.entities[type.collection]
+      const entities = payload.entities[getCollection(apiTypes, typeConstant)]
       return entities ? {
         ...state,
         ...entities,
@@ -39,9 +35,9 @@ export const createEntitiesReducer = type => (state = {}, action) => {
 }
 
 
-export const createPromisesReducer = (apiTypes, type) => (state = {}, action) => {
+export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
-  if (payload.entity !== type) return state
+  if (payload.entity !== typeConstant) return state
 
   const key = deriveRequestId(apiTypes, action)
   const promise = state[key]
@@ -109,20 +105,22 @@ export const createPromisesReducer = (apiTypes, type) => (state = {}, action) =>
 
 
 export default (apiTypes) => {
-  const typesGroupedByCollection = groupBy( apiTypes, (apiType) => apiType.collection )
+  const constants = typeConstants(apiTypes)
+  const constantsByCollection = groupBy( constants, getCollection(apiTypes, constants) )
+
   return combineReducers({
 
     entities: combineReducers(
       mapValues(
-        typesGroupedByCollection,
-        types => reduceReducers(
-          ...types.map(createEntitiesReducer)
+        constantsByCollection,
+        (constantsWithSameCollection) => reduceReducers(
+          ...constantsWithSameCollection.map(createEntitiesReducer.bind(null, apiTypes))
         )
       )
     ),
 
     promises: combineReducers(
-      mapValues(typeConstants(apiTypes), createPromisesReducer.bind(null, apiTypes))
+      mapValues(constants, createPromisesReducer.bind(null, apiTypes))
     ),
 
   })
