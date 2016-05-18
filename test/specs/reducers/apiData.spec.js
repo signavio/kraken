@@ -1,12 +1,6 @@
 import expect from '../../expect'
 
-import {
-  LOAD_ENTITY,
-  SUCCESS,
-  FAILURE,
-  REQUEST,
-  CACHE_HIT,
-} from '../../../src/actions'
+import createActionCreators from '../../../src/actions'
 
 import { typeUtils } from '../../../src'
 import { stringifyQuery } from '../../../src/utils'
@@ -22,11 +16,12 @@ import * as sampleData from '../../data'
 
 import { apiTypes } from '../../types'
 
+const actions = createActionCreators(apiTypes)
+
 export default () => {
   Object.keys(apiTypes).forEach((type) => {
     describe(type, () => {
       dataTest(
-        { ...apiTypes[type], key: type },
         type,
         sampleData[type],
       )
@@ -52,26 +47,19 @@ const createCleanState = (query) => ({
     },
   },
 })
-const dataTest = (entity, type, value) => {
-
+const dataTest = (type, value) => {
   const query = { id: testId }
   const requestId = stringifyQuery(query)
   const collection = typeUtils.getCollection(apiTypes, type)
   // const entityReducerForEntity = entityReducer(entity)
+
   describe('promiseReducer', () => {
-    const promiseReducerForEntity = createPromisesReducer(entity)
+    const promiseReducerForEntity = createPromisesReducer(apiTypes, type)
 
     it('LOAD_ENTITY', () => {
-      const loadAction = {
-        type: LOAD_ENTITY,
-        payload: {
-          entity,
-          query,
-        },
-      }
       const newState = promiseReducerForEntity(
-        createCleanState(query).cache.promises[entity],
-        loadAction,
+        createCleanState(query).cache.promises[type],
+        actions.loadEntity(type, query)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', true)
@@ -79,76 +67,46 @@ const dataTest = (entity, type, value) => {
     })
 
     it('REQUEST', () => {
-      const loadAction = {
-        type: REQUEST,
-        payload: {
-          entity,
-          requestId,
-        },
-      }
       const newState = promiseReducerForEntity(
         createCleanState(query).cache.promises[requestId],
-        loadAction,
+        actions.request(type, requestId)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', false)
     })
 
     it('CACHE_HIT', () => {
-      const loadAction = {
-        type: CACHE_HIT,
-        payload: {
-          entity,
-          query,
-          value,
-        },
-      }
       const newState = promiseReducerForEntity(
         createCleanState(query).cache.promises[requestId],
-        loadAction,
+        actions.cacheHit(type, query, value.response.result)
       )
+
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', false)
       expect(newState[requestId]).to.have.property('pending', false)
       expect(newState[requestId]).to.have.property('fulfilled', true)
       expect(newState[requestId]).to.have.property('rejected', false)
-      expect(newState[requestId]).to.have.property('value').to.deep.equal(value)
+      expect(newState[requestId]).to.have.property('value').to.equal(value.response.result)
 
     })
 
     it('SUCCESS', () => {
-      const loadAction = {
-        type: SUCCESS,
-        payload: {
-          entity,
-          query,
-          value,
-        },
-      }
       const newState = promiseReducerForEntity(
         createCleanState(query).cache.promises[requestId],
-        loadAction,
+        actions.success(type, requestId, value.response.result, value.response.entities)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('pending', false)
       expect(newState[requestId]).to.have.property('fulfilled', true)
       expect(newState[requestId]).to.have.property('rejected', false)
-      expect(newState[requestId]).to.have.property('value').to.deep.equal(value)
+      expect(newState[requestId]).to.have.property('value').to.equal(value.response.result)
     })
 
     it('FAILURE', () => {
       const error = 'the error message'
-      const loadAction = {
-        type: FAILURE,
-        payload: {
-          entity,
-          query,
-          error,
-        },
-      }
       const newState = promiseReducerForEntity(
         createCleanState(query).cache.promises[requestId],
-        loadAction,
+        actions.failure(type, requestId, error)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('pending', false)
@@ -160,20 +118,12 @@ const dataTest = (entity, type, value) => {
   })
 
   describe('entityReducer', () => {
-    const entityReducerForEntity = createEntitiesReducer(entity)
+    const entityReducerForEntity = createEntitiesReducer(apiTypes, type)
 
     it('SUCCESS with entities', () => {
-      const loadAction = {
-        type: SUCCESS,
-        payload: {
-          entity: type,
-          entities: value.response.entities,
-        },
-      }
-
       const newState = entityReducerForEntity(
         createCleanState(query).cache.entities[collection],
-        loadAction,
+        actions.success(type, requestId, value.response.result, value.response.entities),
       )
 
       expect(newState).to.deep.equal(value.response.entities[collection])
