@@ -1,6 +1,6 @@
 import findKey from 'lodash/find'
 import { getCollection, hasEntitySchema, getIdAttribute } from '../types'
-import { LOAD_ENTITY, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
+import { LOAD_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
 
 
 // TODO: maybe switch to a proper hashing to make sure to not have key
@@ -11,6 +11,7 @@ export const deriveRequestId = (types, action) => {
   const { type, payload } = action
   switch (type) {
     case LOAD_ENTITY:
+    case CACHE_HIT:
       return stringifyQuery(payload.query)
     case CREATE_ENTITY:
       return payload.requestId
