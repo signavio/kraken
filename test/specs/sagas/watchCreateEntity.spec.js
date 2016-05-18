@@ -40,14 +40,12 @@ const genericTest = (type, data) => {
 
     describe('happy path', () => {
       const body = { title: 'foo' }
-      let requestId
+      const requestId = 'myReqId'
 
-      const gen = createEntity(type, body)
+      const gen = createEntity(type, body, requestId)
 
-      it('should dispatch a `request` action, generating a unique request id', () => {
+      it('should dispatch a `request` action, using the provided request id', () => {
         const genNext = gen.next()
-        requestId = genNext.value.PUT.action.payload.requestId
-        expect(requestId).to.exist
         expect(genNext.value).to.deep.equal(
           put(actions.request(type, requestId))
         )
@@ -71,10 +69,11 @@ const genericTest = (type, data) => {
 
     describe('server failure', () => {
       const body = { title: 'foo' }
-      const gen = createEntity(type, body)
+      const requestId = 'myReqId2'
 
-      const genNext = gen.next() // dispatch `request` action
-      const requestId = genNext.value.PUT.action.payload.requestId
+      const gen = createEntity(type, body, requestId)
+
+      gen.next() // dispatch `request` action
       gen.next() // call `fetch` function
 
       it('should dispatch an `error` action if the server request fails', () => {
