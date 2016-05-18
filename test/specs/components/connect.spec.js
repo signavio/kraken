@@ -38,8 +38,8 @@ class MyComp extends Component {
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
   cache: {
-    promises: { Trace: {} },
-    entities: { trace: {} },
+    promises: { Subject: {}, Trace: {} },
+    entities: { subjects: {}, traces: {} },
   },
 })
 
@@ -80,7 +80,7 @@ export default () => {
     )
   })
 
-  it.only('should provide a pre-configured action creator when using a `create` method ', () => {
+  it('should provide a pre-configured action creator when using a `create` method ', () => {
     const TestComponent = connect(() => ({
       createSubject: { type: Subject, method: 'create' },
     }))(MyComp)
@@ -93,7 +93,7 @@ export default () => {
 
     // should pass in action creator function as createSubject prop
     expect(renderSpy).to.have.been.calledOnce
-    const { createSubject } = renderSpy.args[0]
+    const { createSubject } = renderSpy.args[0][0] // first arg of first call
     expect(createSubject).to.be.a.function
 
     // dispatch action

@@ -1,4 +1,5 @@
-import { Component, createElement, PropTypes, bindActionCreators } from 'react'
+import { Component, createElement, PropTypes } from 'react'
+import { bindActionCreators } from 'redux'
 import { connect as reduxConnect } from 'react-redux'
 import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
@@ -57,9 +58,9 @@ export default (types) => {
         }
 
         loadEntities(props = this.props) {
-          mapPropsToPromiseProps(props).forEach((prop) => {
-            const { method = 'load' } = prop
-            if (method === 'load') prop()
+          forEach(mapPropsToPromiseProps(props), (promiseProp, propName) => {
+            const { method = 'load' } = promiseProp
+            if (method === 'load') props[propName]()
           })
         }
 

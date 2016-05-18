@@ -30,7 +30,7 @@ export default function createWatchCreateEntity(types) {
     yield* takeEvery(
       CREATE_ENTITY,
       (action) => createEntity(
-        action.payload.entity, action.payload.body, deriveRequestId(action)
+        action.payload.entity, action.payload.body, deriveRequestId(types, action)
       )
     )
   }

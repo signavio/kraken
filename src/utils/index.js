@@ -15,7 +15,7 @@ export const deriveRequestId = (types, action) => {
     case CREATE_ENTITY:
       return payload.requestId
     case UPDATE_ENTITY:
-      const id = payload.body[getIdAttribute(types[payload.entity])]
+      const id = payload.body[getIdAttribute(types, payload.entity)]
       return `update_${id}`
     case REMOVE_ENTITY:
       return `remove_${payload.id}`

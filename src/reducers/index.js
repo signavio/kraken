@@ -39,11 +39,11 @@ export const createEntitiesReducer = type => (state = {}, action) => {
 }
 
 
-export const createPromisesReducer = type => (state = {}, action) => {
+export const createPromisesReducer = (apiTypes, type) => (state = {}, action) => {
   const { payload = {} } = action
   if (payload.entity !== type) return state
 
-  const key = deriveRequestId(action)
+  const key = deriveRequestId(apiTypes, action)
   const promise = state[key]
 
   switch (action.type) {
@@ -122,7 +122,7 @@ export default (apiTypes) => {
     ),
 
     promises: combineReducers(
-      mapValues(typeConstants(apiTypes), createPromisesReducer)
+      mapValues(typeConstants(apiTypes), createPromisesReducer.bind(null, apiTypes))
     ),
 
   })
