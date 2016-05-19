@@ -106,7 +106,7 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
 
 export default (apiTypes) => {
   const constants = typeConstants(apiTypes)
-  const constantsByCollection = groupBy( constants, getCollection(apiTypes, constants) )
+  const constantsByCollection = groupBy(constants, constant => getCollection(apiTypes, constant))
 
   return combineReducers({
 
