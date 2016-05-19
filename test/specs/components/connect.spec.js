@@ -80,6 +80,20 @@ export default () => {
     )
   })
 
+  it('should validate the promise props and throw on invalid values', () => {
+    const invalidType = () => {
+      const InvalidComp = connect(() => ({ invalid: { type: undefined } }))(MyComp)
+      mount(<Provider store={testStore}><InvalidComp /></Provider>)
+    }
+    const invalidMethod = () => {
+      const InvalidComp = connect(() => ({ invalid: { type: Trace, method: 'divideby0' } }))(MyComp)
+      mount(<Provider store={testStore}><InvalidComp /></Provider>)
+    }
+
+    expect(invalidType).to.throw(/^Invalid type value/)
+    expect(invalidMethod).to.throw(/^Invalid method/)
+  })
+
   it('should provide a pre-configured action creator when using a `create` method ', () => {
     const TestComponent = connect(() => ({
       createSubject: { type: Subject, method: 'create' },
@@ -119,7 +133,6 @@ export default () => {
 
     const TestComponent = connect(props => ({
       userFetch: { type: Trace, id: props.traceId },
-
     }))(MyComp)
 
     mount(

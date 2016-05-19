@@ -20,17 +20,36 @@ function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
-const mapIdToQuery = (types) => fpMapValues(({ id, query, type, ...rest }) => {
-  // TODO add checks for different methods
+const validMethods = ['fetch', 'create', 'update', 'remove']
+
+const validatePromiseProps = (types) => fpMapValues((props) => {
+  const { type, method = 'fetch', id, query } = props
+
+  invariant(
+    type && types[type],
+    `Invalid type value '${type}' passed to \`connect\` ` +
+    `(expected one of: ${Object.keys(types).join(', ')})`
+  )
+
+  invariant(
+    validMethods.indexOf(method) >= 0,
+    `Invalid method '${method}' specified for \`connect\` ` +
+    `(expected one of: ${validMethods.join(', ')})`
+  )
 
   invariant(!(id && query), `Must only define one of the 'id' and 'query' parameters`)
-  if (id) {
-    query = { [getIdAttribute(types, type)]: id }
+
+  return props
+})
+
+const mapIdToQuery = (types) => fpMapValues((props) => {
+  const { method = 'fetch', id, query, type, ...rest } = props
+  if (method !== 'fetch') return props
+  return {
+    query: id ? { [getIdAttribute(types, type)]: id } : query || {},
+    type,
+    ...rest,
   }
-  if (!query) {
-    query = {}
-  }
-  return { query, type, ...rest }
 })
 
 export default (types) => {
@@ -39,7 +58,12 @@ export default (types) => {
 
     // filter out empty promise prop mappings and
     // transform convenience id syntax into regular queries
-    mapPropsToPromiseProps = compose(mapIdToQuery(types), pickBy(Boolean), mapPropsToPromiseProps)
+    const finalMapPropsToPromiseProps = compose(
+      mapIdToQuery(types),
+      validatePromiseProps(types),
+      pickBy(Boolean), // remove falsy values
+      mapPropsToPromiseProps
+    )
 
     const wrapWithApiConnect = (WrappedComponent) => {
       class ApiConnect extends Component {
@@ -58,7 +82,7 @@ export default (types) => {
         }
 
         loadEntities(props = this.props) {
-          forEach(mapPropsToPromiseProps(props), (promiseProp, propName) => {
+          forEach(finalMapPropsToPromiseProps(props), (promiseProp, propName) => {
             const { method = 'load' } = promiseProp
             if (method === 'load') props[propName]()
           })
@@ -84,7 +108,7 @@ export default (types) => {
         !!state.cache,
         'Could not find an API cache in the state (looking at: `state.cache`)'
       )
-      const promiseProps = mapPropsToPromiseProps(ownProps)
+      const promiseProps = finalMapPropsToPromiseProps(ownProps)
       // keep promise and entity states in separate props, so that react-redux' connect function can
       // figure out whether s.th. has changed
       return {
@@ -109,7 +133,7 @@ export default (types) => {
     const actionCreators = actionsCreators(types)
     const mapDispatchToProps = (dispatch, ownProps) => {
       const boundActionCreators = bindActionCreators(actionCreators, dispatch)
-      const promiseProps = mapPropsToPromiseProps(ownProps)
+      const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
       const bindActionCreatorForPromiseProp = ({ type, method = 'load', query, requiredFields }) => {
         const actionCreator = boundActionCreators[`${method}Entity`]
@@ -128,7 +152,7 @@ export default (types) => {
     }
 
     const mergeProps = (stateProps, dispatchProps, ownProps) => {
-      const promiseProps = mapPropsToPromiseProps(ownProps)
+      const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
       const joinPromiseValue = propName => {
         const promise = stateProps[`${propName}_promise`]
