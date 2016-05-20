@@ -6,10 +6,18 @@ import { normalize } from 'normalizr'
 export default function callApi(fullUrl, schema, options) {
   return fetch(fullUrl, options)
     .then(response => {
-      if (response.headers.get('Content-Type') === 'application/json') {
-        return response.json().then(json => ({ json, response }))
+      const contentType = response.headers.get('Content-Type')
+      switch (contentType) {
+        case 'application/json':
+          return response.json().then(json => ({ json, response }))
+        case 'text/plain':
+          return response.text().then(text => ({ json: { message: text }, response }))
+        default:
+          return Promise.reject({
+            json: { message: `Bad response content type: '${contentType}'` },
+            response,
+          })
       }
-      return response.text().then(text => ({ json: { message: text }, response }))
     }).then(({ json, response }) => {
       if (!response.ok) {
         return Promise.reject({ json, response })
