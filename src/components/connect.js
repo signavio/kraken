@@ -135,7 +135,8 @@ export default (types) => {
       const boundActionCreators = bindActionCreators(actionCreators, dispatch)
       const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
-      const bindActionCreatorForPromiseProp = ({ type, method = 'load', query, requiredFields }) => {
+      const bindActionCreatorForPromiseProp =
+      ({ type, method = 'load', query, requiredFields }) => {
         const actionCreator = boundActionCreators[`${method}Entity`]
         invariant(!!actionCreator,
 `Unknown method '${method}' specified
