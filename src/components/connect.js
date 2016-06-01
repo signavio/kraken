@@ -1,4 +1,4 @@
-import { Component, createElement, PropTypes } from 'react'
+import { Component, createElement } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect as reduxConnect } from 'react-redux'
 import invariant from 'invariant'
