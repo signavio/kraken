@@ -140,7 +140,7 @@ export default (types) => {
         const actionCreator = boundActionCreators[`${method}Entity`]
         invariant(!!actionCreator,
 `Unknown method '${method}' specified
- (supported values: 'fetch', 'create', 'update', 'remove')`
+ (supported values: 'load', 'create', 'update', 'remove')`
         )
         if (method === 'load') {
           return actionCreator.bind(null, type, query, requiredFields)
