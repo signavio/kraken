@@ -1,0 +1,19 @@
+[{
+  "id": "f2e950d2bd0a492bbbf60952807c43ae",
+  "subjectId": 123,
+  "startActivity": "Check Order",
+  "endActivity": "Create Order",
+  "activities": ["Check Order", "Archive", "Create Order"]
+}, {
+  "id": "b768bddd427a422485ae9e855d4f8b97",
+  "subjectId": 123,
+  "startActivity": "Check Order",
+  "endActivity": "Check Order",
+  "activities": ["Check Order"]
+}, {
+  "id": "fa36a358574c4fd3a65d6f71d68f796f",
+  "subjectId": 123,
+  "startActivity": "Check Order",
+  "endActivity": "Create Order",
+  "activities": ["Check Order", "Create Order"]
+}]

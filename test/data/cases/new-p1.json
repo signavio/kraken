@@ -1,0 +1,44 @@
+[{
+  "_id": {
+    "timestamp": 1462188438,
+    "machineIdentifier": 14621548,
+    "processIdentifier": 23199,
+    "counter": 8658072,
+    "timeSecond": 1462188438,
+    "time": 1462188438000,
+    "date": 1462188438000
+  },
+  "id": "0IWE1379946_2703_2014",
+  "subjectId": 123,
+  "traceId": "f2e950d2bd0a492bbbf60952807c43ae",
+  "begin": 1409156381,
+  "end": 1409215562,
+  "activities": [{
+    "id": "176b9a0a3bc942bbbc08efefc9f0f2e5",
+    "caseId": "0IWE1379946_2703_2014",
+    "activity": "Check Order",
+    "timestamp": 1409156381,
+    "payload": {
+      "Locator": "BELNR IWE1379946 GJAHR 2014 BUKRS 2703",
+      "TCODE": "OS_APPLICATION"
+    }
+  }, {
+    "id": "cf3ec2cda7474a92abfcbe2148705057",
+    "caseId": "0IWE1379946_2703_2014",
+    "activity": "Archive",
+    "timestamp": 1409175440,
+    "payload": {
+      "Locator": "BELNR 0010122268 GJAHR 2014 BUKRS 2703",
+      "TCODE": "FB1S"
+    }
+  }, {
+    "id": "35df11ce54024d61a7f01ff1fd347b3a",
+    "caseId": "0IWE1379946_2703_2014",
+    "activity": "Create Order",
+    "timestamp": 1409215562,
+    "payload": {
+      "Locator": "BELNR 1500009032 GJAHR 2014 BUKRS 2703",
+      "TCODE": "F110"
+    }
+  }]
+}]
