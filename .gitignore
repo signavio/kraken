@@ -1,0 +1,12 @@
+# OS X
+.DS_Store
+
+# NPM
+node_modules
+npm-debug.log
+
+# EDITOR
+*.sublime-workspace
+
+# build
+lib
