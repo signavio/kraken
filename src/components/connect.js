@@ -10,6 +10,7 @@ import mapKeys from 'lodash/mapKeys'
 import fpMapValues from 'lodash/fp/mapValues'
 import compose from 'lodash/fp/compose'
 import pickBy from 'lodash/fp/pickBy'
+import uniqueId from 'lodash/uniqueId'
 
 import actionsCreators from '../actions'
 import { getPromiseState, getEntityState } from '../utils'
@@ -20,7 +21,8 @@ function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
-const validMethods = ['fetch', 'create', 'update', 'remove']
+const VALID_METHODS = ['fetch', 'create', 'update', 'remove']
+const ELEMENT_ID_PROP_NAME = '__api__elementId'
 
 const validatePromiseProps = (types) => fpMapValues((props) => {
   const { type, method = 'fetch', id, query } = props
@@ -32,9 +34,9 @@ const validatePromiseProps = (types) => fpMapValues((props) => {
   )
 
   invariant(
-    validMethods.indexOf(method) >= 0,
+    VALID_METHODS.indexOf(method) >= 0,
     `Invalid method '${method}' specified for \`connect\` ` +
-    `(expected one of: ${validMethods.join(', ')})`
+    `(expected one of: ${VALID_METHODS.join(', ')})`
   )
 
   invariant(!(id && query), `Must only define one of the 'id' and 'query' parameters`)
@@ -53,17 +55,56 @@ const mapIdToQuery = (types) => fpMapValues((props) => {
 })
 
 export default (types) => {
+  const actionCreators = actionsCreators(types)
+
   return (mapPropsToPromiseProps = () => ({}), options = {}) => {
     const { withRef = false } = options
 
     // filter out empty promise prop mappings and
-    // transform convenience id syntax into regular queries
+    // transform shortcut id query syntax into regular queries
     const finalMapPropsToPromiseProps = compose(
       mapIdToQuery(types),
       validatePromiseProps(types),
       pickBy(Boolean), // remove falsy values
       mapPropsToPromiseProps
     )
+
+    const injectElementIdProp = (WrappedComponent) => {
+      class InjectElementIdProp extends Component {
+
+        constructor(props) {
+          super(props)
+          this.elementId = uniqueId()
+        }
+
+        render() {
+          return createElement(
+            WrappedComponent, {
+              ...this.props,
+              [ELEMENT_ID_PROP_NAME]: this.elementId,
+              ...(withRef ? { ref: 'wrappedInstance' } : {}),
+            }
+          )
+        }
+
+        getWrappedInstance() {
+          invariant(withRef,
+            `To access the wrapped instance, you need to specify ` +
+            `{ withRef: true } as the second argument of the connect() call.`
+          )
+
+          // 3 levels of component wrapping: InjectElementIdProp(Connect(ApiConnect(WrappedComponent)))
+          return this.refs.wrappedInstance.getWrappedInstance().getWrappedInstance()
+        }
+      }
+
+      InjectElementIdProp.displayName = `InjectElementIdProp(${getDisplayName(WrappedComponent)})`
+      InjectElementIdProp.WrappedComponent = WrappedComponent
+      return hoistStatics(InjectElementIdProp, WrappedComponent)
+    }
+
+
+    
 
     const wrapWithApiConnect = (WrappedComponent) => {
       class ApiConnect extends Component {
@@ -130,8 +171,9 @@ export default (types) => {
 
     }
 
-    const actionCreators = actionsCreators(types)
-    const mapDispatchToProps = (dispatch, ownProps) => {
+    
+    const mapDispatchToProps = (dispatch, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
+      console.log(elementId);
       const boundActionCreators = bindActionCreators(actionCreators, dispatch)
       const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
@@ -144,6 +186,10 @@ export default (types) => {
         )
         if (method === 'load') {
           return actionCreator.bind(null, type, query, requiredFields)
+        }
+
+        if (method === 'create' || method === 'update') {
+          return actionCreator.bind(null, type, `${elementId}`)
         }
 
         return actionCreator.bind(null, type)
@@ -185,6 +231,7 @@ export default (types) => {
     }
 
     return compose(
+      injectElementIdProp,
       reduxConnect(
         mapStateToProps,
         mapDispatchToProps,

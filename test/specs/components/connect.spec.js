@@ -170,7 +170,7 @@ export default () => {
       // first getWrappedInstance() is from reduxConnect
       // second getWrappedInstance() is from own connect
       expect(
-        wrapper.find(CompWithRefs).get(0).getWrappedInstance().getWrappedInstance().refs.myRef
+        wrapper.find(CompWithRefs).get(0).getWrappedInstance().refs.myRef
       ).to.exist
     })
   })
