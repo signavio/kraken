@@ -22,16 +22,16 @@ const methodForAction = ({ type }) => ({
 
 export const derivePromiseKeyFromAction = (types, action) => {
   const { type, payload: { requestId } } = action
-  return requestId || derivePromiseKey(methodForAction(action), action.payload)
+  return requestId || derivePromiseKey(methodForAction(action), payload)
 }
 
-export const getPromiseState = (types, state, type, query) => {
-  const promiseKey = stringifyQuery(query)
+export const getPromiseState = (types, state, type, method, payload) => {
+  const promiseKey = derivePromiseKey(method, payload)
   return state.cache.promises[type][promiseKey]
 }
 
-export const getPromiseValue = (types, state, type, query) => {
-  const { value } = getPromiseState(types, state, type, query) || {}
+export const getPromiseValue = (types, state, type, method, payload) => {
+  const { value } = getPromiseState(types, state, type, method, payload) || {}
   const entityCollection = state.cache.entities[getCollection(types, type)]
 
   if (hasEntitySchema(types, type)) {
@@ -41,7 +41,7 @@ export const getPromiseValue = (types, state, type, query) => {
   return value
 }
 
-export const getEntityCollectionState = (types, state, type) => state.cache.entities[getCollection(types, type)]
+const getEntityCollectionState = (types, state, type) => state.cache.entities[getCollection(types, type)]
 
 export const getEntityState = (types, state, type, query) => {
   const entityCollection = getEntityCollectionState(types, state, type)

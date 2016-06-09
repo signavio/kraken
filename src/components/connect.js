@@ -148,7 +148,7 @@ export default (types) => {
       return hoistStatics(ApiConnect, WrappedComponent)
     }
 
-    const mapStateToProps = (state, ownProps) => {
+    const mapStateToProps = (state, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
       invariant(
         !!state.cache,
         'Could not find an API cache in the state (looking at: `state.cache`)'
@@ -160,7 +160,7 @@ export default (types) => {
         ...mapKeys(
           mapValues(
             promiseProps,
-            ({ query, type }) => getPromiseState(types, state, type, query)
+            ({ query, type, method }) => getPromiseState(types, state, type, method, { query, elementId })
           ),
           (val, propName) => `${propName}_promise`,
         ),

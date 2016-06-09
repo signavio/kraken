@@ -2,7 +2,7 @@ import { spawn } from 'redux-saga/effects'
 
 import {
   getPromiseState, getPromiseValue,
-  getEntityState, getEntityCollectionState,
+  getEntityState,
 } from '../utils'
 import createWatchLoadEntity from './watchLoadEntity'
 import createWatchCreateEntity from './watchCreateEntity'
@@ -18,13 +18,16 @@ export default (types) => {
 
   return function* rootSaga(getState) {
     const getEntity = (type, query) => getEntityState(types, getState(), type, query)
-    const getEntityById = (type, id) => getEntityCollectionState(types, getState(), type)[id]
-    const getValue = (type, query) => getPromiseValue(types, getState(), type, query)
-    const getPromise = (type, query) => getPromiseState(types, getState(), type, query)
+    const getValue = (type, method, payload) => (
+      getPromiseValue(types, getState(), type, method, payload)
+    )
+    const getPromise = (type, method, payload) => (
+      getPromiseState(types, getState(), type, method, payload)
+    )
 
     yield spawn(watchLoadEntity, getEntity, getValue, getPromise)
     yield spawn(watchCreateEntity)
-    yield spawn(watchUpdateEntity, getEntityById, getPromise)
-    yield spawn(watchRemoveEntity, getEntityById)
+    yield spawn(watchUpdateEntity, getEntity, getPromise)
+    yield spawn(watchRemoveEntity, getEntity)
   }
 }

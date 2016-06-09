@@ -8,7 +8,7 @@ import { getUpdate, getIdAttribute } from '../types'
 export function createUpdateEntity(types) {
   const actions = createActionCreators(types)
 
-  return function* updateEntity(type, body, getEntityById, getPromise) {
+  return function* updateEntity(type, body, getEntity, getPromise) {
     const id = body[getIdAttribute(type)]
     const requestId = `update_${id}`
     // const promise = getPromise(type, requestId)
@@ -17,7 +17,7 @@ export function createUpdateEntity(types) {
     //     // TODO what do we want to do now?
     // }
 
-    // const entity = getEntityById(type, id)
+    // const entity = getEntity(type, id)
     const update = getUpdate(type)
     yield put(actions.request(type, requestId, body))
 
@@ -36,12 +36,12 @@ export function createUpdateEntity(types) {
 export default function createWatchEntity(types) {
   const updateEntity = createUpdateEntity(types)
 
-  return function* watchUpdateEntity(getEntityById, getPromise) {
+  return function* watchUpdateEntity(getEntity, getPromise) {
     yield* takeEvery(
       UPDATE_ENTITY,
       ({ payload }) => updateEntity(
         payload.entity, payload.body,
-        getEntityById, getPromise
+        getEntity, getPromise
       )
     )
   }
