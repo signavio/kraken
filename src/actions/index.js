@@ -1,6 +1,5 @@
 import invariant from 'invariant'
 import mapValues from 'lodash/mapValues'
-import uniqueId from 'lodash/uniqueId'
 
 export const LOAD_ENTITY = 'API_LOAD_ENTITY'
 export const CREATE_ENTITY = 'API_CREATE_ENTITY'
@@ -35,29 +34,29 @@ const actionCreators = {
     },
   }),
 
-  createEntity: (entityType, body) => ({
+  updateEntity: (entityType, query, body) => ({
+    type: UPDATE_ENTITY,
+    payload: {
+      entity: entityType,
+      query
+      body,
+    },
+  }),
+
+  removeEntity: (entityType, query) => ({
+    type: REMOVE_ENTITY,
+    payload: {
+      entity: entityType,
+      query,
+    },
+  }),  
+
+  createEntity: (entityType, requestId, body) => ({
     type: CREATE_ENTITY,
     payload: {
       entity: entityType,
       body,
-      requestId: uniqueId('create_'),
-    },
-  }),
-
-  updateEntity: (entityType, body) => ({
-    type: UPDATE_ENTITY,
-    payload: {
-      entity: entityType,
-      body,
-      requestId: uniqueId('update_'),
-    },
-  }),
-
-  removeEntity: (entityType, id) => ({
-    type: REMOVE_ENTITY,
-    payload: {
-      entity: entityType,
-      id,
+      requestId,
     },
   }),
 

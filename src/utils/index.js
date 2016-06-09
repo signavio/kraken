@@ -5,25 +5,24 @@ import { LOAD_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } f
 
 // TODO: maybe switch to a proper hashing to make sure to not have key
 // collision when queries with different key sets are used for the same type
-export const stringifyQuery = (query) => JSON.stringify(query)
+const stringifyQuery = (query) => JSON.stringify(query)
 
-export const deriveRequestId = (types, action) => {
-  const { type, payload } = action
-  switch (type) {
-    case LOAD_ENTITY:
-    case CACHE_HIT:
-      return stringifyQuery(payload.query)
-    case CREATE_ENTITY:
-      return payload.requestId
-    case UPDATE_ENTITY:
-      const id = payload.body[getIdAttribute(types, payload.entity)]
-      return `update_${id}`
-    case REMOVE_ENTITY:
-      return `remove_${payload.id}`
-    default:
-      return payload.requestId
-  }
+export derivePromiseKey = (method, { query, elementId }) => {
+  const key = elementId || stringifyQuery(query)
+  return `${method}_${elementId}`
+}
 
+const methodForAction = ({ type }) => ({
+  LOAD_ENTITY: 'fetch',
+  CACHE_HIT: 'fetch',
+  CREATE_ENTITY: 'create',
+  UPDATE_ENTITY: 'update',
+  REMOVE_ENTITY: 'remove',
+}[type])
+
+export const derivePromiseKeyFromAction = (types, action) => {
+  const { type, payload: { requestId } } = action
+  return requestId || derivePromiseKey(methodForAction(action), action.payload)
 }
 
 export const getPromiseState = (types, state, type, query) => {

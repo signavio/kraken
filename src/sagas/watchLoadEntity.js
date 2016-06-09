@@ -3,14 +3,14 @@ import { put, call } from 'redux-saga/effects'
 
 import createActionCreators, { LOAD_ENTITY } from '../actions'
 import { getFetch } from '../types'
-import { stringifyQuery } from '../utils'
+import { derivePromiseKey } from '../utils'
 
 export const createFetchEntity = (types) => {
 
   const actions = createActionCreators(types)
 
   return function* fetchEntity(type, query, getPromise) {
-    const requestId = stringifyQuery(query)
+    const requestId = derivePromiseKey('fetch', query)
     const promise = getPromise(type, query)
 
     if (promise && !promise.outstanding) {

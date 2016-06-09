@@ -13,7 +13,7 @@ import pickBy from 'lodash/fp/pickBy'
 import uniqueId from 'lodash/uniqueId'
 
 import actionsCreators from '../actions'
-import { getPromiseState, getEntityState } from '../utils'
+import { getPromiseState, getEntityState, derivePromiseKey } from '../utils'
 import { getIdAttribute } from '../types'
 
 
@@ -45,12 +45,16 @@ const validatePromiseProps = (types) => fpMapValues((props) => {
 })
 
 const mapIdToQuery = (types) => fpMapValues((props) => {
-  const { method = 'fetch', id, query, type, ...rest } = props
-  if (method !== 'fetch') return props
-  return {
-    query: id ? { [getIdAttribute(types, type)]: id } : query || {},
-    type,
-    ...rest,
+  const { id, query, type, ...rest } = props
+
+  if(id && !query) {
+    return {
+      query: { [getIdAttribute(types, type)]: id },
+      type,
+      ...rest,
+    }
+  } else {
+    return props
   }
 })
 
@@ -173,26 +177,25 @@ export default (types) => {
 
     
     const mapDispatchToProps = (dispatch, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
-      console.log(elementId);
       const boundActionCreators = bindActionCreators(actionCreators, dispatch)
       const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
       const bindActionCreatorForPromiseProp =
-      ({ type, method = 'load', query, requiredFields }) => {
+      ({ type, method = 'fetch', query, requiredFields }, propName) => {
         const actionCreator = boundActionCreators[`${method}Entity`]
         invariant(!!actionCreator,
           `Unknown method '${method}' specified ` +
-          `(supported values: 'load', 'create', 'update', 'remove')`
+          `(supported values: 'fetch', 'create', 'update', 'remove')`
         )
-        if (method === 'load') {
-          return actionCreator.bind(null, type, query, requiredFields)
-        }
 
-        if (method === 'create' || method === 'update') {
-          return actionCreator.bind(null, type, `${elementId}`)
+        switch (method) {
+          case 'fetch':
+            return actionCreator.bind(null, type, query, requiredFields)
+          case: 'create': 
+            return actionCreator.bind(null, type, derivePromiseKey(method, elementId))
+          default:
+            return actionCreator.bind(null, type, query)
         }
-
-        return actionCreator.bind(null, type)
       }
 
       return mapValues(promiseProps, bindActionCreatorForPromiseProp)
