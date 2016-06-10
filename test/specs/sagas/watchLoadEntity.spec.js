@@ -57,9 +57,10 @@ const genericTest = (type, data) => {
           },
         },
       }
-      const getPromise = (entity, promiseQuery) => {
-        return getPromiseState(apiTypes, state, entity, promiseQuery)
-      }
+
+      const getPromise = (type, method, payload) => (
+        getPromiseState(apiTypes, state, type, method, payload)
+      )
 
       const gen = fetchEntity(type, query, getPromise)
 
@@ -102,9 +103,9 @@ const genericTest = (type, data) => {
           },
         },
       }
-      const getPromise = (entity, promiseQuery) => {
-        return getPromiseState(apiTypes, state, entity, promiseQuery)
-      }
+      const getPromise = (type, method, payload) => (
+        getPromiseState(apiTypes, state, type, method, payload)
+      )
 
       const gen = fetchEntity(type, query, getPromise)
       gen.next() // dispatch `fetch` action

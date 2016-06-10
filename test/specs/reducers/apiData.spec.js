@@ -56,10 +56,10 @@ const dataTest = (type, value) => {
   describe('promiseReducer', () => {
     const promiseReducerForEntity = createPromisesReducer(apiTypes, type)
 
-    it('LOAD_ENTITY', () => {
+    it('FETCH_ENTITY', () => {
       const newState = promiseReducerForEntity(
         createCleanState(query).cache.promises[type],
-        actions.loadEntity(type, query)
+        actions.fetchEntity(type, query)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', true)

@@ -1,7 +1,7 @@
 import invariant from 'invariant'
 import mapValues from 'lodash/mapValues'
 
-export const LOAD_ENTITY = 'API_LOAD_ENTITY'
+export const FETCH_ENTITY = 'API_FETCH_ENTITY'
 export const CREATE_ENTITY = 'API_CREATE_ENTITY'
 export const UPDATE_ENTITY = 'API_UPDATE_ENTITY'
 export const REMOVE_ENTITY = 'API_REMOVE_ENTITY'
@@ -16,8 +16,8 @@ const actionCreators = {
 
   // If requiredFields is set to `true` the entity will always be refetched,
   // even it is already in the cache,
-  loadEntity: (entityType, query, requiredFields) => ({
-    type: LOAD_ENTITY,
+  fetchEntity: (entityType, query, requiredFields) => ({
+    type: FETCH_ENTITY,
     payload: {
       entity: entityType,
       query,
@@ -91,10 +91,10 @@ const actionCreators = {
 }
 
 
-const enhanceWithEntityTypeValidation = (types, actionCreator) => (entityType, ...args) => {
+const enhanceWithEntityTypeValidation = (types, actionCreator, actionCreatorName) => (entityType, ...args) => {
   invariant(
     !!types[entityType],
-`First argument of loadEntity action creator must be one of the following constants:
+`First argument of ${actionCreatorName} action creator must be one of the following constants:
 \`${Object.keys(types).join(', ')}\`
 (is: \`${entityType}\`)
 `

@@ -8,7 +8,7 @@ import invariant from 'invariant'
 import { typeConstants, getCollection } from '../types'
 import { deriveRequestIdFromAction } from '../utils'
 import {
-  LOAD_ENTITY,
+  FETCH_ENTITY,
   CACHE_HIT,
   CREATE_ENTITY,
   UPDATE_ENTITY,
@@ -43,7 +43,7 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
   const promise = state[key]
 
   switch (action.type) {
-    case LOAD_ENTITY:
+    case FETCH_ENTITY:
     case CREATE_ENTITY:
     case UPDATE_ENTITY:
     case REMOVE_ENTITY:

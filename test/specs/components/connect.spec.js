@@ -17,7 +17,7 @@ import types, { apiTypes } from '../../types'
 
 const connect = createConnect(apiTypes)
 
-import { LOAD_ENTITY, CREATE_ENTITY } from '../../../src/actions'
+import { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
 
 const { Trace, Subject } = types
 
@@ -52,7 +52,7 @@ export default () => {
     reducerSpy.reset()
   })
 
-  it('should dispatch the LOAD_ENTITY action on mount', () => {
+  it('should dispatch the FETCH_ENTITY action on mount', () => {
     const traceId = 'trace1'
 
     const TestComponent = connect(props => ({
@@ -69,7 +69,7 @@ export default () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: LOAD_ENTITY,
+        type: FETCH_ENTITY,
         payload: {
           entity: Trace,
           query: {

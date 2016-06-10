@@ -1,6 +1,6 @@
 import findKey from 'lodash/find'
 import { getCollection, hasEntitySchema } from '../types'
-import { LOAD_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
+import { FETCH_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
 
 
 // TODO: maybe switch to a proper hashing to make sure to not have key
@@ -14,7 +14,7 @@ export const deriveRequestId = (method, { query, elementId, propName }) => {
 }
 
 const methodForActionType = (type) => ({
-  [LOAD_ENTITY]: 'fetch',
+  [FETCH_ENTITY]: 'fetch',
   [CACHE_HIT]: 'fetch',
   [CREATE_ENTITY]: 'create',
   [UPDATE_ENTITY]: 'update',

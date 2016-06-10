@@ -42,7 +42,7 @@ const genericTest = (type, data) => {
       const body = { title: 'foo' }
       const requestId = 'myReqId'
 
-      const gen = createEntity(type, body, requestId)
+      const gen = createEntity(type, requestId, body)
 
       it('should dispatch a `request` action, using the provided request id', () => {
         const genNext = gen.next()
@@ -71,7 +71,7 @@ const genericTest = (type, data) => {
       const body = { title: 'foo' }
       const requestId = 'myReqId2'
 
-      const gen = createEntity(type, body, requestId)
+      const gen = createEntity(type, requestId, body)
 
       gen.next() // dispatch `request` action
       gen.next() // call `fetch` function

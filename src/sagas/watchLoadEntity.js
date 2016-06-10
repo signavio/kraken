@@ -1,7 +1,7 @@
 import { takeEvery, delay } from 'redux-saga'
 import { put, call } from 'redux-saga/effects'
 
-import createActionCreators, { LOAD_ENTITY } from '../actions'
+import createActionCreators, { FETCH_ENTITY } from '../actions'
 import { getFetch } from '../types'
 import { deriveRequestId } from '../utils'
 
@@ -55,13 +55,12 @@ export default function createWatchLoadEntity(types) {
 
   return function* watchLoadEntity(getEntity, getPromise) {
     yield* takeEvery(
-      LOAD_ENTITY,
+      FETCH_ENTITY,
       ({ payload = {} }) => loadEntity(
         payload.entity,
         payload.query,
         payload.requiredFields,
         getEntity,
-        getValue,
         getPromise,
       )
     )
