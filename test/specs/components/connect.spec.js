@@ -17,7 +17,7 @@ import types, { apiTypes } from '../../types'
 
 const connect = createConnect(apiTypes)
 
-import { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
+import actions, { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
 
 const { Trace, Subject } = types
 
@@ -122,28 +122,11 @@ export default () => {
         type: CREATE_ENTITY,
         payload: {
           entity: Subject,
+          requestId: sinon.match.string,
           body,
         },
       }
     )
-  })
-
-  it('should not rerender if the used state did not change', () => {
-    const traceId = 'trace1'
-
-    const TestComponent = connect(props => ({
-      userFetch: { type: Trace, id: props.traceId },
-    }))(MyComp)
-
-    mount(
-        <Provider store={testStore}>
-            <TestComponent traceId={traceId} />
-        </Provider>
-    )
-    expect(renderSpy).to.have.been.calledOnce
-
-    testStore.dispatch({ type: 'DUMMY_ACTION' })
-    expect(renderSpy).to.have.been.calledOnce
   })
 
   describe('#getWrappedInstance', () => {

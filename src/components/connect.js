@@ -220,18 +220,18 @@ export default (types) => {
         }
       }
 
-      const assignPromiseStateToActionCreator = (propName, promiseState) => {
-        return Object.assign(dispatchProps[propName], promiseState)
+      const mergePromiseStateToActionCreator = (propName, promiseState) => {
+        return Object.assign((...args) => dispatchProps[propName](...args), promiseState)
       }
 
       // now it's time to join the `${propName}_entity` with the `${propName}_promise` props
       return {
         ...ownProps,
-        ...mapValues(promiseProps, (value, propName) => assignPromiseStateToActionCreator(
+        ...dispatchProps,
+        ...mapValues(promiseProps, (value, propName) => mergePromiseStateToActionCreator(
           propName,
           joinPromiseValue(propName)
         )),
-        ...dispatchProps,
       }
     }
 
