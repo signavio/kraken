@@ -6,7 +6,7 @@ import reduceReducers from 'reduce-reducers'
 import invariant from 'invariant'
 
 import { typeConstants, getCollection } from '../types'
-import { derivePromiseKeyFromAction } from '../utils'
+import { deriveRequestIdFromAction } from '../utils'
 import {
   LOAD_ENTITY,
   CACHE_HIT,
@@ -39,7 +39,7 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
   const { payload = {} } = action
   if (payload.entity !== typeConstant) return state
 
-  const key = derivePromiseKeyFromAction(apiTypes, action)
+  const key = deriveRequestIdFromAction(apiTypes, action)
   const promise = state[key]
 
   switch (action.type) {

@@ -2,16 +2,15 @@ import { takeEvery } from 'redux-saga'
 import { put, call } from 'redux-saga/effects'
 
 import createActionCreators, { UPDATE_ENTITY } from '../actions'
-import { getUpdate, getIdAttribute } from '../types'
+import { getUpdate } from '../types'
+import { deriveRequestIdFromAction } from '../utils'
 
 
 export function createUpdateEntity(types) {
   const actions = createActionCreators(types)
 
-  return function* updateEntity(type, body, getEntity, getPromise) {
-    const id = body[getIdAttribute(type)]
-    const requestId = `update_${id}`
-    // const promise = getPromise(type, requestId)
+  return function* updateEntity(type, requestId, query, body, getEntity, getPromise) {
+    // const promise = getPromise(type, 'update', { query })
 
     // if(promise.pending) {
     //     // TODO what do we want to do now?
@@ -24,7 +23,7 @@ export function createUpdateEntity(types) {
     // TODO to be cool, do an optimistic update of the entity cache and revert to
     // previous state stored in `entity` var if the request fails
 
-    const { response, error } = yield call(update, body)
+    const { response, error } = yield call(update, query, body)
     if (response) {
       yield put(actions.success(type, requestId, response.result, response.entities))
     } else {
@@ -39,8 +38,9 @@ export default function createWatchEntity(types) {
   return function* watchUpdateEntity(getEntity, getPromise) {
     yield* takeEvery(
       UPDATE_ENTITY,
-      ({ payload }) => updateEntity(
-        payload.entity, payload.body,
+      (action) => updateEntity(
+        action.payload.entity, deriveRequestIdFromAction(types, action),
+        action.payload.query, action.payload.body,
         getEntity, getPromise
       )
     )

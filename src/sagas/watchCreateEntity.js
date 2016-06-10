@@ -3,13 +3,13 @@ import { put, call } from 'redux-saga/effects'
 
 import createActionCreators, { CREATE_ENTITY } from '../actions'
 import { getCreate } from '../types'
-import { derivePromiseKeyFromAction } from '../utils'
+import { deriveRequestIdFromAction } from '../utils'
 
 
 export const createCreateEntity = (types) => {
   const actions = createActionCreators(types)
 
-  return function* createEntity(type, body, requestId) {
+  return function* createEntity(type, requestId, body) {
     const create = getCreate(types, type)
     yield put(actions.request(type, requestId))
 
@@ -30,7 +30,7 @@ export default function createWatchCreateEntity(types) {
     yield* takeEvery(
       CREATE_ENTITY,
       (action) => createEntity(
-        action.payload.entity, action.payload.body, derivePromiseKeyFromAction(types, action)
+        action.payload.entity, deriveRequestIdFromAction(types, action), action.payload.body
       )
     )
   }

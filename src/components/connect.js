@@ -13,7 +13,7 @@ import pickBy from 'lodash/fp/pickBy'
 import uniqueId from 'lodash/uniqueId'
 
 import actionsCreators from '../actions'
-import { getPromiseState, getEntityState, derivePromiseKey } from '../utils'
+import { getPromiseState, getEntityState, deriveRequestId } from '../utils'
 import { getIdAttribute } from '../types'
 
 
@@ -47,15 +47,15 @@ const validatePromiseProps = (types) => fpMapValues((props) => {
 const mapIdToQuery = (types) => fpMapValues((props) => {
   const { id, query, type, ...rest } = props
 
-  if(id && !query) {
+  if (id && !query) {
     return {
       query: { [getIdAttribute(types, type)]: id },
       type,
       ...rest,
     }
-  } else {
-    return props
   }
+
+  return props
 })
 
 export default (types) => {
@@ -97,7 +97,8 @@ export default (types) => {
             `{ withRef: true } as the second argument of the connect() call.`
           )
 
-          // 3 levels of component wrapping: InjectElementIdProp(Connect(ApiConnect(WrappedComponent)))
+          // 3 levels of component wrapping: 
+          // InjectElementIdProp(Connect(ApiConnect(WrappedComponent)))
           return this.refs.wrappedInstance.getWrappedInstance().getWrappedInstance()
         }
       }
@@ -107,8 +108,6 @@ export default (types) => {
       return hoistStatics(InjectElementIdProp, WrappedComponent)
     }
 
-
-    
 
     const wrapWithApiConnect = (WrappedComponent) => {
       class ApiConnect extends Component {
@@ -160,14 +159,18 @@ export default (types) => {
         ...mapKeys(
           mapValues(
             promiseProps,
-            ({ query, type, method }) => getPromiseState(types, state, type, method, { query, elementId })
+            ({ query, type, method }, propName) => (
+              getPromiseState(types, state, type, method, { query, elementId, propName })
+            )
           ),
           (val, propName) => `${propName}_promise`,
         ),
         ...mapKeys(
           mapValues(
             promiseProps,
-            ({ query, type }) => getEntityState(types, state, type, query)
+            ({ query, type, method }, propName) => (
+              getEntityState(types, state, type, method, { query, elementId, propName })
+            )
           ),
           (val, propName) => `${propName}_entity`,
         ),
@@ -175,7 +178,6 @@ export default (types) => {
 
     }
 
-    
     const mapDispatchToProps = (dispatch, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
       const boundActionCreators = bindActionCreators(actionCreators, dispatch)
       const promiseProps = finalMapPropsToPromiseProps(ownProps)
@@ -191,8 +193,8 @@ export default (types) => {
         switch (method) {
           case 'fetch':
             return actionCreator.bind(null, type, query, requiredFields)
-          case: 'create': 
-            return actionCreator.bind(null, type, derivePromiseKey(method, elementId))
+          case 'create':
+            return actionCreator.bind(null, type, deriveRequestId(method, { elementId, propName }))
           default:
             return actionCreator.bind(null, type, query)
         }

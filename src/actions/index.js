@@ -38,7 +38,7 @@ const actionCreators = {
     type: UPDATE_ENTITY,
     payload: {
       entity: entityType,
-      query
+      query,
       body,
     },
   }),
@@ -49,14 +49,14 @@ const actionCreators = {
       entity: entityType,
       query,
     },
-  }),  
+  }),
 
   createEntity: (entityType, requestId, body) => ({
     type: CREATE_ENTITY,
     payload: {
       entity: entityType,
-      body,
       requestId,
+      body,
     },
   }),
 

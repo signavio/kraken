@@ -3,15 +3,15 @@ import { put, call } from 'redux-saga/effects'
 
 import createActionCreators, { LOAD_ENTITY } from '../actions'
 import { getFetch } from '../types'
-import { derivePromiseKey } from '../utils'
+import { deriveRequestId } from '../utils'
 
 export const createFetchEntity = (types) => {
 
   const actions = createActionCreators(types)
 
   return function* fetchEntity(type, query, getPromise) {
-    const requestId = derivePromiseKey('fetch', query)
-    const promise = getPromise(type, query)
+    const requestId = deriveRequestId('fetch', { query })
+    const promise = getPromise(type, 'fetch', { query })
 
     if (promise && !promise.outstanding) {
       return
@@ -36,13 +36,11 @@ export const createLoadEntity = (types) => {
   const fetchEntity = createFetchEntity(types)
 
   // fetch entity unless it is cached or already being fetched
-  return function* loadEntity(type, query, requiredFields, getEntity, getValue, getPromise) {
-    const entity = getEntity(type, query)
-    const foundInCache = !entity
+  return function* loadEntity(type, query, requiredFields, getEntity, getPromise) {
+    const entity = getEntity(type, 'fetch', query)
 
-      // if (foundInCache) yield call(fetchEntity, type, query, getPromise)
-    if (!foundInCache) {
-      yield put(actions.cacheHit(type, query, getValue(type, query)))
+    if (entity) {
+      yield put(actions.cacheHit(type, query, entity))
       return
     }
 
@@ -55,7 +53,7 @@ export const createLoadEntity = (types) => {
 export default function createWatchLoadEntity(types) {
   const loadEntity = createLoadEntity(types)
 
-  return function* watchLoadEntity(getEntity, getValue, getPromise) {
+  return function* watchLoadEntity(getEntity, getPromise) {
     yield* takeEvery(
       LOAD_ENTITY,
       ({ payload = {} }) => loadEntity(

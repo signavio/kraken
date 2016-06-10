@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 
-import { shallow, mount } from 'enzyme'
+import { mount } from 'enzyme'
 
 import sinon from 'sinon'
 

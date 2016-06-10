@@ -3,14 +3,15 @@ import { put, call } from 'redux-saga/effects'
 
 import createActionCreators, { REMOVE_ENTITY } from '../actions'
 import { getRemove } from '../types'
+import { deriveRequestIdFromAction } from '../utils'
 
 
 export function createRemoveEntity(types) {
   const actions = createActionCreators(types)
 
-  return function* updateEntity(type, id, getPromise) {
-    const requestId = `remove_${id}`
-    // const promise = getPromise(type, requestId)
+  return function* removeEntity(type, query, getPromise) {
+    const requestId = deriveRequestId(method, { query })
+    const promise = getPromise(type, requestId)
 
     // if(promise.pending) {
     //     // TODO what do we want to do now?
@@ -22,7 +23,7 @@ export function createRemoveEntity(types) {
     // TODO to be cool, do an optimistic remove of the entity cache and revert to
     // previous state stored in `entity` var if the request fails
 
-    const { response, error } = yield call(remove, id)
+    const { response, error } = yield call(remove, query)
     if (response) {
       yield put(actions.success(type, requestId))
     } else {

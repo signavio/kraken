@@ -11,7 +11,7 @@ import actionsCreator from '../../../src/actions'
 
 import { getPromiseState } from '../../../src/utils'
 import { typeUtils } from '../../../src'
-import { stringifyQuery } from '../../../src/utils'
+import { deriveRequestId } from '../../../src/utils'
 
 import * as sampleData from '../../data'
 
@@ -42,14 +42,14 @@ const genericTest = (type, data) => {
 
     describe('happy path', () => {
       const query = { id: 'p1' }
-      const requestId = stringifyQuery({ id: 'p1' })
+      const requestId = deriveRequestId('fetch', { query })
       const state = {
         cache: {
           promises: {
             ...Object.keys(apiTypes).reduce((pre, key) => ({
               ...pre,
               [key]: {
-                [stringifyQuery(query)]: {
+                [deriveRequestId('fetch', { query })]: {
                   outstanding: true,
                 },
               },
@@ -87,7 +87,7 @@ const genericTest = (type, data) => {
 
     describe('server failure', () => {
       const query = { id: 'p3' }
-      const requestId = stringifyQuery(query)
+      const requestId = deriveRequestId('fetch', { query })
       const state = {
         cache: {
           promises: {

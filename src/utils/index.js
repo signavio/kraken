@@ -1,5 +1,5 @@
 import findKey from 'lodash/find'
-import { getCollection, hasEntitySchema, getIdAttribute } from '../types'
+import { getCollection, hasEntitySchema } from '../types'
 import { LOAD_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
 
 
@@ -7,49 +7,45 @@ import { LOAD_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } f
 // collision when queries with different key sets are used for the same type
 const stringifyQuery = (query) => JSON.stringify(query)
 
-export derivePromiseKey = (method, { query, elementId }) => {
-  const key = elementId || stringifyQuery(query)
-  return `${method}_${elementId}`
+export const deriveRequestId = (method, { query, elementId, propName }) => {
+  return method === 'create' ?
+    `create_${elementId}_${propName}` :
+    `${method}_${stringifyQuery(query)}`
 }
 
-const methodForAction = ({ type }) => ({
-  LOAD_ENTITY: 'fetch',
-  CACHE_HIT: 'fetch',
-  CREATE_ENTITY: 'create',
-  UPDATE_ENTITY: 'update',
-  REMOVE_ENTITY: 'remove',
+const methodForActionType = (type) => ({
+  [LOAD_ENTITY]: 'fetch',
+  [CACHE_HIT]: 'fetch',
+  [CREATE_ENTITY]: 'create',
+  [UPDATE_ENTITY]: 'update',
+  [REMOVE_ENTITY]: 'remove',
 }[type])
 
-export const derivePromiseKeyFromAction = (types, action) => {
-  const { type, payload: { requestId } } = action
-  return requestId || derivePromiseKey(methodForAction(action), payload)
+export const deriveRequestIdFromAction = (types, { type, payload }) => {
+  const { requestId } = payload
+  return requestId || deriveRequestId(methodForActionType(type), payload)
 }
 
 export const getPromiseState = (types, state, type, method, payload) => {
-  const promiseKey = derivePromiseKey(method, payload)
-  return state.cache.promises[type][promiseKey]
+  const requestId = deriveRequestId(method, payload)
+  return state.cache.promises[type][requestId]
 }
 
-export const getPromiseValue = (types, state, type, method, payload) => {
-  const { value } = getPromiseState(types, state, type, method, payload) || {}
-  const entityCollection = state.cache.entities[getCollection(types, type)]
+const getEntityCollectionState = (types, state, type) => (
+  state.cache.entities[getCollection(types, type)]
+)
 
-  if (hasEntitySchema(types, type)) {
-    return value || findKey(entityCollection, query)
-  }
-
-  return value
-}
-
-const getEntityCollectionState = (types, state, type) => state.cache.entities[getCollection(types, type)]
-
-export const getEntityState = (types, state, type, query) => {
+export const getEntityState = (types, state, type, method, payload) => {
   const entityCollection = getEntityCollectionState(types, state, type)
-  const value = getPromiseValue(types, state, type, query)
+  const value = getPromiseState(types, state, type, method, payload)
+  const { query } = payload
 
   if (hasEntitySchema(types, type)) {
-    return value && entityCollection[value]
+    // single item type: if there's no promise, try to retrieve from cache
+    const id = value || findKey(entityCollection, query)
+    return id && entityCollection[id]
   }
 
+  // array type: map ids in promise value to entities
   return value && value.map(id => entityCollection[id])
 }

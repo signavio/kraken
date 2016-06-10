@@ -3,7 +3,7 @@ import expect from '../../expect'
 import createActionCreators from '../../../src/actions'
 
 import { typeUtils } from '../../../src'
-import { stringifyQuery } from '../../../src/utils'
+import { deriveRequestId } from '../../../src/utils'
 
 import {
   createEntitiesReducer,
@@ -35,7 +35,7 @@ const createCleanState = (query) => ({
       ...Object.keys(apiTypes).reduce((prev, key) => ({
         ...prev,
         [key]: {
-          [stringifyQuery(query)]: {},
+          [deriveRequestId('fetch', { query })]: {},
         },
       }), {}),
     },
@@ -49,7 +49,7 @@ const createCleanState = (query) => ({
 })
 const dataTest = (type, value) => {
   const query = { id: testId }
-  const requestId = stringifyQuery(query)
+  const requestId = deriveRequestId('fetch', { query })
   const collection = typeUtils.getCollection(apiTypes, type)
   // const entityReducerForEntity = entityReducer(entity)
 
