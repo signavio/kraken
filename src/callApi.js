@@ -6,7 +6,8 @@ import { normalize } from 'normalizr'
 export default function callApi(fullUrl, schema, options) {
   return fetch(fullUrl, options)
     .then(response => {
-      const contentType = response.headers.get('Content-Type')
+      const contentType = response.headers.get('Content-Type') &&
+        response.headers.get('Content-Type').split(';')[0]
       switch (contentType) {
         case 'application/json':
           return response.json().then(json => ({ json, response }))
@@ -26,6 +27,10 @@ export default function callApi(fullUrl, schema, options) {
     })
     .then(
       response => ({ response }),
-      ({ json, response }) => ({ error: json && json.message || response.statusText })
+      ({ json, response, message }) => ({
+        error: message ? `Error parsing the response: ${message}` :
+          json && json.message ||
+          response && response.statusText,
+      })
     )
 }
