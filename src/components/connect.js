@@ -25,7 +25,7 @@ const VALID_METHODS = ['fetch', 'create', 'update', 'remove']
 const ELEMENT_ID_PROP_NAME = '__api__elementId'
 
 const validatePromiseProps = (types) => fpMapValues((props) => {
-  const { type, method = 'fetch', id, query } = props
+  const { type, method, id, query } = props
 
   invariant(
     type && types[type],
@@ -43,6 +43,10 @@ const validatePromiseProps = (types) => fpMapValues((props) => {
 
   return props
 })
+
+const makeFetchTheDefaultMethod = fpMapValues((props) => (
+  props.method ? props : { ...props, method: 'fetch' }
+))
 
 const mapIdToQuery = (types) => fpMapValues((props) => {
   const { id, query, type, ...rest } = props
@@ -69,6 +73,7 @@ export default (types) => {
     const finalMapPropsToPromiseProps = compose(
       mapIdToQuery(types),
       validatePromiseProps(types),
+      makeFetchTheDefaultMethod,
       pickBy(Boolean), // remove falsy values
       mapPropsToPromiseProps
     )
@@ -127,8 +132,8 @@ export default (types) => {
 
         loadEntities(props = this.props) {
           forEach(finalMapPropsToPromiseProps(props), (promiseProp, propName) => {
-            const { method = 'load' } = promiseProp
-            if (method === 'load') props[propName]()
+            const { method } = promiseProp
+            if (method === 'fetch') props[propName]()
           })
         }
 
@@ -183,7 +188,7 @@ export default (types) => {
       const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
       const bindActionCreatorForPromiseProp =
-      ({ type, method = 'fetch', query, requiredFields }, propName) => {
+      ({ type, method, query, requiredFields }, propName) => {
         const actionCreator = boundActionCreators[`${method}Entity`]
         invariant(!!actionCreator,
           `Unknown method '${method}' specified ` +

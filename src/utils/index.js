@@ -37,7 +37,7 @@ const getEntityCollectionState = (types, state, type) => (
 
 export const getEntityState = (types, state, type, method, payload) => {
   const entityCollection = getEntityCollectionState(types, state, type)
-  const value = getPromiseState(types, state, type, method, payload)
+  const { value } = getPromiseState(types, state, type, method, payload) || {}
   const { query } = payload
 
   if (hasEntitySchema(types, type)) {

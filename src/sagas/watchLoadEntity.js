@@ -37,7 +37,7 @@ export const createLoadEntity = (types) => {
 
   // fetch entity unless it is cached or already being fetched
   return function* loadEntity(type, query, requiredFields, getEntity, getPromise) {
-    const entity = getEntity(type, 'fetch', query)
+    const entity = getEntity(type, 'fetch', { query })
 
     if (entity) {
       yield put(actions.cacheHit(type, query, entity))
