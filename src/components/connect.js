@@ -97,7 +97,7 @@ export default (types) => {
             `{ withRef: true } as the second argument of the connect() call.`
           )
 
-          // 3 levels of component wrapping: 
+          // 3 levels of component wrapping:
           // InjectElementIdProp(Connect(ApiConnect(WrappedComponent)))
           return this.refs.wrappedInstance.getWrappedInstance().getWrappedInstance()
         }
@@ -210,12 +210,18 @@ export default (types) => {
         const promise = stateProps[`${propName}_promise`]
         const entity = stateProps[`${propName}_entity`]
 
-        return promise ? {
-          ...promise,
-          value: entity,
-        } : {
-          pending: !entity,
-          fulfilled: !!entity,
+        const initialPromise = promiseProps[propName].method === 'fetch' ?
+          {
+            pending: !entity,
+            fulfilled: !!entity,
+          } :
+          {
+            pending: false,
+            fulfilled: false,
+          }
+
+        return {
+          ...(promise || initialPromise),
           value: entity,
         }
       }
