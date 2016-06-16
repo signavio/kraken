@@ -6,6 +6,7 @@ import hoistStatics from 'hoist-non-react-statics'
 import forEach from 'lodash/forEach'
 import mapValues from 'lodash/mapValues'
 import mapKeys from 'lodash/mapKeys'
+import isFunction from 'lodash/isFunction'
 
 import fpMapValues from 'lodash/fp/mapValues'
 import compose from 'lodash/fp/compose'
@@ -48,6 +49,12 @@ const makeFetchTheDefaultMethod = fpMapValues((props) => (
   props.method ? props : { ...props, method: 'fetch' }
 ))
 
+const objectShorthandToFunction = (mapPropsToPromiseProps) => (
+  isFunction(mapPropsToPromiseProps) ?
+    mapPropsToPromiseProps :
+    () => mapPropsToPromiseProps
+)
+
 const mapIdToQuery = (types) => fpMapValues((props) => {
   const { id, query, type, ...rest } = props
 
@@ -75,7 +82,7 @@ export default (types) => {
       validatePromiseProps(types),
       makeFetchTheDefaultMethod,
       pickBy(Boolean), // remove falsy values
-      mapPropsToPromiseProps
+      objectShorthandToFunction(mapPropsToPromiseProps)
     )
 
     const injectElementIdProp = (WrappedComponent) => {
