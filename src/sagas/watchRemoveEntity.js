@@ -17,7 +17,7 @@ export function createRemoveEntity(types) {
     //     // TODO what do we want to do now?
     // }
 
-    const remove = getRemove(type)
+    const remove = getRemove(types, type)
     yield put(actions.request(type, requestId))
 
     // TODO to be cool, do an optimistic remove of the entity cache and revert to

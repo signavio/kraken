@@ -17,7 +17,7 @@ export function createUpdateEntity(types) {
     // }
 
     // const entity = getEntity(type, id)
-    const update = getUpdate(type)
+    const update = getUpdate(types, type)
     yield put(actions.request(type, requestId, body))
 
     // TODO to be cool, do an optimistic update of the entity cache and revert to
