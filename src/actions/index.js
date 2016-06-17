@@ -16,11 +16,12 @@ const actionCreators = {
 
   // If requiredFields is set to `true` the entity will always be refetched,
   // even it is already in the cache,
-  fetchEntity: (entityType, query, requiredFields) => ({
+  fetchEntity: (entityType, query, refresh, requiredFields) => ({
     type: FETCH_ENTITY,
     payload: {
       entity: entityType,
       query,
+      refresh,
       requiredFields,
     },
   }),
