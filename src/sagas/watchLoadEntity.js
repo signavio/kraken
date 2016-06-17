@@ -36,11 +36,11 @@ export const createLoadEntity = (types) => {
   const fetchEntity = createFetchEntity(types)
 
   // fetch entity unless it is cached or already being fetched
-  return function* loadEntity(type, query, requiredFields, getEntity, getPromise) {
-    const entity = getEntity(type, 'fetch', { query })
+  return function* loadEntity(type, query, requiredFields, getValue, getPromise) {
+    const value = getValue(type, 'fetch', { query })
 
-    if (entity) {
-      yield put(actions.cacheHit(type, query, entity))
+    if (value) {
+      yield put(actions.cacheHit(type, query, value))
       return
     }
 
@@ -53,14 +53,14 @@ export const createLoadEntity = (types) => {
 export default function createWatchLoadEntity(types) {
   const loadEntity = createLoadEntity(types)
 
-  return function* watchLoadEntity(getEntity, getPromise) {
+  return function* watchLoadEntity(getValue, getPromise) {
     yield* takeEvery(
       FETCH_ENTITY,
       ({ payload = {} }) => loadEntity(
         payload.entity,
         payload.query,
         payload.requiredFields,
-        getEntity,
+        getValue,
         getPromise,
       )
     )

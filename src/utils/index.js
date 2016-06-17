@@ -35,15 +35,25 @@ const getEntityCollectionState = (types, state, type) => (
   state.cache.entities[getCollection(types, type)]
 )
 
-export const getEntityState = (types, state, type, method, payload) => {
+export const getCachedValue = (types, state, type, method, payload) => {
   const entityCollection = getEntityCollectionState(types, state, type)
   const { value } = getPromiseState(types, state, type, method, payload) || {}
   const { query } = payload
 
   if (hasEntitySchema(types, type)) {
     // single item type: if there's no promise, try to retrieve from cache
-    const id = value || findKey(entityCollection, query)
-    return id && entityCollection[id]
+    return value || findKey(entityCollection, query)
+  }
+
+  return value
+}
+
+export const getEntityState = (types, state, type, method, payload) => {
+  const entityCollection = getEntityCollectionState(types, state, type)
+  const value = getCachedValue(types, state, type, method, payload)
+
+  if (hasEntitySchema(types, type)) {
+    return value && entityCollection[value]
   }
 
   // array type: map ids in promise value to entities
