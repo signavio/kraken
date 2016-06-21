@@ -195,16 +195,16 @@ export default (types) => {
       const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
       const bindActionCreatorForPromiseProp =
-      ({ type, method, query, requiredFields }, propName) => {
+      ({ type, method, query, refresh, requiredFields }, propName) => {
         const actionCreator = boundActionCreators[`${method}Entity`]
         invariant(!!actionCreator,
           `Unknown method '${method}' specified ` +
-          `(supported values: 'fetch', 'create', 'update', 'remove')`
+          `(supported values: ${VALID_METHODS.map(m => `'${m}'`).join(', ')})`
         )
 
         switch (method) {
           case 'fetch':
-            return actionCreator.bind(null, type, query, requiredFields)
+            return actionCreator.bind(null, type, query, refresh, requiredFields)
           case 'create':
             return actionCreator.bind(null, type, deriveRequestId(method, { elementId, propName }))
           default:
