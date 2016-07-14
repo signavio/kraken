@@ -1,6 +1,6 @@
 {
   "name": "@signavio/generic-api",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Load API entities",
   "main": "lib/index.js",
   "scripts": {
