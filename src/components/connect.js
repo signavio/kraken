@@ -147,7 +147,10 @@ export default (types) => {
           const prevPromiseProps = finalMapPropsToPromiseProps(prevProps)
           forEach(promiseProps, (promiseProp, propName) => {
             const { method } = promiseProp
-            if (method === 'fetch' && !promisePropsEqual(promiseProp, prevPromiseProps[propName])) {
+            console.log(promiseProp, prevPromiseProps[propName]);
+            const promisePropUpdated = !prevPromiseProps[propName] || 
+              !promisePropsEqual(promiseProp, prevPromiseProps[propName])
+            if (method === 'fetch' && promisePropUpdated) {
               props[propName]()
             }
           })
