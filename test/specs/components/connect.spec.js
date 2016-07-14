@@ -122,7 +122,7 @@ export default () => {
       mount(<Provider store={testStore}><InvalidComp /></Provider>)
     }
     const invalidMethod = () => {
-      const InvalidComp = connect(() => ({ invalid: { type: Trace, method: 'divideby0' } }))(MyComp)
+      const InvalidComp = connect(() => ({ invalid: { type: Trace, method: 'prost' } }))(MyComp)
       mount(<Provider store={testStore}><InvalidComp /></Provider>)
     }
 
@@ -177,17 +177,15 @@ export default () => {
       }
     }
     CompWithRefs = connect(props => ({
-      userFetch: { type: Trace, id: props.userId },
+      traceFetch: { type: Trace, id: props.traceId },
     }), { withRef: true })(CompWithRefs)
 
     it('should return the wrapped instance', () => {
       const wrapper = mount(
         <Provider store={testStore}>
-            <CompWithRefs userId="user1" />
+            <CompWithRefs traceId="trace1" />
         </Provider>
       )
-      // first getWrappedInstance() is from reduxConnect
-      // second getWrappedInstance() is from own connect
       expect(
         wrapper.find(CompWithRefs).get(0).getWrappedInstance().refs.myRef
       ).to.exist

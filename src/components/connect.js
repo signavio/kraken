@@ -1,7 +1,6 @@
 import { Component, createElement } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect as reduxConnect } from 'react-redux'
-import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
 import forEach from 'lodash/forEach'
@@ -15,12 +14,10 @@ import pickBy from 'lodash/fp/pickBy'
 import uniqueId from 'lodash/uniqueId'
 
 import actionsCreators from '../actions'
-import { getPromiseState, getEntityState, deriveRequestId } from '../utils'
+import { getPromiseState, getEntityState, deriveRequestId, promisePropsEqual } from '../utils'
 import { getIdAttribute } from '../types'
 
-const promisePropsEqual = ({ query: query1, ...rest1 }, { query: query2, ...rest2 }) => (
-  shallowEqual(query1, query2) && shallowEqual(rest1, rest2)
-)
+
 
 const getDisplayName = (WrappedComponent) => (
   WrappedComponent.displayName || WrappedComponent.name || 'Component'
@@ -129,7 +126,7 @@ export default (types) => {
       class ApiConnect extends Component {
 
         componentWillMount() {
-          this.loadEntities()
+          this.loadEntities(this.props)
         }
 
         componentWillUpdate(nextProps) {
@@ -145,10 +142,12 @@ export default (types) => {
           )
         }
 
-        loadEntities(props = this.props, prevProps = {}) {
-          forEach(finalMapPropsToPromiseProps(props), (promiseProp, propName) => {
+        loadEntities(props, prevProps = {}) {
+          const promiseProps = finalMapPropsToPromiseProps(props)
+          const prevPromiseProps = finalMapPropsToPromiseProps(prevProps)
+          forEach(promiseProps, (promiseProp, propName) => {
             const { method } = promiseProp
-            if (method === 'fetch' && props[propName] !== prevProps[propName]) {
+            if (method === 'fetch' && !promisePropsEqual(promiseProp, prevPromiseProps[propName])) {
               props[propName]()
             }
           })

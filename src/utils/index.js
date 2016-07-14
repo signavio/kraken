@@ -1,4 +1,5 @@
 import findKey from 'lodash/find'
+import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import { getCollection, hasEntitySchema } from '../types'
 import { FETCH_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
 
@@ -59,3 +60,11 @@ export const getEntityState = (types, state, type, method, payload) => {
   // array type: map ids in promise value to entities
   return value && value.map(id => entityCollection[id])
 }
+
+export const promisePropsEqual = ({ query: query1, ...rest1 }, { query: query2, ...rest2 }) => (
+  (
+    query1 === query2 || 
+    (!!query1 && !!query2 && shallowEqual(query1, query2))
+  ) && 
+  shallowEqual(rest1, rest2)
+)
