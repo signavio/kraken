@@ -1,6 +1,7 @@
 import { Component, createElement } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect as reduxConnect } from 'react-redux'
+import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
 import forEach from 'lodash/forEach'
@@ -17,10 +18,13 @@ import actionsCreators from '../actions'
 import { getPromiseState, getEntityState, deriveRequestId } from '../utils'
 import { getIdAttribute } from '../types'
 
+const promisePropsEqual = ({ query: query1, ...rest1 }, { query: query2, ...rest2 }) => (
+  shallowEqual(query1, query2) && shallowEqual(rest1, rest2)
+)
 
-function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component'
-}
+const getDisplayName = (WrappedComponent) => (
+  WrappedComponent.displayName || WrappedComponent.name || 'Component'
+)
 
 const VALID_METHODS = ['fetch', 'create', 'update', 'remove']
 const ELEMENT_ID_PROP_NAME = '__api__elementId'
@@ -125,7 +129,11 @@ export default (types) => {
       class ApiConnect extends Component {
 
         componentWillMount() {
-          this.loadEntities(this.props)
+          this.loadEntities()
+        }
+
+        componentWillUpdate(nextProps) {
+          this.loadEntities(nextProps, this.props)
         }
 
         render() {
@@ -137,10 +145,12 @@ export default (types) => {
           )
         }
 
-        loadEntities(props = this.props) {
+        loadEntities(props = this.props, prevProps = {}) {
           forEach(finalMapPropsToPromiseProps(props), (promiseProp, propName) => {
             const { method } = promiseProp
-            if (method === 'fetch') props[propName]()
+            if (method === 'fetch' && props[propName] !== prevProps[propName]) {
+              props[propName]()
+            }
           })
         }
 
@@ -190,29 +200,45 @@ export default (types) => {
 
     }
 
-    const mapDispatchToProps = (dispatch, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
-      const boundActionCreators = bindActionCreators(actionCreators, dispatch)
-      const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
-      const bindActionCreatorForPromiseProp =
-      ({ type, method, query, refresh, requiredFields }, propName) => {
-        const actionCreator = boundActionCreators[`${method}Entity`]
-        invariant(!!actionCreator,
-          `Unknown method '${method}' specified ` +
-          `(supported values: ${VALID_METHODS.map(m => `'${m}'`).join(', ')})`
-        )
+    const mapDispatchToPropsFactory = () => {
+      let lastPromiseProps = {}, lastActionCreators = {}
 
-        switch (method) {
-          case 'fetch':
-            return actionCreator.bind(null, type, query, refresh, requiredFields)
-          case 'create':
-            return actionCreator.bind(null, type, deriveRequestId(method, { elementId, propName }))
-          default:
-            return actionCreator.bind(null, type, query)
+      return (dispatch, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
+        const promiseProps = finalMapPropsToPromiseProps(ownProps)
+        const boundActionCreators = bindActionCreators(actionCreators, dispatch)
+        
+        const bindActionCreatorForPromiseProp =
+        ({ type, method, query, refresh, requiredFields }, propName) => {
+          const actionCreator = boundActionCreators[`${method}Entity`]
+          invariant(!!actionCreator,
+            `Unknown method '${method}' specified ` +
+            `(supported values: ${VALID_METHODS.map(m => `'${m}'`).join(', ')})`
+          )
+
+          switch (method) {
+            case 'fetch':
+              return actionCreator.bind(null, type, query, refresh, requiredFields)
+            case 'create':
+              return actionCreator.bind(null, type, deriveRequestId(method, { elementId, propName }))
+            default:
+              return actionCreator.bind(null, type, query)
+          }
         }
-      }
 
-      return mapValues(promiseProps, bindActionCreatorForPromiseProp)
+        const memoizedActionCreatorForPromiseProps = (promiseProp, propName) => {
+          if (promisePropsEqual(promiseProp, lastPromiseProps[propName])) {
+            return lastActionCreators[propName]
+          }
+
+          lastPromiseProps[propName] = promiseProp
+          lastActionCreators[propName] = bindActionCreatorForPromiseProp(promiseProp, propName)
+
+          return lastActionCreators[propName]
+        }
+
+        return mapValues(promiseProps, bindActionCreatorForPromiseProp)
+      }
     }
 
     const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -257,7 +283,7 @@ export default (types) => {
       injectElementIdProp,
       reduxConnect(
         mapStateToProps,
-        mapDispatchToProps,
+        mapDispatchToPropsFactory,
         mergeProps,
         options
       ),

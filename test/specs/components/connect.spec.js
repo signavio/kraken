@@ -43,6 +43,16 @@ const testStore = createStore(reducerSpy, {
   },
 })
 
+const TestComponent = connect(props => ({
+  fetchUser: { type: Trace, id: props.traceId },
+}))(MyComp)
+
+const TestContainer = (props) => (
+  <Provider store={testStore}>
+    <TestComponent {...props} />
+  </Provider>
+)
+
 export default () => {
 
   // let store
@@ -55,15 +65,7 @@ export default () => {
   it('should dispatch the FETCH_ENTITY action on mount', () => {
     const traceId = 'trace1'
 
-    const TestComponent = connect(props => ({
-      fetchUser: { type: Trace, id: props.traceId },
-    }))(MyComp)
-
-    mount(
-        <Provider store={testStore}>
-            <TestComponent traceId={traceId} />
-        </Provider>
-    )
+    mount(<TestContainer traceId={traceId} />)
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
@@ -78,6 +80,40 @@ export default () => {
         },
       }
     )
+  })
+
+  it('should dispatch the FETCH_ENTITY action when the promise props update', () => {
+    const wrapper = mount(<TestContainer traceId={'trace1'} />)
+    reducerSpy.reset()
+
+    expect(reducerSpy).to.have.not.been.called
+    wrapper.setProps({ traceId: 'trace2' })
+
+    expect(reducerSpy).to.have.been.calledOnce
+    expect(reducerSpy).to.have.been.calledWithMatch(
+      {},
+      {
+        type: FETCH_ENTITY,
+        payload: {
+          entity: Trace,
+          query: {
+            id: 'trace2',
+          },
+        },
+      }
+    )
+  })
+
+  it('should not dispatch the FETCH_ENTITY action on update when promise props did not change', () => {
+    const wrapper = mount(<TestContainer traceId={'trace1'} />)
+    reducerSpy.reset()
+    expect(reducerSpy).to.have.not.been.called
+
+    wrapper.setProps({ bla: 'blups' })
+    expect(reducerSpy).to.have.not.been.called
+
+    wrapper.update() // calls forceUpdate
+    expect(reducerSpy).to.have.not.been.called
   })
 
   it('should validate the promise props and throw on invalid values', () => {
@@ -100,9 +136,9 @@ export default () => {
     }))(MyComp)
 
     mount(
-        <Provider store={testStore}>
-            <TestComponent />
-        </Provider>
+      <Provider store={testStore}>
+        <TestComponent />
+      </Provider>
     )
 
     // should pass in action creator function as createSubject prop
@@ -134,9 +170,9 @@ export default () => {
     class CompWithRefs extends Component {
       render() {
         return (
-            <div ref="myRef">
-              Text
-            </div>
+          <div ref="myRef">
+            Text
+          </div>
         )
       }
     }
@@ -146,9 +182,9 @@ export default () => {
 
     it('should return the wrapped instance', () => {
       const wrapper = mount(
-          <Provider store={testStore}>
-              <CompWithRefs userId="user1" />
-          </Provider>
+        <Provider store={testStore}>
+            <CompWithRefs userId="user1" />
+        </Provider>
       )
       // first getWrappedInstance() is from reduxConnect
       // second getWrappedInstance() is from own connect
