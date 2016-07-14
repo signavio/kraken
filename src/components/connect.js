@@ -142,9 +142,9 @@ export default (types) => {
           )
         }
 
-        loadEntities(props, prevProps = {}) {
+        loadEntities(props, prevProps) {
           const promiseProps = finalMapPropsToPromiseProps(props)
-          const prevPromiseProps = finalMapPropsToPromiseProps(prevProps)
+          const prevPromiseProps = prevProps ? finalMapPropsToPromiseProps(prevProps) : {}
           forEach(promiseProps, (promiseProp, propName) => {
             const { method } = promiseProp
             const promisePropUpdated = !prevPromiseProps[propName] || 
