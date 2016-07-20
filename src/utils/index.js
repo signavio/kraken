@@ -61,10 +61,17 @@ export const getEntityState = (types, state, type, method, payload) => {
   return value && value.map(id => entityCollection[id])
 }
 
-export const promisePropsEqual = ({ query: query1, ...rest1 }, { query: query2, ...rest2 }) => (
+export const promisePropsEqual = (
+  { query: query1, requiredFields: requiredFields1, ...rest1 }, 
+  { query: query2, requiredFields: requiredFields2, ...rest2 }
+) => (
   (
     query1 === query2 || 
     (isPlainObject(query1) && isPlainObject(query2) && shallowEqual(query1, query2))
+  ) &&
+  ( 
+    requiredFields1 === requiredFields2 || 
+    shallowEqual(requiredFields1, requiredFields2)
   ) && 
   shallowEqual(rest1, rest2)
 )

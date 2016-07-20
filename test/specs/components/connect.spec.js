@@ -44,7 +44,7 @@ const testStore = createStore(reducerSpy, {
 })
 
 const TestComponent = connect(props => ({
-  fetchUser: { type: Trace, id: props.traceId },
+  fetchUser: { type: Trace, id: props.traceId, requiredFields: ["activities"] },
 }))(MyComp)
 
 const TestContainer = (props) => (
