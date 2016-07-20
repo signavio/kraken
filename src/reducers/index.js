@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
-import mapValues from 'lodash/mapValues'
-import groupBy from 'lodash/groupBy'
+import { mapValues, groupBy, keys } from 'lodash'
 import reduceReducers from 'reduce-reducers'
 
 import invariant from 'invariant'
@@ -18,6 +17,20 @@ import {
   FAILURE,
 } from '../actions'
 
+
+const mergeValues = (obj1, obj2) => (
+  keys(obj2).reduce(
+    (acc, key) => ({ 
+      ...acc, 
+      [key]: {
+        ...(acc[key] || {}),
+        ...obj2[key]
+      } 
+    }),
+    obj1
+  )
+)
+
 export const createEntitiesReducer = (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
   if (payload.entity !== typeConstant) return state
@@ -25,10 +38,7 @@ export const createEntitiesReducer = (apiTypes, typeConstant) => (state = {}, ac
   switch (action.type) {
     case SUCCESS:
       const entities = payload.entities[getCollection(apiTypes, typeConstant)]
-      return entities ? {
-        ...state,
-        ...entities,
-      } : state
+      return entities ? mergeValues(state, entities) : state
     default:
       return state
   }
