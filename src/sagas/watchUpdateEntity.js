@@ -39,7 +39,7 @@ export default function createWatchUpdateEntity(types) {
     yield* takeEvery(
       UPDATE_ENTITY,
       (action) => updateEntity(
-        action.payload.entity, deriveRequestIdFromAction(types, action),
+        action.payload.entity, deriveRequestIdFromAction(action),
         action.payload.query, action.payload.body,
         getEntity, getPromise
       )

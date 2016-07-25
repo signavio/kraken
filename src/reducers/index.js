@@ -49,7 +49,7 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
   const { payload = {} } = action
   if (payload.entity !== typeConstant) return state
 
-  const key = deriveRequestIdFromAction(apiTypes, action)
+  const key = deriveRequestIdFromAction(action)
   const promise = state[key]
 
   switch (action.type) {

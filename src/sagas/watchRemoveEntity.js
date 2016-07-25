@@ -38,7 +38,7 @@ export default function createWatchRemoveEntity(types) {
       REMOVE_ENTITY,
       action => removeEntity(
         action.payload.entity,
-        deriveRequestIdFromAction(types, action),
+        deriveRequestIdFromAction(action),
         action.payload.query,
         getPromise
       )
