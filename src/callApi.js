@@ -14,6 +14,10 @@ export default function callApi(fullUrl, schema, options) {
         case 'text/plain':
           return response.text().then(text => ({ json: { message: text }, response }))
         default:
+          if (response.status === 204) {
+            return { response }
+          }
+          
           return Promise.reject({
             json: { message: `Bad response content type: '${contentType}'` },
             response,

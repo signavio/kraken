@@ -32,7 +32,7 @@ export function createUpdateEntity(types) {
   }
 }
 
-export default function createWatchEntity(types) {
+export default function createWatchUpdateEntity(types) {
   const updateEntity = createUpdateEntity(types)
 
   return function* watchUpdateEntity(getEntity, getPromise) {

@@ -30,6 +30,6 @@ export default (types) => {
     yield spawn(watchLoadEntity, getValue, getPromise)
     yield spawn(watchCreateEntity)
     yield spawn(watchUpdateEntity, getEntity, getPromise)
-    yield spawn(watchRemoveEntity, getEntity)
+    yield spawn(watchRemoveEntity, getPromise)
   }
 }

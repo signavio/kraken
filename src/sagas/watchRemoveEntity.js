@@ -9,9 +9,8 @@ import { deriveRequestIdFromAction } from '../utils'
 export function createRemoveEntity(types) {
   const actions = createActionCreators(types)
 
-  return function* removeEntity(type, query, getPromise) {
-    const requestId = deriveRequestId(method, { query })
-    const promise = getPromise(type, requestId)
+  return function* removeEntity(type, requestId, query, getPromise) {
+    // const promise = getPromise(type, 'remove', { requestId })
 
     // if(promise.pending) {
     //     // TODO what do we want to do now?
@@ -32,14 +31,15 @@ export function createRemoveEntity(types) {
   }
 }
 
-export default function createWatchEntity(types) {
+export default function createWatchRemoveEntity(types) {
   const removeEntity = createRemoveEntity(types)
-
   return function* watchRemoveEntity(getPromise) {
     yield* takeEvery(
       REMOVE_ENTITY,
-      ({ payload }) => removeEntity(
-        payload.entity, payload.id,
+      action => removeEntity(
+        action.payload.entity,
+        deriveRequestIdFromAction(types, action),
+        action.payload.query,
         getPromise
       )
     )

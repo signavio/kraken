@@ -22,7 +22,7 @@ const methodForActionType = (type) => ({
   [REMOVE_ENTITY]: 'remove',
 }[type])
 
-export const deriveRequestIdFromAction = (types, { type, payload }) => {
+export const deriveRequestIdFromAction = (types, { type, payload = {} }) => {
   const { requestId } = payload
   return requestId || deriveRequestId(methodForActionType(type), payload)
 }
