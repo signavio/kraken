@@ -17,7 +17,7 @@ export default function callApi(fullUrl, schema, options) {
           if (response.status === 204) {
             return { response }
           }
-          
+
           return Promise.reject({
             json: { message: `Bad response content type: '${contentType}'` },
             response,
@@ -27,7 +27,8 @@ export default function callApi(fullUrl, schema, options) {
       if (!response.ok) {
         return Promise.reject({ json, response })
       }
-      return normalize(json, schema)
+
+      return json ? normalize(json, schema) : null
     })
     .then(
       response => ({ response }),

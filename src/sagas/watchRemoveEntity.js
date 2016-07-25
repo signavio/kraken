@@ -22,8 +22,8 @@ export function createRemoveEntity(types) {
     // TODO to be cool, do an optimistic remove of the entity cache and revert to
     // previous state stored in `entity` var if the request fails
 
-    const { response, error } = yield call(remove, query)
-    if (response) {
+    const { error } = yield call(remove, query)
+    if (!error) {
       yield put(actions.success(type, requestId))
     } else {
       yield put(actions.failure(type, requestId, error))

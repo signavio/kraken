@@ -37,7 +37,7 @@ export const createEntitiesReducer = (apiTypes, typeConstant) => (state = {}, ac
 
   switch (action.type) {
     case SUCCESS:
-      const entities = payload.entities[getCollection(apiTypes, typeConstant)]
+      const entities = payload.entities && payload.entities[getCollection(apiTypes, typeConstant)]
       return entities ? mergeValues(state, entities) : state
     default:
       return state
