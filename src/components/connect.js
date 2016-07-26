@@ -149,7 +149,7 @@ export default (types) => {
             const { method } = promiseProp
             const promisePropUpdated = !prevPromiseProps[propName] || 
               !promisePropsEqual(promiseProp, prevPromiseProps[propName])
-            if (method === 'fetch' && promisePropUpdated) {
+            if (method === 'fetch' && promisePropUpdated && !promiseProp.lazy) {
               props[propName]()
             }
           })
