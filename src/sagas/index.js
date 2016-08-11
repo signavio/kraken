@@ -15,9 +15,9 @@ export default (types) => {
 
   return function* rootSaga(getState) {
 
-    const getValue = (type, method, payload) => {
+    const getValue = (type, method, payload) => (
       getCachedValue(types, getState(), type, method, payload)
-    }
+    )
 
     const getEntity = (type, method, payload) => (
       getEntityState(types, getState(), type, method, payload)
