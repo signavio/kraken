@@ -86,7 +86,7 @@ describe('concurrent fetches', () => {
     store = configureStore()
     fetchStub.reset()
     app = mount(<App />)
-    setTimeout(() => { done() }, 10)
+    setTimeout(() => { done() }, 30)
   })
 
   it('should call the fetch function only once', () => {
