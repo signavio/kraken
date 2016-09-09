@@ -57,7 +57,7 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
     case CREATE_ENTITY:
     case UPDATE_ENTITY:
     case REMOVE_ENTITY:
-      return {
+      return state[key] && state[key].pending ? state : {
         ...state,
         [key]: {
           ...promise,
