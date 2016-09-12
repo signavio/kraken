@@ -47,15 +47,34 @@ export default () => {
   describe('promiseReducer', () => {
     const promiseReducerForEntity = createPromisesReducer(apiTypes, types.Case)
 
-    it('FETCH_ENTITY', () => {
-      const newState = promiseReducerForEntity(
-        createCleanState(query).cache.promises[types.Case],
-        actions.fetchEntity(types.Case, query)
-      )
-      expect(newState).to.have.property(requestId)
-      expect(newState[requestId]).to.have.property('outstanding', true)
-      expect(newState[requestId]).to.have.property('pending', true)
+    describe('FETCH_ENTITY', () => {
+      it('should set pending and outstanding flags', () => {
+        const newState = promiseReducerForEntity(
+          createCleanState(query).cache.promises[types.Case],
+          actions.fetchEntity(types.Case, query)
+        )
+        expect(newState).to.have.property(requestId)
+        expect(newState[requestId]).to.have.property('outstanding', true)
+        expect(newState[requestId]).to.have.property('pending', true)
+      })
+
+      it('should reset value if refresh token updated', () => {
+        const state = promiseReducerForEntity(
+          createCleanState(query).cache.promises[requestId],
+          actions.cacheHit(types.Case, query, sampleData.Case.response.result)
+        )
+        expect(state).to.have.property(requestId)
+        expect(state[requestId]).to.have.property('value').to.exist
+
+        const nextState = promiseReducerForEntity(
+          state,
+          actions.fetchEntity(types.Case, query, 1)
+        )
+        expect(nextState[requestId]).to.have.property('value', undefined)
+        expect(nextState[requestId]).to.have.property('refresh', 1)
+      })
     })
+      
 
     it('REQUEST', () => {
       const newState = promiseReducerForEntity(

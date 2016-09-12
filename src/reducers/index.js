@@ -50,19 +50,22 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
   if (payload.entity !== typeConstant) return state
 
   const key = deriveRequestIdFromAction(action)
-  const promise = state[key]
+  const promise = state[key] || {}
 
   switch (action.type) {
     case FETCH_ENTITY:
     case CREATE_ENTITY:
     case UPDATE_ENTITY:
     case REMOVE_ENTITY:
-      return state[key] && state[key].pending ? state : {
+      const needsRefresh = payload.refresh && promise.refresh !== payload.refresh
+      return promise.pending && !needsRefresh ? state : {
         ...state,
         [key]: {
           ...promise,
           outstanding: true,
           pending: true,
+          refresh: payload.refresh,
+          value: needsRefresh ? undefined : promise.value
         },
       }
     case CACHE_HIT:
