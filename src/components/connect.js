@@ -196,9 +196,9 @@ export default (types) => {
           ...mapKeys(
             mapValues(
               promiseProps,
-              ({ query, type, method }, propName) => {
+              ({ query, refresh, type, method }, propName) => {
                 const entityState = getEntityState(
-                  types, state, type, method, { query, elementId, propName }
+                  types, state, type, method, { query, refresh, elementId, propName }
                 )
                 const lastEntityState = lastStateProps[`${propName}_entity`]
                 const useMemoized = (

@@ -38,11 +38,16 @@ const getEntityCollectionState = (types, state, type) => (
 
 export const getCachedValue = (types, state, type, method, payload) => {
   const entityCollection = getEntityCollectionState(types, state, type)
-  const { value } = getPromiseState(types, state, type, method, payload) || {}
-  const { query } = payload
+  const { value, refresh: lastRefresh } = getPromiseState(types, state, type, method, payload) || {}
+  const { query, refresh } = payload
+
+  if (refresh && refresh !== lastRefresh) {
+    return undefined
+  }
 
   if (hasEntitySchema(types, type)) {
-    // single item type: if there's no promise, try to retrieve from cache
+    // single item type: if there's no promise and refresh is not enforced,
+    // try to retrieve from cache
     return value || findKey(entityCollection, query)
   }
 
