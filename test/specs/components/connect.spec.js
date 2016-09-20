@@ -17,17 +17,15 @@ import types, { apiTypes } from '../../types'
 
 const connect = createConnect(apiTypes)
 
-import actions, { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
+import { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
 
 const { Trace, Subject } = types
 
 const renderSpy = sinon.spy()
 
-class MyComp extends Component {
-  render() {
-    renderSpy(this.props)
-    return <div />
-  }
+const MyComp = (props) => {
+  renderSpy(props)
+  return <div />
 }
 
 // var MyFunctionalComp = (props) => <div />
@@ -44,7 +42,7 @@ const testStore = createStore(reducerSpy, {
 })
 
 const TestComponent = connect(props => ({
-  fetchUser: { type: Trace, id: props.traceId, requiredFields: ["activities"] },
+  fetchUser: { type: Trace, id: props.traceId, requiredFields: ['activities'] },
 }))(MyComp)
 
 const TestContainer = (props) => (
@@ -54,9 +52,6 @@ const TestContainer = (props) => (
 )
 
 export default () => {
-
-  // let store
-
   beforeEach(() => {
     renderSpy.reset()
     reducerSpy.reset()
@@ -104,7 +99,7 @@ export default () => {
     )
   })
 
-  it('should not dispatch the FETCH_ENTITY action on update when promise props did not change', () => {
+  it('should not dispatch FETCH_ENTITY action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer traceId={'trace1'} />)
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
@@ -131,13 +126,13 @@ export default () => {
   })
 
   it('should provide a pre-configured action creator when using a `create` method ', () => {
-    const TestComponent = connect(() => ({
+    const TestSubjectComponent = connect(() => ({
       createSubject: { type: Subject, method: 'create' },
     }))(MyComp)
 
     mount(
       <Provider store={testStore}>
-        <TestComponent />
+        <TestSubjectComponent />
       </Provider>
     )
 
@@ -166,7 +161,6 @@ export default () => {
   })
 
   describe('#getWrappedInstance', () => {
-
     class CompWithRefs extends Component {
       render() {
         return (
@@ -176,18 +170,18 @@ export default () => {
         )
       }
     }
-    CompWithRefs = connect(props => ({
+    const ConnectedCompWithRefs = connect(props => ({
       traceFetch: { type: Trace, id: props.traceId },
     }), { withRef: true })(CompWithRefs)
 
     it('should return the wrapped instance', () => {
       const wrapper = mount(
         <Provider store={testStore}>
-            <CompWithRefs traceId="trace1" />
+          <ConnectedCompWithRefs traceId="trace1" />
         </Provider>
       )
       expect(
-        wrapper.find(CompWithRefs).get(0).getWrappedInstance().refs.myRef
+        wrapper.find(ConnectedCompWithRefs).get(0).getWrappedInstance().refs.myRef
       ).to.exist
     })
   })
