@@ -1,5 +1,4 @@
-import { findKey, isPlainObject } from 'lodash'
-import shallowEqual from 'react-redux/lib/utils/shallowEqual'
+import { findKey, isPlainObject, isEqual } from 'lodash'
 import { getCollection, hasEntitySchema } from '../types'
 import { FETCH_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
 
@@ -67,16 +66,16 @@ export const getEntityState = (types, state, type, method, payload) => {
 }
 
 export const promisePropsEqual = (
-  { query: query1, requiredFields: requiredFields1, ...rest1 }, 
+  { query: query1, requiredFields: requiredFields1, ...rest1 },
   { query: query2, requiredFields: requiredFields2, ...rest2 }
 ) => (
   (
-    query1 === query2 || 
-    (isPlainObject(query1) && isPlainObject(query2) && shallowEqual(query1, query2))
+    query1 === query2 ||
+    (isPlainObject(query1) && isPlainObject(query2) && isEqual(query1, query2))
   ) &&
-  ( 
-    requiredFields1 === requiredFields2 || 
-    shallowEqual(requiredFields1, requiredFields2)
-  ) && 
-  shallowEqual(rest1, rest2)
+  (
+    requiredFields1 === requiredFields2 ||
+    isEqual(requiredFields1, requiredFields2)
+  ) &&
+  isEqual(rest1, rest2)
 )

@@ -68,7 +68,7 @@ export default () => {
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
-      {},
+      testStore.getState(),
       {
         type: FETCH_ENTITY,
         payload: {
@@ -79,6 +79,7 @@ export default () => {
               something: 'string',
             },
           },
+          requiredFields: ['activities'],
         },
       }
     )
@@ -93,7 +94,7 @@ export default () => {
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
-      {},
+      testStore.getState(),
       {
         type: FETCH_ENTITY,
         payload: {
@@ -104,6 +105,7 @@ export default () => {
               something: 'string',
             },
           },
+          requiredFields: ['activities'],
         },
       }
     )
@@ -111,14 +113,14 @@ export default () => {
 
   it('should not dispatch FETCH_ENTITY action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer traceId={'trace1'} />)
-    console.log('1', wrapper.props())
+
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
     wrapper.setProps({ bla: 'blups' })
-    console.log('2', wrapper.props())
+
     expect(reducerSpy).to.have.not.been.called
     wrapper.update() // calls forceUpdate
-    console.log('3', wrapper.props())
+
     expect(reducerSpy).to.have.not.been.called
   })
 }

@@ -3,5 +3,5 @@ import connectWithQuery from './connectWithQuery.spec'
 
 describe('components', () => {
   describe('connect', connect)
-  describe.skip('connectWithQuery', connectWithQuery)
+  describe('connectWithQuery', connectWithQuery)
 })
