@@ -16,7 +16,6 @@ export function createUpdateEntity(types) {
     //     // TODO what do we want to do now?
     // }
 
-    // const entity = getEntity(type, id)
     const update = getUpdate(types, type)
     yield put(actions.request(type, requestId, body))
 
