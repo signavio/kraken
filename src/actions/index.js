@@ -44,11 +44,12 @@ const actionCreators = {
     },
   }),
 
-  removeEntity: (entityType, query) => ({
+  removeEntity: (entityType, query, body) => ({
     type: REMOVE_ENTITY,
     payload: {
       entity: entityType,
       query,
+      body,
     },
   }),
 
