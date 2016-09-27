@@ -93,7 +93,8 @@ const actionCreators = {
 }
 
 
-const enhanceWithEntityTypeValidation = (types, actionCreator, actionCreatorName) => (entityType, ...args) => {
+const enhanceWithEntityTypeValidation = (types, actionCreator, actionCreatorName) =>
+(entityType, ...args) => {
   invariant(
     !!types[entityType],
 `First argument of ${actionCreatorName} action creator must be one of the following constants:
