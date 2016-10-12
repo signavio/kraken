@@ -1,6 +1,6 @@
 {
   "name": "@signavio/generic-api",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Load API entities",
   "main": "lib/index.js",
   "scripts": {
@@ -22,7 +22,6 @@
     "hoist-non-react-statics": "^1.0.5",
     "isomorphic-fetch": "^2.2.1",
     "normalizr": "^2.0.1",
-    "react": "^15.0.1",
     "react-redux": "^4.4.0",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.3.1",
@@ -42,9 +41,13 @@
     "install": "^0.5.4",
     "jsdom": "^9.0.0",
     "mocha": "^2.4.5",
+    "react": "^15.0.1",
     "react-addons-test-utils": "^15.0.1",
     "react-dom": "^15.0.1",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0"
+  },
+  "peerDependencies": {
+    "react": "^15.0.1"
   }
 }
