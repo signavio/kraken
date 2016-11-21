@@ -64,7 +64,7 @@ export const createPromisesReducer = (apiTypes, typeConstant) => (state = {}, ac
           ...promise,
           outstanding: true,
           pending: true,
-          refresh: payload.refresh,
+          refresh: payload.refresh || promise.refresh,
           value: needsRefresh ? undefined : promise.value
         },
       }

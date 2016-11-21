@@ -73,6 +73,25 @@ export default () => {
         expect(nextState[requestId]).to.have.property('value', undefined)
         expect(nextState[requestId]).to.have.property('refresh', 1)
       })
+
+      it('should keep the previous refresh token if another fetch of the same entity ' +
+      'is dispatched without a refresh token', () => {
+        const state = promiseReducerForEntity(
+          createCleanState(query).cache.promises[requestId],
+          actions.cacheHit(types.Case, query, sampleData.Case.response.result)
+        )
+        const nextState = promiseReducerForEntity(
+          state,
+          actions.fetchEntity(types.Case, query, 1)
+        )
+        expect(nextState[requestId]).to.have.property('refresh', 1)
+
+        const finalState = promiseReducerForEntity(
+          state,
+          actions.fetchEntity(types.Case, query)
+        )
+        expect(nextState[requestId]).to.have.property('refresh', 1) // still has the previous token
+      })
     })
       
 
