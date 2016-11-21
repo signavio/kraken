@@ -7,6 +7,7 @@ import forEach from 'lodash/forEach'
 
 import { promisePropsEqual } from '../../utils'
 import getDisplayName from './getDisplayName'
+import { ELEMENT_ID_PROP_NAME } from './constants'
 
 const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (WrappedComponent) => {
   class ApiConnect extends Component {
@@ -20,9 +21,10 @@ const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (Wrappe
     }
 
     render() {
+      const { [ELEMENT_ID_PROP_NAME]: elementId, ...rest } = this.props
       return createElement(
         WrappedComponent, {
-          ...this.props,
+          ...rest,
           ...(withRef ? { ref: 'wrappedInstance' } : {}),
         }
       )
