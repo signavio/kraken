@@ -78,13 +78,18 @@ describe('promiseReducer', () => {
   })
 
 
-  it('REQUEST', () => {
-    const newState = promiseReducerForEntity(
-      { [requestId]: {} },
-      actions.request(types.Case, requestId)
-    )
-    expect(newState).to.have.property(requestId)
-    expect(newState[requestId]).to.have.property('outstanding', false)
+  describe('REQUEST', () => {
+    it('should set outstanding requests to not be outstanding anymore', () => {
+      const newState = promiseReducerForEntity(
+        { [requestId]: {
+          outstanding: true,
+        } },
+
+        actions.request(types.Case, requestId)
+      )
+      expect(newState).to.have.property(requestId)
+      expect(newState[requestId]).to.have.property('outstanding', false)
+    })
   })
 
   describe('CACHE_HIT', () => {
@@ -103,7 +108,6 @@ describe('promiseReducer', () => {
       expect(newState[requestId]).to.have.property('pending', false)
       expect(newState[requestId]).to.have.property('fulfilled', true)
       expect(newState[requestId]).to.have.property('rejected', false)
-      expect(newState[requestId]).to.have.property('value').to.equal(sampleData.result)
     })
 
     it('should set the value', () => {
