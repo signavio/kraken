@@ -160,17 +160,32 @@ describe('promiseReducer', () => {
   })
 
   describe('FAILURE', () => {
-    it('should reject the promise and add an error message.', () => {
-      const error = 'the error message'
-
+    it('should reject the promise', () => {
       const newState = promiseReducerForEntity(
         { [requestId]: {} },
-        actions.failure(types.Case, requestId, error)
+
+        actions.failure(types.Case, requestId)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('pending', false)
       expect(newState[requestId]).to.have.property('fulfilled', false)
       expect(newState[requestId]).to.have.property('rejected', true)
+    })
+
+    it('should add an error message', () => {
+      const error = 'the error message'
+
+      const newState = promiseReducerForEntity(
+        { [requestId]: {} },
+
+        actions.failure(
+          types.Case, requestId,
+
+          error,
+        )
+      )
+
+      expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('reason', error)
     })
   })
