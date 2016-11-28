@@ -1,4 +1,4 @@
-import { keys, reduce } from 'lodash'
+import { keys, omit } from 'lodash'
 
 import { getCollection } from '../types'
 
@@ -30,13 +30,7 @@ export default (apiTypes, typeConstant) => (state = {}, action) => {
       const entities = payload.entities && payload.entities[getCollection(apiTypes, typeConstant)]
       return entities ? mergeValues(state, entities) : state
     case REMOVE_ENTITY:
-      return reduce(state, (result, value, key) => ({
-        ...result,
-
-        ...(key !== payload.query.id && {
-          [key]: value,
-        }),
-      }), {})
+      return omit(state, payload.query.id)
     default:
       return state
   }
