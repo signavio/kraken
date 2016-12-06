@@ -68,10 +68,22 @@ describe('entityReducer', () => {
   describe('REMOVE_ENTITY', () => {
     it('should remove entities from the state when a remove action is fired', () => {
       const state = entityReducerForEntity(
-        { [id]: {} },
+        { [id]: { id } },
 
         actions.removeEntity(
           types.Case, { id },
+        ),
+      )
+
+      expect(state).to.not.have.key(id)
+    })
+
+    it('should select the entity to remove by comparing query params with entity attributes', () => {
+      const state = entityReducerForEntity(
+        { [id]: { foo: 'bar', baz: 1, boo: true } },
+
+        actions.removeEntity(
+          types.Case, { foo: 'bar', baz: 1 },
         ),
       )
 

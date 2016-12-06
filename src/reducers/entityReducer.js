@@ -1,4 +1,4 @@
-import { keys, omit } from 'lodash'
+import { keys, omitBy, every } from 'lodash'
 
 import { getCollection } from '../types'
 
@@ -20,6 +20,10 @@ const mergeValues = (obj1, obj2) => (
   )
 )
 
+const hasAllPropertiesOf = (obj1, obj2) => (
+  every(obj2, (key) => obj1[key] === obj2[key])
+)
+
 export default (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
 
@@ -30,7 +34,7 @@ export default (apiTypes, typeConstant) => (state = {}, action) => {
       const entities = payload.entities && payload.entities[getCollection(apiTypes, typeConstant)]
       return entities ? mergeValues(state, entities) : state
     case REMOVE_ENTITY:
-      return omit(state, payload.query.id)
+      return omitBy(state, (value) => hasAllPropertiesOf(value, payload.query))
     default:
       return state
   }
