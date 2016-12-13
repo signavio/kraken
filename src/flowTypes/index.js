@@ -26,7 +26,7 @@ export type StateT = {
   cache: CacheT,
 };
 
-type ApiTypeT = {
+export type ApiTypeT = {
   collection: string,
 
   fetch?: (any) => void,
