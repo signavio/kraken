@@ -3,8 +3,8 @@ import { getCollection, hasEntitySchema } from '../types'
 import { FETCH_ENTITY, CACHE_HIT, CREATE_ENTITY, UPDATE_ENTITY, REMOVE_ENTITY } from '../actions'
 
 
-// TODO: maybe switch to a proper hashing to make sure to not have key
-// collision when queries with different key sets are used for the same type
+// TODO: maybe switch to a better hashing mechanism to make sure that queries with different
+// key orderings are still mapped to the same string key
 const stringifyQuery = (query) => JSON.stringify(query)
 
 export const deriveRequestId = (method, { query, elementId, propName }) => {
