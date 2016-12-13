@@ -1,12 +1,19 @@
+// @flow
 import { findKey } from 'lodash'
 
 import { hasEntitySchema } from '../types'
+import type { StateT, ApiTypesT, MethodT, PayloadT } from '../flowTypes'
 
 import getPromiseState from './getPromiseState'
 import getEntityCollectionState from './getEntityCollectionState'
 
-export default (types, state, type, method, payload) => {
-  const entityCollection = getEntityCollectionState(types, state, type)
+export default function getCachedValue<T>(
+  types: ApiTypesT,
+  state: StateT,
+  type: string,
+  method: MethodT,
+  payload: PayloadT
+): ?T {
   const { value, refresh: lastRefresh } = getPromiseState(types, state, type, method, payload) || {}
   const { query, refresh } = payload
 
@@ -15,6 +22,8 @@ export default (types, state, type, method, payload) => {
   }
 
   if (hasEntitySchema(types, type)) {
+    const entityCollection = getEntityCollectionState(types, state, type)
+
     // single item type: if there's no promise and refresh is not enforced,
     // try to retrieve from cache
     return value || findKey(entityCollection, query)
