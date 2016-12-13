@@ -8,32 +8,23 @@ import { mount } from 'enzyme'
 import expect from '../../expect'
 
 import apiCreator from '../../../src'
-import types, { apiTypes } from '../../types'
+import { apiTypes, types, data } from '../fixtures'
 
 
-const fetchStub = sinon.stub(apiTypes.Case, 'fetch', (url, options) => {
-  return new Promise(function(resolve, reject) { 
-    setTimeout(function() {
-      resolve({ 
-        response: {
-          result: 1,
-          entities: {
-            case: {
-              1: { id: 1, name: 'case1' }
-            }
-          }
-        }
-      });
-    }, 1)
-  })
-})
+const fetchStub = sinon.stub(apiTypes.USER, 'fetch', () => new Promise((resolve) => {
+  setTimeout(() => resolve({
+    response: {
+      result: data.user.id,
+      entities: {
+        users: {
+          [data.user.id]: data.user,
+        },
+      },
+    },
+  }), 1)
+}))
 
-const {
-  reducer,
-  saga,
-  connect,
-  actions,
-} = apiCreator(apiTypes)
+const { reducer, saga, connect } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
   cache: reducer,
@@ -52,28 +43,26 @@ function configureStore(initialState) {
 }
 
 describe('concurrent fetches', () => {
-
   let store
 
-  const CaseCompPure = ({ fetchCase }) => {
-    return (<div>
-        { fetchCase.value && fetchCase.value.name }
-      </div>
-    )
-  }
+  const UserPure = ({ fetchUser }) => (
+    <div>
+      { fetchUser.value && fetchUser.value.firstName }
+    </div>
+  )
 
-  const CaseComp = connect(({ id }) => ({
-    fetchCase: {
-      type: types.Case,
+  const User = connect(({ id }) => ({
+    fetchUser: {
+      type: types.USER,
       id,
-    }
-  }))(CaseCompPure)
+    },
+  }))(UserPure)
 
   const App = () => (
-    <Provider store={store}>
+    <Provider store={ store }>
       <div>
-        <CaseComp id={1} />
-        <CaseComp id={1} />
+        <User id={ data.user.id } />
+        <User id={ data.user.id } />
       </div>
     </Provider>
   )
@@ -93,9 +82,9 @@ describe('concurrent fetches', () => {
     expect(fetchStub).to.have.been.calledOnce
   })
 
-  it('should render the case name in both components', () => {
-    expect(app.find(CaseCompPure).first().find('div').text()).to.equal('case1')
-    expect(app.find(CaseCompPure).last().find('div').text()).to.equal('case1')
+  it('should render the firstName in both components', () => {
+    expect(app.find(UserPure).first().find('div').text()).to.equal(data.user.firstName)
+    expect(app.find(UserPure).last().find('div').text()).to.equal(data.user.firstName)
   })
 
   it('should use caches after the first fetch and not call fetch again', (done) => {
@@ -103,8 +92,7 @@ describe('concurrent fetches', () => {
     app = mount(<App />)
     setTimeout(() => {
       expect(fetchStub).to.have.been.calledOnce
-      done() 
+      done()
     }, 10)
   })
-  
 })

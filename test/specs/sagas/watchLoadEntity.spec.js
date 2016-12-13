@@ -1,125 +1,81 @@
-import {
-  put,
-  call,
-} from 'redux-saga/effects'
-
-import expect from '../../expect'
+import { put, call } from 'redux-saga/effects'
+import { normalize } from 'normalizr'
 
 import { createFetchEntity } from '../../../src/sagas/watchLoadEntity'
 
 import actionsCreator from '../../../src/actions'
-
-import { getPromiseState } from '../../../src/utils'
+import { getPromiseState, deriveRequestId } from '../../../src/utils'
 import { typeUtils } from '../../../src'
-import { deriveRequestId } from '../../../src/utils'
 
-import * as sampleData from '../../data'
+import expect from '../../expect'
 
-import { apiTypes } from '../../types'
+import { apiTypes, types, data } from '../fixtures'
 
 const fetchEntity = createFetchEntity(apiTypes)
 const actions = actionsCreator(apiTypes)
 
-export default () => {
-  Object.keys(apiTypes).forEach((type) => {
-    describe(type, () => {
-      genericTest(
-        type,
-        sampleData[type],
-      )
-    })
-  })
+const query = { id: 'user-1' }
+const requestId = deriveRequestId('fetch', { query })
+
+const state = {
+  cache: {
+    promises: {
+      [types.USER]: {
+        [requestId]: {
+          outstanding: true,
+        },
+      },
+    },
+  },
 }
 
-const genericTest = (type, data) => {
+const getPromise = (type, method, payload) => (
+  getPromiseState(apiTypes, state, type, method, payload)
+)
 
-  describe('loadEntity', () => {
+describe('Saga - fetchEntity', () => {
+  describe('Cached', () => {
     it('should call `fetchEntity` the entity is not already cached')
     it('should dispatch a `cacheHit` action if the entity is already in the cache')
   })
 
-  describe('fetchEntity', () => {
+  let generator
 
-    describe('happy path', () => {
-      const query = { id: 'p1' }
-      const requestId = deriveRequestId('fetch', { query })
-      const state = {
-        cache: {
-          promises: {
-            ...Object.keys(apiTypes).reduce((pre, key) => ({
-              ...pre,
-              [key]: {
-                [deriveRequestId('fetch', { query })]: {
-                  outstanding: true,
-                },
-              },
-            }), {}),
-          },
-        },
-      }
-
-      const getPromise = (type, method, payload) => (
-        getPromiseState(apiTypes, state, type, method, payload)
-      )
-
-      const gen = fetchEntity(type, query, getPromise)
-
-      it('should dispatch a `request` action', () => {
-        const genNext = gen.next()
-        expect(genNext.value)
-          .to.deep.equal( put(actions.request(type, requestId)) )
-      })
-
-      it('should call the `fetch` function of the entity type passing in the query object', () => {
-        const genNext = gen.next()
-        expect(genNext.value).to.deep.equal(
-          call(typeUtils.getFetch(apiTypes, type), query)
-        )
-      })
-
-      it('should dispatch the `success` action with the server response data', () => {
-        const { response } = data
-        const genNext = gen.next(data)
-        expect(genNext.value).to.deep.equal(
-          put(actions.success(type, requestId, response.result, response.entities))
-        )
-      })
-    })
-
-    describe('server failure', () => {
-      const query = { id: 'p3' }
-      const requestId = deriveRequestId('fetch', { query })
-      const state = {
-        cache: {
-          promises: {
-            ...Object.keys(apiTypes).reduce((pre, key) => ({
-              ...pre,
-              [key]: {
-                [requestId]: {
-                  outstanding: true,
-                },
-              },
-            }), {}),
-          },
-        },
-      }
-      const getPromise = (type, method, payload) => (
-        getPromiseState(apiTypes, state, type, method, payload)
-      )
-
-      const gen = fetchEntity(type, query, getPromise)
-      gen.next() // dispatch `fetch` action
-      gen.next() // call `fetch` function
-
-      it('should dispatch an `error` action if the server request fails', () => {
-
-        const error = 'Some error message'
-        const genNext = gen.next({ error }) // simulate server error
-        expect(genNext.value)
-          .to.deep.equal( put(actions.failure(type, requestId, error)) )
-      })
-    })
-
+  beforeEach(() => {
+    generator = fetchEntity(types.USER, query, getPromise)
   })
 
-}
+  it('should dispatch a `request` action', () => {
+    expect(generator.next().value)
+      .to.deep.equal(put(actions.request(types.USER, requestId)) )
+  })
+
+  it('should call the `fetch` function of the entity type passing in the query object', () => {
+    generator.next()
+
+    expect(generator.next().value).to.deep.equal(
+      call(typeUtils.getFetch(apiTypes, types.USER), query)
+    )
+  })
+
+  it('should dispatch the `success` action with the server response data', () => {
+    generator.next()
+    generator.next()
+
+    const { result, entities } = normalize(data.user, apiTypes.USER.schema)
+
+    expect(generator.next({ response: { result, entities } }).value).to.deep.equal(
+      put(actions.success(types.USER, requestId, result, entities))
+    )
+  })
+
+  it('should dispatch an `error` action if the server request fails', () => {
+    generator.next()
+    generator.next()
+
+    const error = 'Some error message'
+
+    expect(generator.next({ error }).value)
+      .to.deep.equal( put(actions.failure(types.USER, requestId, error)) )
+  })
+})

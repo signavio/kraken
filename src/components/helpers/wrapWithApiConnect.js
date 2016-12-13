@@ -33,10 +33,12 @@ const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (Wrappe
     loadEntities(props, prevProps) {
       const promiseProps = finalMapPropsToPromiseProps(props)
       const prevPromiseProps = prevProps ? finalMapPropsToPromiseProps(prevProps) : {}
+
       forEach(promiseProps, (promiseProp, propName) => {
         const { method } = promiseProp
         const promisePropUpdated = !prevPromiseProps[propName] ||
           !promisePropsEqual(promiseProp, prevPromiseProps[propName])
+
         if (method === 'fetch' && promisePropUpdated && !promiseProp.lazy) {
           props[propName]()
         }
