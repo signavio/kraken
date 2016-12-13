@@ -9,7 +9,7 @@ import { typeUtils } from '../../../src'
 
 import expect from '../../expect'
 
-import { apiTypes, types, data } from './fixtures'
+import { apiTypes, types, data } from '../fixtures'
 
 const fetchEntity = createFetchEntity(apiTypes)
 const actions = actionsCreator(apiTypes)
@@ -64,7 +64,7 @@ describe('Saga - fetchEntity', () => {
 
     const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
-    expect(generator.next({ response: { result, entities }}).value).to.deep.equal(
+    expect(generator.next({ response: { result, entities } }).value).to.deep.equal(
       put(actions.success(types.USER, requestId, result, entities))
     )
   })

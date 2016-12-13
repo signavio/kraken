@@ -9,7 +9,7 @@ import actionsCreator from '../../../src/actions'
 
 import { typeUtils } from '../../../src'
 
-import { apiTypes, types, data } from './fixtures'
+import { apiTypes, types, data } from '../fixtures'
 
 const createEntity = createCreateEntity(apiTypes)
 const actions = actionsCreator(apiTypes)
