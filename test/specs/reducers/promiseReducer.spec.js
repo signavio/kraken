@@ -1,3 +1,5 @@
+import { normalize } from 'normalizr'
+
 import expect from '../../expect'
 
 import createActionCreators from '../../../src/actions'
@@ -6,12 +8,10 @@ import { deriveRequestId } from '../../../src/utils'
 
 import { createPromisesReducer } from '../../../src/reducers'
 
-import * as data from '../../data'
-
-import { apiTypes, default as types } from '../../types'
+import { apiTypes, types, data } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
-const sampleData = data.Case.response
+const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 const id = 'my-id'
 const query = { id }
@@ -19,13 +19,13 @@ const requestId = deriveRequestId('fetch', { query: { id } })
 // const entityReducerForEntity = entityReducer(entity)
 
 describe('promiseReducer', () => {
-  const promiseReducerForEntity = createPromisesReducer(apiTypes, types.Case)
+  const promiseReducerForEntity = createPromisesReducer(apiTypes, types.USER)
 
   describe('FETCH_ENTITY', () => {
     it('should set pending and outstanding flags', () => {
       const newState = promiseReducerForEntity(
         {},
-        actions.fetchEntity(types.Case, query)
+        actions.fetchEntity(types.USER, query)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', true)
@@ -35,7 +35,7 @@ describe('promiseReducer', () => {
     it('should reset value if refresh token updated', () => {
       const state = promiseReducerForEntity(
         {},
-        actions.cacheHit(types.Case, query, sampleData.result)
+        actions.cacheHit(types.USER, query, result)
       )
 
       expect(state).to.have.property(requestId)
@@ -43,7 +43,7 @@ describe('promiseReducer', () => {
 
       const nextState = promiseReducerForEntity(
         state,
-        actions.fetchEntity(types.Case, query, 1)
+        actions.fetchEntity(types.USER, query, 1)
       )
 
       expect(nextState[requestId]).to.have.property('value', undefined)
@@ -55,21 +55,21 @@ describe('promiseReducer', () => {
       const state = promiseReducerForEntity(
         {},
         actions.cacheHit(
-          types.Case, query,
-          sampleData.result
+          types.USER, query,
+          result
         )
       )
 
       const nextState = promiseReducerForEntity(
         state,
-        actions.fetchEntity(types.Case, query, 1)
+        actions.fetchEntity(types.USER, query, 1)
       )
 
       expect(nextState[requestId]).to.have.property('refresh', 1)
 
       promiseReducerForEntity(
         state,
-        actions.fetchEntity(types.Case, query)
+        actions.fetchEntity(types.USER, query)
       )
 
       // still has the previous token
@@ -85,7 +85,7 @@ describe('promiseReducer', () => {
           outstanding: true,
         } },
 
-        actions.request(types.Case, requestId)
+        actions.request(types.USER, requestId)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', false)
@@ -97,9 +97,9 @@ describe('promiseReducer', () => {
       const newState = promiseReducerForEntity(
         { [requestId]: {} },
         actions.cacheHit(
-          types.Case, query,
+          types.USER, query,
 
-          sampleData.result,
+          result,
         )
       )
 
@@ -114,14 +114,14 @@ describe('promiseReducer', () => {
       const newState = promiseReducerForEntity(
         { [requestId]: {} },
         actions.cacheHit(
-          types.Case, query,
+          types.USER, query,
 
-          sampleData.result,
+          result,
         )
       )
 
       expect(newState).to.have.property(requestId)
-      expect(newState[requestId]).to.have.property('value').to.equal(sampleData.result)
+      expect(newState[requestId]).to.have.property('value').to.equal(result)
     })
   })
 
@@ -130,10 +130,10 @@ describe('promiseReducer', () => {
       const newState = promiseReducerForEntity(
         { [requestId]: {} },
         actions.success(
-          types.Case, requestId,
+          types.USER, requestId,
 
-          sampleData.result,
-          sampleData.entities,
+          result,
+          entities,
         )
       )
       expect(newState).to.have.property(requestId)
@@ -147,15 +147,15 @@ describe('promiseReducer', () => {
       const newState = promiseReducerForEntity(
         { [requestId]: {} },
         actions.success(
-          types.Case, requestId,
+          types.USER, requestId,
 
-          sampleData.result,
-          sampleData.entities,
+          result,
+          entities,
         )
       )
       expect(newState).to.have.property(requestId)
 
-      expect(newState[requestId]).to.have.property('value').to.equal(sampleData.result)
+      expect(newState[requestId]).to.have.property('value').to.equal(result)
     })
   })
 
@@ -164,7 +164,7 @@ describe('promiseReducer', () => {
       const newState = promiseReducerForEntity(
         { [requestId]: {} },
 
-        actions.failure(types.Case, requestId)
+        actions.failure(types.USER, requestId)
       )
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('pending', false)
@@ -179,7 +179,7 @@ describe('promiseReducer', () => {
         { [requestId]: {} },
 
         actions.failure(
-          types.Case, requestId,
+          types.USER, requestId,
 
           error,
         )

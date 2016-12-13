@@ -1,3 +1,5 @@
+import { normalize } from 'normalizr'
+
 import expect from '../../expect'
 
 import createActionCreators, {
@@ -10,17 +12,16 @@ import { deriveRequestId } from '../../../src/utils'
 
 import { createEntitiesReducer } from '../../../src/reducers'
 
-import * as data from '../../data'
-
-import types, { apiTypes } from '../../types'
+import { apiTypes, types, data } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
-const sampleData = data.Case.response
 
 const id = 'my-id'
 const requestId = deriveRequestId('fetch', { query: { id } })
-const collection = typeUtils.getCollection(apiTypes, types.Case)
-const entityReducerForEntity = createEntitiesReducer(apiTypes, types.Case)
+const collection = typeUtils.getCollection(apiTypes, types.USER)
+const entityReducerForEntity = createEntitiesReducer(apiTypes, types.USER)
+
+const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 describe('entityReducer', () => {
   describe(SUCCESS, () => {
@@ -28,14 +29,14 @@ describe('entityReducer', () => {
       const newState = entityReducerForEntity(
         {},
         actions.success(
-          types.Case, requestId,
+          types.USER, requestId,
 
-          sampleData.result,
-          sampleData.entities,
+          result,
+          entities,
         ),
       )
 
-      expect(newState).to.deep.equal(sampleData.entities[collection])
+      expect(newState).to.deep.equal(entities[collection])
     })
 
     it('should not remove fields when merging partial JSON response', () => {
@@ -43,28 +44,28 @@ describe('entityReducer', () => {
       const state = entityReducerForEntity(
         {},
         actions.success(
-          types.Case, requestId,
+          types.USER, requestId,
 
-          sampleData.result,
-          sampleData.entities
+          result,
+          entities
         ),
       )
 
       // new request which does not return the activities
-      const { activities, ...partialCase } = sampleData.entities.case['0IWE1379946_2703_2014']
-      expect(activities).to.exist
+      const { firstName, ...partialUser } = entities.users['user-1']
+      expect(firstName).to.exist
 
       const nextState = entityReducerForEntity(
         state,
 
         actions.success(
-          types.Case, requestId,
-          sampleData.result,
-          { '0IWE1379946_2703_2014': partialCase }
+          types.USER, requestId,
+          result,
+          { 'user-1': partialUser }
         ),
       )
 
-      expect(nextState['0IWE1379946_2703_2014'].activities).to.equal(activities)
+      expect(nextState['user-1'].firstName).to.equal(firstName)
     })
   })
 
@@ -74,7 +75,7 @@ describe('entityReducer', () => {
         { [id]: { id } },
 
         actions.removeEntity(
-          types.Case, { id },
+          types.USER, { id },
         ),
       )
 
@@ -86,7 +87,7 @@ describe('entityReducer', () => {
         { [id]: { foo: 'bar', baz: 1, boo: true } },
 
         actions.removeEntity(
-          types.Case, { foo: 'bar', baz: 1 },
+          types.USER, { foo: 'bar', baz: 1 },
         ),
       )
 

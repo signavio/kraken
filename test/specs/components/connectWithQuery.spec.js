@@ -1,25 +1,17 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable react/no-multi-comp */
-
 import React from 'react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
-
 import { mount } from 'enzyme'
-
 import sinon from 'sinon'
+
+import createConnect from '../../../src/components/connect'
+import { FETCH_ENTITY } from '../../../src/actions'
 
 import expect from '../../expect'
 
-import createConnect from '../../../src/components/connect'
-
-import types, { apiTypes } from '../../types'
+import { types, apiTypes, data } from '../fixtures'
 
 const connect = createConnect(apiTypes)
-
-import { FETCH_ENTITY } from '../../../src/actions'
-
-const { Trace } = types
 
 const renderSpy = sinon.spy()
 
@@ -31,21 +23,24 @@ const MyComp = (props) => {
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
   cache: {
-    promises: { Subject: {}, Trace: {} },
-    entities: { subjects: {}, traces: {} },
+    promises: {
+      [types.USER]: {},
+    },
+    entities: {
+      [types.USER]: {},
+    },
   },
 })
 
-const TestComponent = connect(({ traceId }) => ({
+const TestComponent = connect(({ id }) => ({
   fetchUser: {
-    type: Trace,
+    type: types.USER,
     query: {
-      id: traceId,
+      id,
       nestedQuery: {
         something: 'string',
       },
     },
-    requiredFields: ['activities'],
   },
 }))(MyComp)
 
@@ -62,9 +57,7 @@ export default () => {
   })
 
   it('should dispatch the FETCH_ENTITY action on mount', () => {
-    const traceId = 'trace1'
-
-    mount(<TestContainer traceId={traceId} />)
+    mount(<TestContainer id={ data.user.id } />)
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
@@ -72,25 +65,24 @@ export default () => {
       {
         type: FETCH_ENTITY,
         payload: {
-          entity: Trace,
+          entity: types.USER,
           query: {
-            id: traceId,
+            id: data.user.id,
             nestedQuery: {
               something: 'string',
             },
           },
-          requiredFields: ['activities'],
         },
       }
     )
   })
 
   it('should dispatch the FETCH_ENTITY action when the promise props update', () => {
-    const wrapper = mount(<TestContainer traceId={'trace1'} />)
+    const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
 
     expect(reducerSpy).to.have.not.been.called
-    wrapper.setProps({ traceId: 'trace2' })
+    wrapper.setProps({ id: 'user-2' })
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
@@ -98,21 +90,20 @@ export default () => {
       {
         type: FETCH_ENTITY,
         payload: {
-          entity: Trace,
+          entity: types.USER,
           query: {
-            id: 'trace2',
+            id: 'user-2',
             nestedQuery: {
               something: 'string',
             },
           },
-          requiredFields: ['activities'],
         },
       }
     )
   })
 
   it('should not dispatch FETCH_ENTITY action on update when promise props did not change', () => {
-    const wrapper = mount(<TestContainer traceId={'trace1'} />)
+    const wrapper = mount(<TestContainer id={ data.user.id } />)
 
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
