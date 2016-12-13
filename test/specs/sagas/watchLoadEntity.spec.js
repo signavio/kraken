@@ -33,7 +33,7 @@ const getPromise = (type, method, payload) => (
   getPromiseState(apiTypes, state, type, method, payload)
 )
 
-describe.only('Saga - fetchEntity', () => {
+describe('Saga - fetchEntity', () => {
   describe('Cached', () => {
     it('should call `fetchEntity` the entity is not already cached')
     it('should dispatch a `cacheHit` action if the entity is already in the cache')
