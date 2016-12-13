@@ -47,9 +47,8 @@ const mapStateToProps = ({
               lastEntityState &&
               shallowEqual(entityState, lastEntityState)
             )
-            return useMemoized ?
-              lastEntityState :
-              entityState
+
+            return useMemoized ? lastEntityState : entityState
           }
         ),
         (val, propName) => `${propName}_entity`,

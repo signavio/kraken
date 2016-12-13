@@ -1,6 +1,9 @@
 import expect from '../../expect'
 
-import createActionCreators from '../../../src/actions'
+import createActionCreators, {
+  SUCCESS,
+  REMOVE_ENTITY,
+} from '../../../src/actions'
 
 import { typeUtils } from '../../../src'
 import { deriveRequestId } from '../../../src/utils'
@@ -9,7 +12,7 @@ import { createEntitiesReducer } from '../../../src/reducers'
 
 import * as data from '../../data'
 
-import { apiTypes, default as types } from '../../types'
+import types, { apiTypes } from '../../types'
 
 const actions = createActionCreators(apiTypes)
 const sampleData = data.Case.response
@@ -20,7 +23,7 @@ const collection = typeUtils.getCollection(apiTypes, types.Case)
 const entityReducerForEntity = createEntitiesReducer(apiTypes, types.Case)
 
 describe('entityReducer', () => {
-  describe('SUCCESS', () => {
+  describe(SUCCESS, () => {
     it('should add all entities to the current state.', () => {
       const newState = entityReducerForEntity(
         {},
@@ -65,7 +68,7 @@ describe('entityReducer', () => {
     })
   })
 
-  describe('REMOVE_ENTITY', () => {
+  describe(REMOVE_ENTITY, () => {
     it('should remove entities from the state when a remove action is fired', () => {
       const state = entityReducerForEntity(
         { [id]: { id } },
