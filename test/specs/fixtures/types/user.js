@@ -1,6 +1,6 @@
 import { Schema } from 'normalizr'
 
-import { callApi } from '../../../../../src'
+import { callApi } from '../../../../src'
 
 export const collection = 'users'
 
