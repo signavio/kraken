@@ -72,7 +72,10 @@ describe('entityReducer', () => {
   describe(REMOVE_ENTITY, () => {
     it('should remove entities from the state when a remove action is fired', () => {
       const state = entityReducerForEntity(
-        { [id]: { id } },
+        {
+          [id]: { id },
+          'someotherid': {},
+        },
 
         actions.removeEntity(
           types.USER, { id },
@@ -80,6 +83,7 @@ describe('entityReducer', () => {
       )
 
       expect(state).to.not.have.key(id)
+      expect(state).to.have.key('someotherid')
     })
 
     it('should select the entity to remove by comparing query params with entity attributes', () => {

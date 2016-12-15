@@ -21,7 +21,7 @@ const mergeValues = (obj1, obj2) => (
 )
 
 const hasAllPropertiesOf = (obj1, obj2) => (
-  every(obj2, (key) => obj1[key] === obj2[key])
+  every(keys(obj2), (key) => obj1[key] === obj2[key])
 )
 
 export default (apiTypes, typeConstant) => (state = {}, action) => {
