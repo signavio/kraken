@@ -1,3 +1,7 @@
 {
-  "extends": "signavio"
+  "extends": "signavio",
+  "rules": {
+    "import/no-unresolved": [0],
+    "import/extensions": [0]
+  }
 }
