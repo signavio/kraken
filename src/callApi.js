@@ -27,7 +27,8 @@ export default function callApi(fullUrl, schema, options) {
             response,
           })
       }
-    }).then(({ json, response }) => {
+    })
+    .then(({ json, response }) => {
       if (!response.ok) {
         return Promise.reject({ json, response })
       }

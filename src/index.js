@@ -14,6 +14,7 @@ export default (types) => {
     }),
     {}
   )
+
   return {
     reducer: createReducer(types),
     saga: createSaga(types),

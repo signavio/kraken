@@ -36,7 +36,7 @@ export default function createWatchRemoveEntity(types) {
   return function* watchRemoveEntity(getPromise) {
     yield* takeEvery(
       REMOVE_ENTITY,
-      action => removeEntity(
+      (action) => removeEntity(
         action.payload.entity,
         deriveRequestIdFromAction(action),
         action.payload.query,

@@ -1,9 +1,9 @@
-import mapValues from 'lodash/mapValues'
+import { mapValues } from 'lodash'
 
 const mergeProps = ({ finalMapPropsToPromiseProps }) => (stateProps, dispatchProps, ownProps) => {
   const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
-  const joinPromiseValue = propName => {
+  const joinPromiseValue = (propName) => {
     const promise = stateProps[`${propName}_promise`]
     const entity = stateProps[`${propName}_entity`]
 

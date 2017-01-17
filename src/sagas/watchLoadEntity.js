@@ -6,7 +6,6 @@ import { getFetch } from '../types'
 import { deriveRequestId } from '../utils'
 
 export const createFetchEntity = (types) => {
-
   const actions = createActionCreators(types)
 
   return function* fetchEntity(type, query, getPromise) {

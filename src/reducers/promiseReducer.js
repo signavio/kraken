@@ -16,13 +16,13 @@ export default (apiTypes, typeConstant) => (state = {}, action) => {
 
   const key = deriveRequestIdFromAction(action)
   const promise = state[key] || {}
+  const needsRefresh = payload.refresh && promise.refresh !== payload.refresh
 
   switch (action.type) {
     case FETCH_ENTITY:
     case CREATE_ENTITY:
     case UPDATE_ENTITY:
     case REMOVE_ENTITY:
-      const needsRefresh = payload.refresh && promise.refresh !== payload.refresh
       return promise.pending && !needsRefresh ? state : {
         ...state,
         [key]: {

@@ -2,7 +2,7 @@ import { Component, createElement } from 'react'
 
 import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
-import forEach from 'lodash/forEach'
+import { forEach } from 'lodash'
 
 
 import { promisePropsEqual } from '../../utils'

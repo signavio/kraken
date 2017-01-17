@@ -1,7 +1,5 @@
 // @flow
-import isString from 'lodash/isString'
-import mapValues from 'lodash/mapValues'
-import isFunction from 'lodash/isFunction'
+import { isString, mapValues, isFunction } from 'lodash'
 import { Schema as EntitySchema } from 'normalizr'
 
 import type { ApiTypesT, ApiTypeT, MethodT } from '../flowTypes'
@@ -19,9 +17,11 @@ export const getCollection = (types: ApiTypesT, type: string) => {
 
 const createMethodFunctionGetter = (method: MethodT) => (types: ApiTypesT, type: string) => {
   const methodFn = types[type][method]
+
   if (!isFunction(methodFn)) {
     throw new Error(`Implementation of '${type}' type does not provide a ${method} function`)
   }
+
   return methodFn
 }
 

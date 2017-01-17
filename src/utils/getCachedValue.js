@@ -7,13 +7,13 @@ import type { StateT, ApiTypesT, MethodT, PayloadT } from '../flowTypes'
 import getPromiseState from './getPromiseState'
 import getEntityCollectionState from './getEntityCollectionState'
 
-export default function getCachedValue(
+const getCachedValue = (
   types: ApiTypesT,
   state: StateT,
   type: string,
   method: MethodT,
   payload: PayloadT
-): ?string {
+): ?string => {
   const { value, refresh: lastRefresh } = getPromiseState(types, state, type, method, payload) || {}
   const { query, refresh } = payload
 
@@ -31,3 +31,5 @@ export default function getCachedValue(
 
   return value
 }
+
+export default getCachedValue

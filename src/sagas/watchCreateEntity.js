@@ -5,7 +5,6 @@ import createActionCreators, { CREATE_ENTITY } from '../actions'
 import { getCreate } from '../types'
 import { deriveRequestIdFromAction } from '../utils'
 
-
 export const createCreateEntity = (types) => {
   const actions = createActionCreators(types)
 
@@ -22,16 +21,19 @@ export const createCreateEntity = (types) => {
   }
 }
 
-
-export default function createWatchCreateEntity(types) {
+const createWatchCreateEntity = (types) => {
   const createEntity = createCreateEntity(types)
 
   return function* watchCreateEntity() {
     yield* takeEvery(
       CREATE_ENTITY,
       (action) => createEntity(
-        action.payload.entity, deriveRequestIdFromAction(action), action.payload.body
+        action.payload.entity,
+        deriveRequestIdFromAction(action),
+        action.payload.body
       )
     )
   }
 }
+
+export default createWatchCreateEntity

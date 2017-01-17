@@ -7,14 +7,12 @@ import createWatchUpdateEntity from './watchUpdateEntity'
 import createWatchRemoveEntity from './watchRemoveEntity'
 
 export default (types) => {
-
   const watchLoadEntity = createWatchLoadEntity(types)
   const watchCreateEntity = createWatchCreateEntity(types)
   const watchUpdateEntity = createWatchUpdateEntity(types)
   const watchRemoveEntity = createWatchRemoveEntity(types)
 
   return function* rootSaga(getState) {
-
     const getValue = (type, method, payload) => (
       getCachedValue(types, getState(), type, method, payload)
     )

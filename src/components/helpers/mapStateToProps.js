@@ -1,10 +1,7 @@
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import invariant from 'invariant'
 
-import mapValues from 'lodash/mapValues'
-import mapKeys from 'lodash/mapKeys'
-
-import isArray from 'lodash/isArray'
+import { mapValues, mapKeys, isArray } from 'lodash'
 
 import { getPromiseState, getEntityState } from '../../utils'
 

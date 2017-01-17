@@ -3,7 +3,7 @@ import invariant from 'invariant'
 
 import hoistStatics from 'hoist-non-react-statics'
 
-import uniqueId from 'lodash/uniqueId'
+import { uniqueId } from 'lodash'
 
 import getDisplayName from './getDisplayName'
 

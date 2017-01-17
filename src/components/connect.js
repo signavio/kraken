@@ -1,11 +1,5 @@
 import { connect as reduxConnect } from 'react-redux'
-
-import isFunction from 'lodash/isFunction'
-
-import fpMapValues from 'lodash/fp/mapValues'
-import compose from 'lodash/fp/compose'
-import pickBy from 'lodash/fp/pickBy'
-
+import { isFunction, mapValues, flowRight, pickBy } from 'lodash/fp'
 
 import {
   injectElementIdProp,
@@ -17,7 +11,7 @@ import {
   mapIdToQuery,
 } from './helpers'
 
-const makeFetchTheDefaultMethod = fpMapValues((props) => (
+const makeFetchTheDefaultMethod = mapValues((props) => (
   props.method ? props : { ...props, method: 'fetch' }
 ))
 
@@ -33,7 +27,7 @@ export default (types) =>
 
     // filter out empty promise prop mappings and
     // transform shortcut id query syntax into regular queries
-    const finalMapPropsToPromiseProps = compose(
+    const finalMapPropsToPromiseProps = flowRight(
       mapIdToQuery(types),
       validatePromiseProps({ types }),
       makeFetchTheDefaultMethod,
@@ -41,7 +35,7 @@ export default (types) =>
       objectShorthandToFunction(mapPropsToPromiseProps)
     )
 
-    return compose(
+    return flowRight(
       injectElementIdProp({ withRef }),
       reduxConnect(
         mapStateToProps({ types, finalMapPropsToPromiseProps }),

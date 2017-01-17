@@ -26,12 +26,12 @@ const hasAllPropertiesOf = (obj1, obj2) => (
 
 export default (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
+  const entities = payload.entities && payload.entities[getCollection(apiTypes, typeConstant)]
 
   if (payload.entity !== typeConstant) return state
 
   switch (action.type) {
     case SUCCESS:
-      const entities = payload.entities && payload.entities[getCollection(apiTypes, typeConstant)]
       return entities ? mergeValues(state, entities) : state
     case REMOVE_ENTITY:
       return omitBy(state, (value) => hasAllPropertiesOf(value, payload.query))

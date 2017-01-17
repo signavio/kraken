@@ -1,4 +1,4 @@
-import mapValues from 'lodash/fp/mapValues'
+import { mapValues } from 'lodash/fp'
 
 import { getIdAttribute } from '../../types'
 

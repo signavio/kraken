@@ -1,6 +1,6 @@
 import invariant from 'invariant'
 
-import mapValues from 'lodash/fp/mapValues'
+import { mapValues } from 'lodash/fp'
 
 import { VALID_METHODS } from './constants'
 
