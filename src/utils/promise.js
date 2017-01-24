@@ -1,7 +1,7 @@
 import { compact, flatten } from 'lodash'
 
-export const all = (...promises) => {
-  promises = compact(flatten(promises))
+export const all = (...promisesArg) => {
+  const promises = compact(flatten(promisesArg))
 
   return {
     pending: promises.some((ps) => ps.pending),
@@ -14,8 +14,8 @@ export const all = (...promises) => {
   }
 }
 
-export const race = (...promises) => {
-  promises = compact(flatten(promises))
+export const race = (...promisesArg) => {
+  const promises = compact(flatten(promisesArg))
   const winner = promises.find((ps) => ps.fulfilled || ps.rejected)
 
   return {
