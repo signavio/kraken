@@ -16,11 +16,11 @@ const actionCreators = {
 
   // If requiredFields is set to `true` the entity will always be refetched,
   // even it is already in the cache,
-  fetchEntity(entityType, query, refresh, requiredFields) {
+  fetchEntity(entity, query, refresh, requiredFields) {
     return {
       type: FETCH_ENTITY,
       payload: {
-        entity: entityType,
+        entity,
         query,
         refresh,
         requiredFields,
@@ -28,64 +28,64 @@ const actionCreators = {
     }
   },
 
-  cacheHit(entityType, query, value) {
+  cacheHit(entity, query, value) {
     return {
       type: CACHE_HIT,
       payload: {
-        entity: entityType,
+        entity,
         query,
         value,
       },
     }
   },
 
-  updateEntity(entityType, query, body) {
+  updateEntity(entity, query, body) {
     return {
       type: UPDATE_ENTITY,
       payload: {
-        entity: entityType,
+        entity,
         query,
         body,
       },
     }
   },
 
-  removeEntity(entityType, query) {
+  removeEntity(entity, query) {
     return {
       type: REMOVE_ENTITY,
       payload: {
-        entity: entityType,
+        entity,
         query,
       },
     }
   },
 
-  createEntity(entityType, requestId, body) {
+  createEntity(entity, requestId, body) {
     return {
       type: CREATE_ENTITY,
       payload: {
-        entity: entityType,
+        entity,
         requestId,
         body,
       },
     }
   },
 
-  request(entityType, requestId) {
+  request(entity, requestId) {
     return {
       type: REQUEST,
       payload: {
-        entity: entityType,
+        entity,
         requestId,
       },
     }
   },
 
-  success(entityType, requestId, value, entities) {
+  success(entity, requestId, value, entities) {
     return {
       type: SUCCESS,
       payload: {
-        entity: entityType,
+        entity,
         requestId,
         value,
         entities,
@@ -107,18 +107,18 @@ const actionCreators = {
 }
 
 
-const enhanceWithEntityTypeValidation = (types, actionCreator, actionCreatorName) => {
-  return (entityType, ...args) => {
+const enhanceWithEntityTypeValidation = (types, actionCreator, actionCreatorName) =>
+  (entity, ...args) => {
     invariant(
-      !!types[entityType],
+      !!types[entity],
       `First argument of ${actionCreatorName} action creator must be one of the following constants:
       \`${Object.keys(types).join(', ')}\`
-      (is: \`${entityType}\`)`
+      (is: \`${entity}\`)`
     )
 
-    return actionCreator(entityType, ...args)
+    return actionCreator(entity, ...args)
   }
-}
+
 
 export default (types) => mapValues(
   actionCreators,
