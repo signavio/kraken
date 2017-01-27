@@ -27,7 +27,7 @@ const fetchStub = sinon.stub(apiTypes.USER, 'fetch', () => new Promise((resolve)
 const { reducer, saga, connect } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
-  cache: reducer,
+  genericApi: reducer,
 })
 
 function configureStore(initialState) {
@@ -45,11 +45,13 @@ function configureStore(initialState) {
 describe('concurrent fetches', () => {
   let store
 
-  const UserPure = ({ fetchUser }) => (
-    <div>
-      { fetchUser.value && fetchUser.value.firstName }
-    </div>
-  )
+  const UserPure = ({ fetchUser }) => {
+    return (
+      <div>
+        { fetchUser.value && fetchUser.value.firstName }
+      </div>
+    )
+  }
 
   const User = connect(({ id }) => ({
     fetchUser: {

@@ -1,35 +1,36 @@
-// @flow
 import { findKey } from 'lodash'
 
 import { hasEntitySchema } from '../types'
-import type { StateT, ApiTypesT, MethodT, PayloadT } from '../flowTypes'
+import { State, ApiTypeMap, DispatchAction, EntityId } from '../internalTypes'
 
-import getPromiseState from './getPromiseState'
+import getRequestState from './getRequestState'
 import getEntityCollectionState from './getEntityCollectionState'
 
 const getCachedValue = (
-  types: ApiTypesT,
-  state: StateT,
-  type: string,
-  method: MethodT,
-  payload: PayloadT
-): ?string => {
-  const { value, refresh: lastRefresh } = getPromiseState(types, state, type, method, payload) || {}
-  const { query, refresh } = payload
+  types: ApiTypeMap,
+  state: State,
+  action: DispatchAction
+): EntityId | EntityId[] | undefined => {
+  let requestState = getRequestState(types, state, action)
 
-  if (refresh && refresh !== lastRefresh) {
-    return undefined
+  if (requestState === undefined) {
+    requestState = {}
   }
 
-  if (hasEntitySchema(types, type)) {
-    const entityCollection = getEntityCollectionState(types, state, type)
-
-    // single item type: if there's no promise and refresh is not enforced,
-    // try to retrieve from cache
-    return value || findKey(entityCollection, query)
+  if (action.type === 'FETCH_DISPATCH') {
+    if (action.payload.refresh !== undefined && action.payload.refresh !== requestState.refresh) {
+      return undefined
+    }
   }
 
-  return value
+  const entityType = action.payload.entityType
+  if (hasEntitySchema(types, entityType)) {
+    const entityCollection = getEntityCollectionState(types, state, entityType)
+
+    return requestState.value || findKey(entityCollection, action.payload.query)
+  }
+
+  return requestState.value
 }
 
 export default getCachedValue

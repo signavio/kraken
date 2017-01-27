@@ -4,19 +4,23 @@ import { normalize } from 'normalizr'
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
 export default function callApi(fullUrl, schema, options) {
-  const finalUrl = (typeof fullUrl === "function") ?
+  const finalUrl = (typeof fullUrl === 'function') ?
     fullUrl() :
     fullUrl
-  
+
   return fetch(finalUrl, options)
-    .then(response => {
-      const contentType = response.headers.get('Content-Type') &&
-        response.headers.get('Content-Type').split(';')[0]
+    .then((response) => {
+      let contentType = response.headers.get('Content-Type')
+
+      if (contentType !== null) {
+        contentType = contentType.split(';')[0]
+      }
+
       switch (contentType) {
         case 'application/json':
-          return response.json().then(json => ({ json, response }))
+          return response.json().then((json) => ({ json, response }))
         case 'text/plain':
-          return response.text().then(text => ({ json: { message: text }, response }))
+          return response.text().then((text) => ({ json: { message: text }, response }))
         default:
           if (response.status === 204) {
             return { response }
@@ -36,11 +40,12 @@ export default function callApi(fullUrl, schema, options) {
       return json ? normalize(json, schema) : null
     })
     .then(
-      response => ({ response }),
+      (response) => ({ response }),
       ({ json, response, message }) => ({
-        error: message ? `Error parsing the response: ${message}` :
-          json && json.message ||
-          response && response.statusText,
+        error: message ?
+          `Error parsing the response: ${message}` :
+            (json && json.message) ||
+            (response && response.statusText),
       })
     )
 }

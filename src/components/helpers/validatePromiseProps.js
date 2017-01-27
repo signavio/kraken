@@ -1,8 +1,9 @@
 import invariant from 'invariant'
 
+import { includes } from 'lodash'
 import { mapValues } from 'lodash/fp'
 
-import { VALID_METHODS } from './constants'
+import { validMethods } from './constants'
 
 const validatePromiseProps = ({ types }) => mapValues((props) => {
   const { type, method, id, query } = props
@@ -14,12 +15,12 @@ const validatePromiseProps = ({ types }) => mapValues((props) => {
   )
 
   invariant(
-    VALID_METHODS.indexOf(method) >= 0,
+    includes(validMethods, method),
     `Invalid method '${method}' specified for \`connect\` ` +
-    `(expected one of: ${VALID_METHODS.join(', ')})`
+    `(expected one of: ${validMethods.join(', ')})`
   )
 
-  invariant(!(id && query), "Must only define one of the 'id' and 'query' parameters")
+  invariant(!(id && query), 'Must only define one of the \'id\' and \'query\' parameters')
 
   return props
 })

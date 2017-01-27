@@ -4,8 +4,7 @@ import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
 
-import createConnect from '../../../src/components/connect'
-import { FETCH_ENTITY } from '../../../src/actions'
+import createConnect from '../../../src/components'
 
 import expect from '../../expect'
 
@@ -22,8 +21,8 @@ const MyComp = (props) => {
 
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
-  cache: {
-    promises: {
+  genericApi: {
+    requests: {
       [types.USER]: {},
     },
     entities: {
@@ -50,22 +49,22 @@ const TestContainer = (props) => (
   </Provider>
 )
 
-export default () => {
+describe('connectWithQuery', () => {
   beforeEach(() => {
     renderSpy.reset()
     reducerSpy.reset()
   })
 
-  it('should dispatch the FETCH_ENTITY action on mount', () => {
+  it('should dispatch the FETCH_DISPATCH action on mount', () => {
     mount(<TestContainer id={ data.user.id } />)
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
       testStore.getState(),
       {
-        type: FETCH_ENTITY,
+        type: 'FETCH_DISPATCH',
         payload: {
-          entity: types.USER,
+          entityType: types.USER,
           query: {
             id: data.user.id,
             nestedQuery: {
@@ -77,7 +76,7 @@ export default () => {
     )
   })
 
-  it('should dispatch the FETCH_ENTITY action when the promise props update', () => {
+  it('should dispatch the FETCH_DISPATCH action when the promise props update', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
 
@@ -88,9 +87,9 @@ export default () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       testStore.getState(),
       {
-        type: FETCH_ENTITY,
+        type: 'FETCH_DISPATCH',
         payload: {
-          entity: types.USER,
+          entityType: types.USER,
           query: {
             id: 'user-2',
             nestedQuery: {
@@ -102,7 +101,7 @@ export default () => {
     )
   })
 
-  it('should not dispatch FETCH_ENTITY action on update when promise props did not change', () => {
+  it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
 
     reducerSpy.reset()
@@ -114,4 +113,4 @@ export default () => {
 
     expect(reducerSpy).to.have.not.been.called
   })
-}
+})

@@ -4,9 +4,7 @@ import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
 
-import createConnect from '../../../src/components/connect'
-
-import { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
+import createConnect from '../../../src/components'
 
 import expect from '../../expect'
 
@@ -23,8 +21,8 @@ const MyComp = (props) => {
 
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
-  cache: {
-    promises: {
+  genericApi: {
+    requests: {
       [types.USER]: {},
     },
     entities: {
@@ -52,16 +50,16 @@ describe('connect', () => {
     reducerSpy.reset()
   })
 
-  it('should dispatch the FETCH_ENTITY action on mount', () => {
+  it('should dispatch the FETCH_DISPATCH action on mount', () => {
     mount(<TestContainer id={ data.user.id } />)
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: FETCH_ENTITY,
+        type: 'FETCH_DISPATCH',
         payload: {
-          entity: types.USER,
+          entityType: types.USER,
           query: {
             id: data.user.id,
           },
@@ -70,7 +68,7 @@ describe('connect', () => {
     )
   })
 
-  it('should dispatch the FETCH_ENTITY action when the promise props update', () => {
+  it('should dispatch the FETCH_DISPATCH action when the promise props update', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
 
@@ -81,9 +79,9 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: FETCH_ENTITY,
+        type: 'FETCH_DISPATCH',
         payload: {
-          entity: types.USER,
+          entityType: types.USER,
           query: {
             id: 'user-2',
           },
@@ -92,7 +90,7 @@ describe('connect', () => {
     )
   })
 
-  it('should not dispatch FETCH_ENTITY action on update when promise props did not change', () => {
+  it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
@@ -130,7 +128,8 @@ describe('connect', () => {
       mount(
         <Provider store={testStore}>
           <InvalidComp />
-        </Provider>)
+        </Provider>
+      )
     }
 
     expect(invalidType).to.throw(/^Invalid type value/)
@@ -165,11 +164,11 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: CREATE_ENTITY,
+        type: 'CREATE_DISPATCH',
         payload: {
-          entity: types.USER,
-          requestId: sinon.match.string,
+          entityType: types.USER,
           body,
+          query: {},
         },
       }
     )

@@ -3,61 +3,72 @@ import { normalize } from 'normalizr'
 
 import expect from '../../expect'
 
-import { createCreateEntity } from '../../../src/sagas/watchCreateEntity'
+import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
 
 import actionsCreator from '../../../src/actions'
+
+import { deriveRequestIdFromAction } from '../../../src/utils'
 
 import { typeUtils } from '../../../src'
 
 import { apiTypes, types, data } from '../fixtures'
 
-const createEntity = createCreateEntity(apiTypes)
+const createEntity = createCreateDispatch(apiTypes)
 const actions = actionsCreator(apiTypes)
 
-const requestId = 'my-request'
+const entityType = types.USER
+const query = {}
+const elementId = 'elementId'
+const body = data.user
+
+const createPayload = {
+  entityType,
+  body,
+  query,
+  elementId,
+}
+
+const createAction = {
+  type: 'CREATE_DISPATCH',
+  payload: createPayload,
+}
+
+const requestId = deriveRequestIdFromAction(createAction)
 
 describe('Saga - createEntity', () => {
   let generator
 
   beforeEach(() => {
-    generator = createEntity(types.USER, requestId, data.user)
-  })
-
-  it('should dispatch a `request` action, using the provided request id', () => {
-    expect(generator.next().value).to.deep.equal(
-      put(actions.request(types.USER, requestId))
-    )
+    generator = createEntity(createAction)
   })
 
   it('should call the `create` function of the entity type passing in the query object', () => {
-    generator.next()
-
     expect(generator.next().value).to.deep.equal(
-      call(typeUtils.getCreate(apiTypes, types.USER), data.user)
+      call(typeUtils.getCreate(apiTypes, types.USER), body)
     )
   })
 
   it('should dispatch the `success` action with the server response data', () => {
     generator.next()
-    generator.next()
 
-    const { result, entities } = normalize(data.user, apiTypes.USER.schema)
+    const { result, entities } = normalize(body, apiTypes.USER.schema)
 
     expect(generator.next({ response: { result, entities } }).value).to.deep.equal(
-      put(actions.success(types.USER, requestId, result, entities))
+      put(actions.succeedCreate({
+        entityType,
+        requestId: deriveRequestIdFromAction(createAction),
+        value: result,
+        entities,
+      }))
     )
   })
 
   it('should dispatch an `error` action if the server request fails', () => {
-    // dispatch `request` action
-    generator.next()
-
-    // call `fetch` function
     generator.next()
 
     const error = 'Some error message'
 
     expect(generator.next({ error }).value)
-      .to.deep.equal( put(actions.failure(types.USER, requestId, error)) )
+      .to.deep.equal(put(actions.failCreate({ entityType: types.USER, requestId, error })))
   })
 })

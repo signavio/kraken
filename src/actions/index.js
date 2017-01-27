@@ -1,126 +1,164 @@
 import invariant from 'invariant'
 import { mapValues } from 'lodash'
 
-export const FETCH_ENTITY = 'API_FETCH_ENTITY'
-export const CREATE_ENTITY = 'API_CREATE_ENTITY'
-export const UPDATE_ENTITY = 'API_UPDATE_ENTITY'
-export const REMOVE_ENTITY = 'API_REMOVE_ENTITY'
+import {
+  ApiTypeMap,
+  Payload,
+  Action,
 
-export const CACHE_HIT = 'API_CACHE_HIT'
+  CreateDispatchPayload,
+  CreateDispatchAction,
+  CreateSuccessPayload,
+  CreateSuccessAction,
+  CreateFailurePayload,
+  CreateFailureAction,
 
-export const REQUEST = 'API_REQUEST'
-export const SUCCESS = 'API_SUCCESS'
-export const FAILURE = 'API_FAILURE'
+  UpdateDispatchPayload,
+  UpdateDispatchAction,
+  UpdateSuccessPayload,
+  UpdateSuccessAction,
+  UpdateFailurePayload,
+  UpdateFailureAction,
 
-const actionCreators = {
+  FetchDispatchPayload,
+  FetchDispatchAction,
+  FetchSuccessPayload,
+  FetchSuccessAction,
+  FetchFailurePayload,
+  FetchFailureAction,
 
-  // If requiredFields is set to `true` the entity will always be refetched,
-  // even it is already in the cache,
-  fetchEntity(entity, query, refresh, requiredFields) {
+  RemoveDispatchPayload,
+  RemoveDispatchAction,
+  RemoveSuccessPayload,
+  RemoveSuccessAction,
+  RemoveFailurePayload,
+  RemoveFailureAction,
+} from '../internalTypes'
+
+type ActionCreator = (Payload) => Action
+type ActionCreatorMap = {
+  dispatchCreate(payload: CreateDispatchPayload): CreateDispatchAction,
+  dispatchUpdate(payload: UpdateDispatchPayload): UpdateDispatchAction,
+  dispatchFetch (payload: FetchDispatchPayload):  FetchDispatchAction,
+  dispatchRemove(payload: RemoveDispatchPayload): RemoveDispatchAction,
+
+  succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction,
+  succeedUpdate(payload: UpdateSuccessPayload): UpdateSuccessAction,
+  succeedFetch (payload: FetchSuccessPayload):  FetchSuccessAction,
+  succeedRemove(payload: RemoveSuccessPayload): RemoveSuccessAction,
+
+  failCreate(payload: CreateFailurePayload): CreateFailureAction,
+  failUpdate(payload: UpdateFailurePayload): UpdateFailureAction,
+  failFetch (payload: FetchFailurePayload):  FetchFailureAction,
+  failRemove(payload: RemoveFailurePayload): RemoveFailureAction,
+}
+
+const actionCreatorMap: ActionCreatorMap = {
+  dispatchCreate(payload: CreateDispatchPayload): CreateDispatchAction {
     return {
-      type: FETCH_ENTITY,
-      payload: {
-        entity,
-        query,
-        refresh,
-        requiredFields,
-      },
+      type: 'CREATE_DISPATCH',
+      payload,
     }
   },
 
-  cacheHit(entity, query, value) {
+  dispatchUpdate(payload: UpdateDispatchPayload): UpdateDispatchAction {
     return {
-      type: CACHE_HIT,
-      payload: {
-        entity,
-        query,
-        value,
-      },
+      type: 'UPDATE_DISPATCH',
+      payload,
     }
   },
 
-  updateEntity(entity, query, body) {
+  dispatchFetch (payload: FetchDispatchPayload):  FetchDispatchAction {
     return {
-      type: UPDATE_ENTITY,
-      payload: {
-        entity,
-        query,
-        body,
-      },
+      type: 'FETCH_DISPATCH',
+      payload,
     }
   },
 
-  removeEntity(entity, query) {
+  dispatchRemove(payload: RemoveDispatchPayload): RemoveDispatchAction {
     return {
-      type: REMOVE_ENTITY,
-      payload: {
-        entity,
-        query,
-      },
+      type: 'REMOVE_DISPATCH',
+      payload,
     }
   },
 
-  createEntity(entity, requestId, body) {
+
+  succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction {
     return {
-      type: CREATE_ENTITY,
-      payload: {
-        entity,
-        requestId,
-        body,
-      },
+      type: 'CREATE_SUCCESS',
+      payload,
     }
   },
 
-  request(entity, requestId) {
+  succeedUpdate(payload: UpdateSuccessPayload): UpdateSuccessAction {
     return {
-      type: REQUEST,
-      payload: {
-        entity,
-        requestId,
-      },
+      type: 'UPDATE_SUCCESS',
+      payload,
     }
   },
 
-  success(entity, requestId, value, entities) {
+  succeedFetch (payload: FetchSuccessPayload):  FetchSuccessAction {
     return {
-      type: SUCCESS,
-      payload: {
-        entity,
-        requestId,
-        value,
-        entities,
-      },
+      type: 'FETCH_SUCCESS',
+      payload,
     }
   },
 
-  failure(entityType, requestId, error) {
+  succeedRemove(payload: RemoveSuccessPayload): RemoveSuccessAction {
     return {
-      type: FAILURE,
-      payload: {
-        entity: entityType,
-        requestId,
-        error,
-      },
-      error: true,
+      type: 'REMOVE_SUCCESS',
+      payload,
+    }
+  },
+
+
+  failCreate(payload: CreateFailurePayload): CreateFailureAction {
+    return {
+      type: 'CREATE_FAILURE',
+      payload,
+    }
+  },
+
+  failUpdate(payload: UpdateFailurePayload): UpdateFailureAction {
+    return {
+      type: 'UPDATE_FAILURE',
+      payload,
+    }
+  },
+
+  failFetch (payload: FetchFailurePayload):  FetchFailureAction {
+    return {
+      type: 'FETCH_FAILURE',
+      payload,
+    }
+  },
+
+  failRemove(payload: RemoveFailurePayload): RemoveFailureAction {
+    return {
+      type: 'REMOVE_FAILURE',
+      payload,
     }
   },
 }
 
 
-const enhanceWithEntityTypeValidation = (types, actionCreator, actionCreatorName) =>
-  (entity, ...args) => {
+const enhanceWithEntityTypeValidation
+  = (types: ApiTypeMap, actionCreator: ActionCreator, actionCreatorName: string) =>
+  (payload: Payload) => {
     invariant(
-      !!types[entity],
-      `First argument of ${actionCreatorName} action creator must be one of the following constants:
+      !!types[payload.entityType],
+      `Payload of ${actionCreatorName} action creator must contain \`entityType\` of one of the following constants:
       \`${Object.keys(types).join(', ')}\`
-      (is: \`${entity}\`)`
+      (is: \`${payload.entityType}\`)`
     )
 
-    return actionCreator(entity, ...args)
+    return actionCreator(payload)
   }
 
 
-export default (types) => mapValues(
-  actionCreators,
+const createActionCreators = (types: ApiTypeMap) => mapValues/*<ActionCreatorMap>*/(
+  actionCreatorMap,
   enhanceWithEntityTypeValidation.bind(null, types)
 )
+
+export default createActionCreators

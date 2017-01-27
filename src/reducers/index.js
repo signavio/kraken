@@ -2,16 +2,21 @@ import { combineReducers } from 'redux'
 import { mapValues, groupBy } from 'lodash'
 import reduceReducers from 'reduce-reducers'
 
-import { typeConstants, getCollection } from '../types'
+import { ApiTypeMap } from '../internalTypes'
 
-import createEntitiesReducer from './entityReducer'
-import createPromisesReducer from './promiseReducer'
+import { getTypeNames, getCollectionName } from '../types'
 
-export { createPromisesReducer, createEntitiesReducer }
+import createEntitiesReducer from './entitiesReducer'
+import createRequestsReducer from './requestsReducer'
 
-export default (apiTypes) => {
-  const constants = typeConstants(apiTypes)
-  const constantsByCollection = groupBy(constants, (constant) => getCollection(apiTypes, constant))
+export { createRequestsReducer, createEntitiesReducer }
+
+const createReducer = (apiTypes: ApiTypeMap) => {
+  const constants = getTypeNames(apiTypes)
+  const constantsByCollection = groupBy(
+    constants,
+    (constant) => getCollectionName(apiTypes, constant)
+  )
 
   return combineReducers({
 
@@ -24,9 +29,11 @@ export default (apiTypes) => {
       )
     ),
 
-    promises: combineReducers(
-      mapValues(constants, createPromisesReducer.bind(null, apiTypes))
+    requests: combineReducers(
+      mapValues(constants, createRequestsReducer.bind(null, apiTypes))
     ),
 
   })
 }
+
+export default createReducer

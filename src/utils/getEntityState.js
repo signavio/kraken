@@ -1,29 +1,29 @@
-// @flow
 import { hasEntitySchema } from '../types'
-import type { ApiTypesT, StateT, MethodT, PayloadT } from '../flowTypes'
+import { ApiTypeMap, State, DispatchAction, Entity } from '../internalTypes'
 
 import getEntityCollectionState from './getEntityCollectionState'
 import getCachedValue from './getCachedValue'
 
-export default function getEntityState<T>(
-  types: ApiTypesT,
-  state: StateT,
-  type: string,
-  method: MethodT,
-  payload: PayloadT,
-): ?T {
-  const value = getCachedValue(types, state, type, method, payload)
+type MaybeEntity = Entity | undefined
 
-  if (!value) {
-    return null
+const getEntityState = (types: ApiTypeMap, state: State, action: DispatchAction): MaybeEntity => {
+  const value = getCachedValue(types, state, action)
+
+  if (value === undefined) {
+    return undefined
   }
 
-  const entityCollection = getEntityCollectionState(types, state, type)
+  const entityCollection = getEntityCollectionState(types, state, action.payload.entityType)
 
-  if (hasEntitySchema(types, type)) {
-    return entityCollection[value]
+  if (typeof value === 'string') {
+    if (hasEntitySchema(types, action.payload.entityType)) {
+      return entityCollection[value]
+    }
+  } else {
+    return value.map((id: string) => entityCollection[id])
   }
 
-  // array type: map ids in promise value to entities
-  return value.map((id: string) => entityCollection[id])
+  return undefined
 }
+
+export default getEntityState

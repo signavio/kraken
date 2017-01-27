@@ -4,17 +4,22 @@ const mergeProps = ({ finalMapPropsToPromiseProps }) => (stateProps, dispatchPro
   const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
   const joinPromiseValue = (propName) => {
-    const promise = stateProps[`${propName}_promise`]
+    const promise = stateProps[`${propName}_request`]
     const entity = stateProps[`${propName}_entity`]
 
-    const initialPromise = promiseProps[propName].method === 'fetch'
-      ? {
+    let initialPromise
+
+    if (promiseProps[propName].method === 'fetch') {
+      initialPromise = {
         pending: !entity,
         fulfilled: !!entity,
-      } : {
+      }
+    } else {
+      initialPromise = {
         pending: false,
         fulfilled: false,
       }
+    }
 
     return {
       ...(promise || initialPromise),
@@ -22,10 +27,11 @@ const mergeProps = ({ finalMapPropsToPromiseProps }) => (stateProps, dispatchPro
     }
   }
 
-  const mergePromiseStateToActionCreator = (propName, promiseState) =>
-    Object.assign((...args) => dispatchProps[propName](...args), promiseState)
+  const mergePromiseStateToActionCreator = (propName, promiseState) => {
+    return Object.assign((...args) => dispatchProps[propName](...args), promiseState)
+  }
 
-  // now it's time to join the `${propName}_entity` with the `${propName}_promise` props
+  // now it's time to join the `${propName}_entity` with the `${propName}_request` props
   return {
     ...ownProps,
     ...dispatchProps,

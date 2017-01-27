@@ -1,16 +1,11 @@
-// @flow
-import type { ApiTypesT, StateT, EntityCollectionT } from '../flowTypes'
+import { ApiTypeMap, State, EntityType } from '../internalTypes'
 
-import { getCollection } from '../types'
+import { getCollectionName } from '../types'
 
-export default function getEntityCollectionState<T>(
-  types: ApiTypesT,
-  state: StateT,
-  type: string
-): EntityCollectionT<T> {
-  if (!state.cache || !state.cache.entities) {
-    return {}
-  }
-
-  return state.cache.entities[getCollection(types, type)]
+export default function getEntityCollectionState(
+  types: ApiTypeMap,
+  state: State,
+  entityType: EntityType
+) {
+  return state.genericApi.entities[getCollectionName(types, entityType)]
 }

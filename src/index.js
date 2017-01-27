@@ -3,7 +3,7 @@ import createSaga from './sagas'
 import createConnect from './components'
 import createActions from './actions'
 
-export default (types) => {
+const apiCreator = (types) => {
   types = Object.keys(types).reduce(
     (prev, key) => ({
       ...prev,
@@ -17,13 +17,21 @@ export default (types) => {
 
   return {
     reducer: createReducer(types),
-    saga: createSaga(types),
+    saga:    createSaga(types),
     connect: createConnect(types),
     actions: createActions(types),
   }
 }
 
-export * as promise from './utils/promise'
-export * as typeUtils from './types'
+import * as promise from './utils/promise'
+import * as typeUtils from './types'
 
-export callApi from './callApi'
+import callApi from './callApi'
+
+export default apiCreator
+
+export {
+  promise,
+  typeUtils,
+  callApi,
+}

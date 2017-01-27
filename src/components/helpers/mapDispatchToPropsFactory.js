@@ -4,10 +4,13 @@ import invariant from 'invariant'
 
 import { mapValues } from 'lodash'
 
-import actionsCreators from '../../actions'
-import { deriveRequestId } from '../../utils'
+import { MethodName } from '../../internalTypes'
 
-import { ELEMENT_ID_PROP_NAME, VALID_METHODS } from './constants'
+import actionsCreators from '../../actions'
+
+import { ELEMENT_ID_PROP_NAME, validMethods } from './constants'
+
+const capitalize = (word: string) => word[0].toUpperCase() + word.slice(1)
 
 const mapDispatchToPropsFactory = ({
   types,
@@ -20,20 +23,22 @@ const mapDispatchToPropsFactory = ({
     const boundActionCreators = bindActionCreators(actionCreators, dispatch)
 
     const bindActionCreatorForPromiseProp =
-    ({ type, method, query, refresh, requiredFields }, propName) => {
-      const actionCreator = boundActionCreators[`${method}Entity`]
+    ({ type: entityType, method, query = {}, refresh, requiredFields }, propName) => {
+      const actionCreator = boundActionCreators[`dispatch${capitalize(method)}`]
       invariant(!!actionCreator,
         `Unknown method '${method}' specified ` +
-        `(supported values: ${VALID_METHODS.map((m) => `'${m}'`).join(', ')})`
+        `(supported values: ${validMethods.map((m) => `'${m}'`).join(', ')})`
       )
 
       switch (method) {
         case 'fetch':
-          return actionCreator.bind(null, type, query, refresh, requiredFields)
+          return () => actionCreator({ entityType, query, refresh, requiredFields })
         case 'create':
-          return actionCreator.bind(null, type, deriveRequestId(method, { elementId, propName }))
-        default:
-          return actionCreator.bind(null, type, query)
+          return (body) => actionCreator({ entityType, elementId, query, body })
+        case 'update':
+          return (body) => actionCreator({ entityType, query, body })
+        case 'remove':
+          return () => actionCreator({ entityType, query })
       }
     }
 
