@@ -21,7 +21,6 @@
     "invariant": "2.2.2",
     "isomorphic-fetch": "2.2.1",
     "lodash": "4.17.4",
-    "normalizr": "3.1.0",
     "react-redux": "5.0.2",
     "reduce-reducers": "0.1.2",
     "redux": "3.6.0",
@@ -43,6 +42,7 @@
     "install": "0.8.4",
     "jsdom": "9.9.1",
     "mocha": "3.2.0",
+    "normalizr": "3.1.0",
     "react": "15.4.2",
     "react-addons-test-utils": "15.4.2",
     "react-dom": "15.4.2",
@@ -50,6 +50,7 @@
     "sinon-chai": "2.8.0"
   },
   "peerDependencies": {
+    "normalizr": "3.1.0",
     "react": "15.4.2"
   }
 }
