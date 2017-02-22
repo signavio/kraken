@@ -1,7 +1,7 @@
 import createReducer from './reducers'
 import createSaga from './sagas'
 import createConnect from './components'
-import createActions from './actions'
+import createActions, { actionTypes } from './actions'
 
 const apiCreator = (types) => {
   types = Object.keys(types).reduce(
@@ -34,4 +34,5 @@ export {
   promise,
   typeUtils,
   callApi,
+  actionTypes,
 }
