@@ -3,7 +3,7 @@ import { put, call } from 'redux-saga/effects'
 
 import { ApiTypeMap, CreateDispatchAction } from '../internalTypes'
 
-import createActionCreators from '../actions'
+import createActionCreators, { actionTypes } from '../actions'
 import { getCreate } from '../types'
 import { deriveRequestIdFromAction } from '../utils'
 
@@ -42,7 +42,7 @@ const createWatchCreateDispatch = (types: ApiTypeMap) => {
   const createDispatch = createCreateDispatch(types)
 
   return function* watchCreateDispatch() {
-    yield* takeEvery('CREATE_DISPATCH', createDispatch)
+    yield* takeEvery(actionTypes.CREATE_DISPATCH, createDispatch)
   }
 }
 

@@ -2,7 +2,7 @@ import { normalize } from 'normalizr'
 
 import expect from '../../expect'
 
-import createActionCreators from '../../../src/actions'
+import createActionCreators, { actionTypes } from '../../../src/actions'
 
 import { typeUtils } from '../../../src'
 import { deriveRequestIdFromAction } from '../../../src/utils'
@@ -14,14 +14,14 @@ import { apiTypes, types, data } from '../fixtures'
 const actions = createActionCreators(apiTypes)
 
 const id = 'my-id'
-const requestId = deriveRequestIdFromAction({ type: 'FETCH_SUCCESS', payload: { query: { id } } })
+const requestId = deriveRequestIdFromAction({ type: actionTypes.FETCH_SUCCESS, payload: { query: { id } } })
 const collection = typeUtils.getCollectionName(apiTypes, types.USER)
 const entityReducerForEntity = createEntitiesReducer(apiTypes, types.USER)
 
 const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 describe('entityReducer', () => {
-  describe('SUCCESS', () => {
+  describe('FETCH_SUCCESS', () => {
     it('should add all entities to the current state.', () => {
       const newState = entityReducerForEntity(
         {},
@@ -67,7 +67,7 @@ describe('entityReducer', () => {
     })
   })
 
-  describe('REMOVE_ENTITY', () => {
+  describe('REMOVE_DISPATCH', () => {
     it('should remove entities from the state when a remove action is fired', () => {
       const state = entityReducerForEntity(
         {

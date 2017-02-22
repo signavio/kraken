@@ -1,6 +1,7 @@
 import { ApiTypeMap, State, Action } from '../internalTypes'
 
 import { deriveRequestIdFromAction } from '../utils'
+import { actionTypes } from '../actions'
 
 const cacheReducer = (state: State, action: Action) => {
   const { payload = {} } = action
@@ -21,10 +22,10 @@ const directReducer = (state: State, action: Action) => {
   let newState = { ...state }
 
   switch (action.type) {
-    case 'FETCH_DISPATCH':
-    case 'CREATE_DISPATCH':
-    case 'UPDATE_DISPATCH':
-    case 'REMOVE_DISPATCH':
+    case actionTypes.FETCH_DISPATCH:
+    case actionTypes.CREATE_DISPATCH:
+    case actionTypes.UPDATE_DISPATCH:
+    case actionTypes.REMOVE_DISPATCH:
       if (!(request.pending && !needsRefresh)) {
         newState = {
           ...newState,
@@ -48,10 +49,10 @@ const directReducer = (state: State, action: Action) => {
       }
 
       break
-    case 'FETCH_SUCCESS':
-    case 'CREATE_SUCCESS':
-    case 'UPDATE_SUCCESS':
-    case 'REMOVE_SUCCESS':
+    case actionTypes.FETCH_SUCCESS:
+    case actionTypes.CREATE_SUCCESS:
+    case actionTypes.UPDATE_SUCCESS:
+    case actionTypes.REMOVE_SUCCESS:
       newState = {
         ...newState,
         [key]: {
@@ -64,10 +65,10 @@ const directReducer = (state: State, action: Action) => {
       }
 
       break
-    case 'FETCH_FAILURE':
-    case 'CREATE_FAILURE':
-    case 'UPDATE_FAILURE':
-    case 'REMOVE_FAILURE':
+    case actionTypes.FETCH_FAILURE:
+    case actionTypes.CREATE_FAILURE:
+    case actionTypes.UPDATE_FAILURE:
+    case actionTypes.REMOVE_FAILURE:
       newState = {
         ...newState,
         [key]: {

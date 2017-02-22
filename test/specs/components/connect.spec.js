@@ -5,6 +5,7 @@ import { mount } from 'enzyme'
 import sinon from 'sinon'
 
 import createConnect from '../../../src/components'
+import { actionTypes } from '../../../src/actions'
 
 import expect from '../../expect'
 
@@ -57,7 +58,7 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: 'FETCH_DISPATCH',
+        type: actionTypes.FETCH_DISPATCH,
         payload: {
           entityType: types.USER,
           query: {
@@ -79,7 +80,7 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: 'FETCH_DISPATCH',
+        type: actionTypes.FETCH_DISPATCH,
         payload: {
           entityType: types.USER,
           query: {
@@ -164,7 +165,7 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: 'CREATE_DISPATCH',
+        type: actionTypes.CREATE_DISPATCH,
         payload: {
           entityType: types.USER,
           body,

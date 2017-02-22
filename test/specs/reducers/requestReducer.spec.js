@@ -2,7 +2,7 @@ import { normalize } from 'normalizr'
 
 import expect from '../../expect'
 
-import createActionCreators from '../../../src/actions'
+import createActionCreators, { actionTypes } from '../../../src/actions'
 
 import { deriveRequestIdFromAction } from '../../../src/utils'
 
@@ -15,7 +15,7 @@ const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 const id = 'my-id'
 const query = { id }
-const requestId = deriveRequestIdFromAction({ type: 'FETCH_DISPATCH', payload: { query: { id } } })
+const requestId = deriveRequestIdFromAction({ type: actionTypes.FETCH_DISPATCH, payload: { query: { id } } })
 // const entityReducerForEntity = entityReducer(entity)
 
 describe('requestReducer', () => {

@@ -56,43 +56,43 @@ type ActionCreatorMap = {
 export const actionTypes = {
   CREATE_DISPATCH: 'GENERIC_API_CREATE_DISPATCH',
   UPDATE_DISPATCH: 'GENERIC_API_UPDATE_DISPATCH',
-  FETCH_DISPATCH: 'FETCHC_API_CREATE_DISPATCH',
+  FETCH_DISPATCH: 'GENERIC_API_FETCH_DISPATCH',
   REMOVE_DISPATCH: 'GENERIC_API_REMOVE_DISPATCH',
   CREATE_SUCCESS: 'GENERIC_API_CREATE_SUCCESS',
   UPDATE_SUCCESS: 'GENERIC_API_UPDATE_SUCCESS',
-  FETCH_SUCCESS: 'FETCHC_API_CREATE_SUCCESS',
+  FETCH_SUCCESS: 'GENERIC_API_FETCH_SUCCESS',
   REMOVE_SUCCESS: 'GENERIC_API_REMOVE_SUCCESS',
   CREATE_FAILURE: 'GENERIC_API_CREATE_FAILURE',
   UPDATE_FAILURE: 'GENERIC_API_UPDATE_FAILURE',
-  FETCH_FAILURE: 'FETCHC_API_CREATE_FAILURE',
+  FETCH_FAILURE: 'GENERIC_API_FETCH_FAILURE',
   REMOVE_FAILURE: 'GENERIC_API_REMOVE_FAILURE',
 }
 
 const actionCreatorMap: ActionCreatorMap = {
   dispatchCreate(payload: CreateDispatchPayload): CreateDispatchAction {
     return {
-      type: 'CREATE_DISPATCH',
+      type: actionTypes.CREATE_DISPATCH,
       payload,
     }
   },
 
   dispatchUpdate(payload: UpdateDispatchPayload): UpdateDispatchAction {
     return {
-      type: 'UPDATE_DISPATCH',
+      type: actionTypes.UPDATE_DISPATCH,
       payload,
     }
   },
 
   dispatchFetch (payload: FetchDispatchPayload):  FetchDispatchAction {
     return {
-      type: 'FETCH_DISPATCH',
+      type: actionTypes.FETCH_DISPATCH,
       payload,
     }
   },
 
   dispatchRemove(payload: RemoveDispatchPayload): RemoveDispatchAction {
     return {
-      type: 'REMOVE_DISPATCH',
+      type: actionTypes.REMOVE_DISPATCH,
       payload,
     }
   },
@@ -100,28 +100,28 @@ const actionCreatorMap: ActionCreatorMap = {
 
   succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction {
     return {
-      type: 'CREATE_SUCCESS',
+      type: actionTypes.CREATE_SUCCESS,
       payload,
     }
   },
 
   succeedUpdate(payload: UpdateSuccessPayload): UpdateSuccessAction {
     return {
-      type: 'UPDATE_SUCCESS',
+      type: actionTypes.UPDATE_SUCCESS,
       payload,
     }
   },
 
   succeedFetch (payload: FetchSuccessPayload):  FetchSuccessAction {
     return {
-      type: 'FETCH_SUCCESS',
+      type: actionTypes.FETCH_SUCCESS,
       payload,
     }
   },
 
   succeedRemove(payload: RemoveSuccessPayload): RemoveSuccessAction {
     return {
-      type: 'REMOVE_SUCCESS',
+      type: actionTypes.REMOVE_SUCCESS,
       payload,
     }
   },
@@ -129,28 +129,28 @@ const actionCreatorMap: ActionCreatorMap = {
 
   failCreate(payload: CreateFailurePayload): CreateFailureAction {
     return {
-      type: 'CREATE_FAILURE',
+      type: actionTypes.CREATE_FAILURE,
       payload,
     }
   },
 
   failUpdate(payload: UpdateFailurePayload): UpdateFailureAction {
     return {
-      type: 'UPDATE_FAILURE',
+      type: actionTypes.UPDATE_FAILURE,
       payload,
     }
   },
 
   failFetch (payload: FetchFailurePayload):  FetchFailureAction {
     return {
-      type: 'FETCH_FAILURE',
+      type: actionTypes.FETCH_FAILURE,
       payload,
     }
   },
 
   failRemove(payload: RemoveFailurePayload): RemoveFailureAction {
     return {
-      type: 'REMOVE_FAILURE',
+      type: actionTypes.REMOVE_FAILURE,
       payload,
     }
   },

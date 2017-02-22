@@ -3,7 +3,7 @@ import { put, call } from 'redux-saga/effects'
 
 import { ApiTypeMap, UpdateDispatchAction } from '../internalTypes'
 
-import createActionCreators from '../actions'
+import createActionCreators, { actionTypes } from '../actions'
 import { getUpdate } from '../types'
 import { deriveRequestIdFromAction } from '../utils'
 
@@ -42,6 +42,6 @@ export default function createWatchUpdateDispatch(types: ApiTypeMap) {
   const updateDispatch = createUpdateDispatch(types)
 
   return function* watchUpdateDispatch() {
-    yield* takeEvery('UPDATE_DISPATCH', (action: UpdateDispatchAction) => updateDispatch(action))
+    yield* takeEvery(actionTypes.UPDATE_DISPATCH, (action: UpdateDispatchAction) => updateDispatch(action))
   }
 }

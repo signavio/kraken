@@ -3,7 +3,7 @@ import { put, call } from 'redux-saga/effects'
 
 import { State, ApiTypeMap, FetchDispatchAction, StateGetter } from '../internalTypes'
 
-import createActionCreators from '../actions'
+import createActionCreators, { actionTypes } from '../actions'
 import { getFetch } from '../types'
 import { deriveRequestIdFromAction, getRequestState, getCachedValue } from '../utils'
 
@@ -61,7 +61,7 @@ export default function createWatchFetchEntity(types: ApiTypeMap) {
   const fetchDispatch = createFetchDispatch(types)
 
   return function* watchDispatchEntity(getState: () => State) {
-    yield* takeEvery('FETCH_DISPATCH', (action: FetchDispatchAction) => {
+    yield* takeEvery(actionTypes.FETCH_DISPATCH, (action: FetchDispatchAction) => {
       return fetchDispatch(action, getState)
     })
   }
