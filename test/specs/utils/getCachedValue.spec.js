@@ -1,10 +1,14 @@
 import { getCachedValue, deriveRequestIdFromAction } from '../../../src/utils'
+import { actionTypes } from '../../../src/actions'
 
 import expect from '../../expect'
 
 import { apiTypes, types, data } from '../fixtures'
 
-const fetchAction = { type: 'FETCH_DISPATCH', payload: { entityType: types.USER, query: { id: data.user.id } } }
+const fetchAction = {
+  type: actionTypes.FETCH_DISPATCH,
+  payload: { entityType: types.USER, query: { id: data.user.id } }
+}
 
 describe('Utils - getCachedValue', () => {
   it('should return undefined if no value has been cached.', () => {

@@ -189,22 +189,22 @@ export type Payload
 ///////////////////////////
 
 export type CreateDispatchAction = {
-  type: 'CREATE_DISPATCH',
+  type: 'GENERIC_API_CREATE_DISPATCH',
   payload: CreateDispatchPayload,
 }
 
 export type FetchDispatchAction = {
-  type: 'FETCH_DISPATCH',
+  type: 'GENERIC_API_FETCH_DISPATCH',
   payload: FetchDispatchPayload,
 }
 
 export type UpdateDispatchAction = {
-  type: 'UPDATE_DISPATCH',
+  type: 'GENERIC_API_UPDATE_DISPATCH',
   payload: UpdateDispatchPayload,
 }
 
 export type RemoveDispatchAction = {
-  type: 'REMOVE_DISPATCH',
+  type: 'GENERIC_API_REMOVE_DISPATCH',
   payload: RemoveDispatchPayload,
 }
 
@@ -219,22 +219,22 @@ export type DispatchAction
 //////////////////////////
 
 export type CreateSuccessAction = {
-  type: 'CREATE_SUCCESS',
+  type: 'GENERIC_API_CREATE_SUCCESS',
   payload: CreateSuccessPayload,
 }
 
 export type UpdateSuccessAction = {
-  type: 'UPDATE_SUCCESS',
+  type: 'GENERIC_API_UPDATE_SUCCESS',
   payload: UpdateSuccessPayload,
 }
 
 export type FetchSuccessAction = {
-  type: 'FETCH_SUCCESS',
+  type: 'GENERIC_API_FETCH_SUCCESS',
   payload: FetchSuccessPayload,
 }
 
 export type RemoveSuccessAction = {
-  type: 'REMOVE_SUCCESS',
+  type: 'GENERIC_API_REMOVE_SUCCESS',
   payload: RemoveSuccessPayload,
 }
 
@@ -249,22 +249,22 @@ export type SuccessAction
 //////////////////////////
 
 export type CreateFailureAction = {
-  type: 'CREATE_FAILURE',
+  type: 'GENERIC_API_CREATE_FAILURE',
   payload: CreateFailurePayload,
 }
 
 export type UpdateFailureAction = {
-  type: 'UPDATE_FAILURE',
+  type: 'GENERIC_API_UPDATE_FAILURE',
   payload: UpdateFailurePayload,
 }
 
 export type FetchFailureAction = {
-  type: 'FETCH_FAILURE',
+  type: 'GENERIC_API_FETCH_FAILURE',
   payload: FetchFailurePayload,
 }
 
 export type RemoveFailureAction = {
-  type: 'REMOVE_FAILURE',
+  type: 'GENERIC_API_REMOVE_FAILURE',
   payload: RemoveFailurePayload,
 }
 

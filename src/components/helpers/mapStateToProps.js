@@ -4,6 +4,7 @@ import invariant from 'invariant'
 import { mapValues, mapKeys, isArray } from 'lodash'
 
 import { getRequestState, getEntityState } from '../../utils'
+import { actionTypes } from '../../actions'
 
 import { ELEMENT_ID_PROP_NAME } from './constants'
 
@@ -29,7 +30,7 @@ const mapStateToProps = ({
             types,
             state,
             {
-              type: `${method.toUpperCase()}_DISPATCH`,
+              type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
               payload: {
                 entityType: type,
                 query,
@@ -49,7 +50,7 @@ const mapStateToProps = ({
               types,
               state,
               {
-                type: `${method.toUpperCase()}_DISPATCH`,
+                type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
                 payload: {
                   entityType: type,
                   query,

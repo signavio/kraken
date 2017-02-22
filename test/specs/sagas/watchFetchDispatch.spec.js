@@ -3,7 +3,7 @@ import { normalize } from 'normalizr'
 
 import { createFetchDispatch } from '../../../src/sagas/watchFetchDispatch'
 
-import actionsCreator from '../../../src/actions'
+import actionsCreator, { actionTypes } from '../../../src/actions'
 import { deriveRequestIdFromAction } from '../../../src/utils'
 import { typeUtils } from '../../../src'
 
@@ -14,7 +14,10 @@ import { apiTypes, types, data } from '../fixtures'
 const fetchEntity = createFetchDispatch(apiTypes)
 const actions = actionsCreator(apiTypes)
 
-const fetchAction = { type: 'FETCH_DISPATCH', payload: { entityType: types.USER, query: { id: 'user-1' } } }
+const fetchAction = {
+  type: actionTypes.FETCH_DISPATCH,
+  payload: { entityType: types.USER, query: { id: 'user-1' } }
+}
 const requestId = deriveRequestIdFromAction(fetchAction)
 
 const state = {

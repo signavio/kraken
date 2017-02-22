@@ -5,7 +5,7 @@ import expect from '../../expect'
 
 import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
 
-import actionsCreator from '../../../src/actions'
+import actionsCreator, { actionTypes } from '../../../src/actions'
 
 import { deriveRequestIdFromAction } from '../../../src/utils'
 
@@ -29,7 +29,7 @@ const createPayload = {
 }
 
 const createAction = {
-  type: 'CREATE_DISPATCH',
+  type: actionTypes.CREATE_DISPATCH,
   payload: createPayload,
 }
 

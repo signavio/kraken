@@ -1,5 +1,6 @@
 import { chain } from 'lodash'
 
+import { actionTypes } from '../actions'
 import {
   Action,
   DispatchAction,
@@ -19,24 +20,39 @@ const stringifyQuery = (query) => {
 }
 
 const isDispatchAction = (action: Action)/* : action is DispatchAction */ => {
-  return action.type === 'CREATE_DISPATCH'
-    || action.type === 'UPDATE_DISPATCH'
-    || action.type === 'FETCH_DISPATCH'
-    || action.type === 'REMOVE_DISPATCH'
+  return action.type === actionTypes.CREATE_DISPATCH
+    || action.type === actionTypes.UPDATE_DISPATCH
+    || action.type === actionTypes.FETCH_DISPATCH
+    || action.type === actionTypes.REMOVE_DISPATCH
 }
 
-const deriveRequestId = (action: DispatchAction) => {
-  const stringifiedQuery = stringifyQuery(action.payload.query)
-  const methodName = action.type.split('_')[0]
-  let requestId: string
-
-  if (action.type === 'CREATE_DISPATCH') {
-    requestId = `${methodName}_${stringifiedQuery}_${action.payload.elementId}`
-  } else {
-    requestId = `${methodName}_${stringifiedQuery}`
+const getMethodName = (action: Action) => {
+  switch (action.type) {
+    case actionTypes.FETCH_DISPATCH:
+    case actionTypes.FETCH_SUCCESS:
+    case actionTypes.FETCH_FAILURE:
+      return 'fetch'
+    case actionTypes.CREATE_DISPATCH:
+    case actionTypes.CREATE_SUCCESS:
+    case actionTypes.CREATE_FAILURE:
+      return 'create'
+    case actionTypes.UPDATE_DISPATCH:
+    case actionTypes.UPDATE_SUCCESS:
+    case actionTypes.UPDATE_FAILURE:
+      return 'update'
+    case actionTypes.REMOVE_DISPATCH:
+    case actionTypes.REMOVE_SUCCESS:
+    case actionTypes.REMOVE_FAILURE:
+      return 'remove'
   }
+}
 
-  return requestId
+const deriveRequestId = (action: DispatchAction): string => {
+  const stringifiedQuery = stringifyQuery(action.payload.query)
+  const methodName = getMethodName(action)
+  return (action.type === actionTypes.CREATE_DISPATCH) ?
+    `${methodName}_${stringifiedQuery}_${action.payload.elementId}` :
+    `${methodName}_${stringifiedQuery}`
 }
 
 const deriveRequestIdFromAction = (action: Action) => {
