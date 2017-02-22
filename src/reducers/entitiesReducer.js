@@ -1,11 +1,7 @@
 import { keys, omitBy, every } from 'lodash'
 
-import { getCollection } from '../types'
-
-import {
-  REMOVE_ENTITY,
-  SUCCESS,
-} from '../actions'
+import { getCollectionName } from '../types'
+import { actionTypes } from '../actions'
 
 const mergeValues = (obj1, obj2) => (
   keys(obj2).reduce(
@@ -26,14 +22,17 @@ const hasAllPropertiesOf = (obj1, obj2) => (
 
 export default (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
+  const entities = payload.entities && payload.entities[getCollectionName(apiTypes, typeConstant)]
 
-  if (payload.entity !== typeConstant) return state
+  if (payload.entityType !== typeConstant) return state
 
   switch (action.type) {
-    case SUCCESS:
-      const entities = payload.entities && payload.entities[getCollection(apiTypes, typeConstant)]
+    case actionTypes.FETCH_SUCCESS:
+    case actionTypes.CREATE_SUCCESS:
+    case actionTypes.UPDATE_SUCCESS:
+    case actionTypes.REMOVE_SUCCESS:
       return entities ? mergeValues(state, entities) : state
-    case REMOVE_ENTITY:
+    case actionTypes.REMOVE_DISPATCH:
       return omitBy(state, (value) => hasAllPropertiesOf(value, payload.query))
     default:
       return state

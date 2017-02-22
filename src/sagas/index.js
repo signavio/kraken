@@ -1,35 +1,24 @@
 import { spawn } from 'redux-saga/effects'
 
-import { getPromiseState, getCachedValue, getEntityState } from '../utils'
-import createWatchLoadEntity from './watchLoadEntity'
-import createWatchCreateEntity from './watchCreateEntity'
-import createWatchUpdateEntity from './watchUpdateEntity'
-import createWatchRemoveEntity from './watchRemoveEntity'
+import { ApiTypeMap, StateGetter } from '../internalTypes'
 
-export default (types) => {
+import createWatchCreateDispatch from './watchCreateDispatch'
+import createWatchUpdateDispatch from './watchUpdateDispatch'
+import createWatchFetchDispatch  from './watchFetchDispatch'
+import createWatchRemoveDispatch from './watchRemoveDispatch'
 
-  const watchLoadEntity = createWatchLoadEntity(types)
-  const watchCreateEntity = createWatchCreateEntity(types)
-  const watchUpdateEntity = createWatchUpdateEntity(types)
-  const watchRemoveEntity = createWatchRemoveEntity(types)
+const createSaga = (types: ApiTypeMap) => {
+  const watchCreateEntity = createWatchCreateDispatch(types)
+  const watchUpdateEntity = createWatchUpdateDispatch(types)
+  const watchFetchEntity  = createWatchFetchDispatch(types)
+  const watchRemoveEntity = createWatchRemoveDispatch(types)
 
-  return function* rootSaga(getState) {
-
-    const getValue = (type, method, payload) => (
-      getCachedValue(types, getState(), type, method, payload)
-    )
-
-    const getEntity = (type, method, payload) => (
-      getEntityState(types, getState(), type, method, payload)
-    )
-
-    const getPromise = (type, method, payload) => (
-      getPromiseState(types, getState(), type, method, payload)
-    )
-
-    yield spawn(watchLoadEntity, getValue, getPromise)
+  return function* rootSaga(getState: StateGetter) {
     yield spawn(watchCreateEntity)
-    yield spawn(watchUpdateEntity, getEntity, getPromise)
-    yield spawn(watchRemoveEntity, getPromise)
+    yield spawn(watchUpdateEntity)
+    yield spawn(watchFetchEntity, getState)
+    yield spawn(watchRemoveEntity)
   }
 }
+
+export default createSaga

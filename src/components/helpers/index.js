@@ -9,8 +9,6 @@ import mergeProps from './mergeProps'
 import validatePromiseProps from './validatePromiseProps'
 import mapIdToQuery from './mapIdToQuery'
 
-import * as constants from './constants'
-
 export {
   injectElementIdProp,
   wrapWithApiConnect,

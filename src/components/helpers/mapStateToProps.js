@@ -1,12 +1,10 @@
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import invariant from 'invariant'
 
-import mapValues from 'lodash/mapValues'
-import mapKeys from 'lodash/mapKeys'
+import { mapValues, mapKeys, isArray } from 'lodash'
 
-import isArray from 'lodash/isArray'
-
-import { getPromiseState, getEntityState } from '../../utils'
+import { getRequestState, getEntityState } from '../../utils'
+import { actionTypes } from '../../actions'
 
 import { ELEMENT_ID_PROP_NAME } from './constants'
 
@@ -18,8 +16,8 @@ const mapStateToProps = ({
 
   return (state, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
     invariant(
-      !!state.cache,
-      'Could not find an API cache in the state (looking at: `state.cache`)'
+      !!state.genericApi,
+      'Could not find an API cache in the state (looking at: `state.genericApi`)'
     )
     const promiseProps = finalMapPropsToPromiseProps(ownProps)
     // keep promise and entity states in separate props, so that react-redux' connect
@@ -28,19 +26,40 @@ const mapStateToProps = ({
       ...mapKeys(
         mapValues(
           promiseProps,
-          ({ query, type, method }, propName) => (
-            getPromiseState(types, state, type, method, { query, elementId, propName })
+          ({ query, type, method }, propName) => getRequestState(
+            types,
+            state,
+            {
+              type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
+              payload: {
+                entityType: type,
+                query,
+                elementId,
+                propName,
+              },
+            }
           )
         ),
-        (val, propName) => `${propName}_promise`,
+        (val, propName) => `${propName}_request`,
       ),
       ...mapKeys(
         mapValues(
           promiseProps,
           ({ query, refresh, type, method }, propName) => {
             const entityState = getEntityState(
-              types, state, type, method, { query, refresh, elementId, propName }
+              types,
+              state,
+              {
+                type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
+                payload: {
+                  entityType: type,
+                  query,
+                  refresh,
+                  elementId,
+                },
+              },
             )
+
             const lastEntityState = lastStateProps[`${propName}_entity`]
             const useMemoized = (
               isArray(entityState) &&
