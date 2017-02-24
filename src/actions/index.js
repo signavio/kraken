@@ -33,6 +33,8 @@ import {
   RemoveSuccessAction,
   RemoveFailurePayload,
   RemoveFailureAction,
+
+  RequestStartAction,
 } from '../internalTypes'
 
 type ActionCreator = (Payload) => Action
@@ -66,6 +68,7 @@ export const actionTypes = {
   UPDATE_FAILURE: 'GENERIC_API_UPDATE_FAILURE',
   FETCH_FAILURE: 'GENERIC_API_FETCH_FAILURE',
   REMOVE_FAILURE: 'GENERIC_API_REMOVE_FAILURE',
+  REQUEST_START: 'GENERIC_API_REQUEST_START',
 }
 
 const actionCreatorMap: ActionCreatorMap = {
@@ -83,7 +86,7 @@ const actionCreatorMap: ActionCreatorMap = {
     }
   },
 
-  dispatchFetch (payload: FetchDispatchPayload):  FetchDispatchAction {
+  dispatchFetch (payload: FetchDispatchPayload): FetchDispatchAction {
     return {
       type: actionTypes.FETCH_DISPATCH,
       payload,
@@ -151,6 +154,13 @@ const actionCreatorMap: ActionCreatorMap = {
   failRemove(payload: RemoveFailurePayload): RemoveFailureAction {
     return {
       type: actionTypes.REMOVE_FAILURE,
+      payload,
+    }
+  },
+
+  startRequest(payload: RequestStartPayload): RequestStartAction {
+    return {
+      type: actionTypes.REQUEST_START,
       payload,
     }
   },

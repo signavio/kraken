@@ -1,5 +1,5 @@
 import { takeEvery, delay } from 'redux-saga'
-import { put, call } from 'redux-saga/effects'
+import { put, call, fork } from 'redux-saga/effects'
 
 import { State, ApiTypeMap, FetchDispatchAction, StateGetter } from '../internalTypes'
 
@@ -7,62 +7,76 @@ import createActionCreators, { actionTypes } from '../actions'
 import { getFetch } from '../types'
 import { deriveRequestIdFromAction, getRequestState, getCachedValue } from '../utils'
 
-export const createFetchDispatch = (types: ApiTypeMap) => {
+export const createFetchSaga = (types: ApiTypeMap) => {
   const actionCreators = createActionCreators(types)
 
-  return function* fetchDispatch(action: FetchDispatchAction, getState: StateGetter) {
+  return function* fetchSaga(action: FetchDispatchAction, getState: StateGetter) {
+    yield call(delay, 1) // throttle to avoid duplicate requests
+
     const requestId = deriveRequestIdFromAction(action)
     const request = getRequestState(types, getState(), action)
     const entityType = action.payload.entityType
-    const value = getCachedValue(types, getState(), action)
-    const fetch = getFetch(types, entityType)
+    //const value = getCachedValue(types, getState(), action)
 
-    if (value !== undefined && !action.payload.refresh) {
-      // TODO: Figure out entities
-      yield put(actionCreators.succeedFetch({
-        entityType,
-        requestId,
-        value,
-        entities: [],
-        isCachedResponse: true,
-      }))
-    } else {
-      if (request && !request.outstanding) {
-        return
-      }
-
-      const result = yield call(fetch, action.payload.query)
-
-      if (result.response) {
-        yield put(
-          actionCreators.succeedFetch({
-            entityType,
-            requestId,
-            value: result.response.result,
-            entities: result.response.entities,
-            isCachedResponse: false,
-          })
-        )
-      } else {
-        yield put(
-          actionCreators.failFetch({
-            entityType,
-            requestId,
-            error: result.error,
-          })
-        )
-      }
+    if (request && !request.outstanding) {
+      return
     }
+
+    yield put(actionCreators.startRequest({ entityType, requestId }))
+
+    const fetch = getFetch(types, entityType)
+    const { response, error } = yield call(fetch, action.payload.query)
+
+    if (response) {
+      yield put(
+        actionCreators.succeedFetch({
+          entityType,
+          requestId,
+          value: response.result,
+          entities: response.entities,
+          isCachedResponse: false,
+        })
+      )
+    } else {
+      yield put(
+        actionCreators.failFetch({
+          entityType,
+          requestId,
+          error: error,
+        })
+      )
+    }
+
+  //   if (value !== undefined && !action.payload.refresh) {
+  //     // TODO: Figure out entities
+  //     yield put(actionCreators.succeedFetch({
+  //       entityType,
+  //       requestId,
+  //       value,
+  //       entities: [],
+  //       isCachedResponse: true,
+  //     }))
+  //   } else {
+  //     if (request && !request.outstanding) {
+  //       return
+  //     }
+
+  //     const result = yield call(fetch, )
+
+
+  //   }
   }
 }
 
 
 export default function createWatchFetchEntity(types: ApiTypeMap) {
-  const fetchDispatch = createFetchDispatch(types)
+  const fetchSaga = createFetchSaga(types)
 
   return function* watchDispatchEntity(getState: () => State) {
-    yield* takeEvery(actionTypes.FETCH_DISPATCH, (action: FetchDispatchAction) => {
-      return fetchDispatch(action, getState)
-    })
+    const fetchSagas = {}
+    yield* takeEvery(
+      actionTypes.FETCH_DISPATCH,
+      (action: FetchDispatchAction) => fetchSaga(action, getState)
+    )
   }
 }

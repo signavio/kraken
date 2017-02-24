@@ -19,18 +19,22 @@ export type Request = {
   refresh: any,
 }
 
+export type RequestsState = {
+  [entityType: string]: {
+    [requestId: string]: Request,
+  },
+}
+
+export type EntitiesState = {
+  [collection: string]: {
+    [entityId: string]: Entity,
+  },
+}
+
 export type State = {
   genericApi: {
-    requests: {
-      [entityType: string]: {
-        [requestId: string]: Request,
-      },
-    },
-    entities: {
-      [collection: string]: {
-        [entityId: string]: Entity,
-      },
-    },
+    requests: RequestsState,
+    entities: EntitiesState,
   },
 }
 
@@ -175,10 +179,18 @@ export type FailurePayload
   | FetchFailurePayload
   | RemoveFailurePayload
 
+
+export type RequestStartPayload = {
+  entityType: string,
+  requestId: RequestId,
+}
+
+
 export type Payload
   = DispatchPayload
   | SuccessPayload
   | FailurePayload
+  | RequestStartPayload
 
 //////////////////
 // Action Types //
@@ -274,7 +286,18 @@ export type FailureAction
   | UpdateFailureAction
   | RemoveFailureAction
 
+
+//////////////////////////
+// Other Action Types //
+//////////////////////////
+
+export type RequestStartAction = {
+  type: 'GENERIC_API_REQUEST_START',
+  payload: RequestStartPayload
+}
+
 export type Action
   = DispatchAction
   | SuccessAction
   | FailureAction
+  | RequestStartAction
