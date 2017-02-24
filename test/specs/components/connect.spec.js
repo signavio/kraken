@@ -5,13 +5,16 @@ import { mount } from 'enzyme'
 import sinon from 'sinon'
 
 import createConnect from '../../../src/components'
-import { actionTypes } from '../../../src/actions'
+import createActionCreators, { actionTypes } from '../../../src/actions'
+import { deriveRequestIdFromAction } from '../../../src/utils'
 
 import expect from '../../expect'
 
 import { types, apiTypes, data } from '../fixtures'
 
 const connect = createConnect(apiTypes)
+
+const { dispatchFetch, dispatchCreate } = createActionCreators(apiTypes)
 
 const renderSpy = sinon.spy()
 
@@ -20,22 +23,37 @@ const MyComp = (props) => {
   return <div />
 }
 
+const fetchUserJaneAction = dispatchFetch({ entityType: types.USER, id: 'user-jane' })
+
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
   genericApi: {
     requests: {
-      [types.USER]: {},
+      [types.USER]: {
+        [deriveRequestIdFromAction(fetchUserJaneAction)]: {
+          value: 'user-jane',
+          fulfilled: true,
+          refresh: 2,
+        }
+      },
     },
     entities: {
-      [types.USER]: {},
+      [apiTypes.USER.collection]: {
+        'user-jane': {
+          id: 'user-jane',
+          firstName: 'Jane',
+          lastName: 'Doe',
+        }
+      },
     },
   },
 })
 
-const TestComponent = connect(({ id }) => ({
+const TestComponent = connect(({ id, refresh }) => ({
   fetchUser: {
     type: types.USER,
     id,
+    refresh,
   },
 }))(MyComp)
 
@@ -69,7 +87,7 @@ describe('connect', () => {
     )
   })
 
-  it('should dispatch the FETCH_DISPATCH action when the promise props update', () => {
+  it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
 
@@ -89,6 +107,14 @@ describe('connect', () => {
         },
       }
     )
+  })
+
+  it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
+    const wrapper = mount(<TestContainer id="user-jane" />)
+    expect(reducerSpy).to.have.not.been.called // it's already cached
+
+    wrapper.setProps({ refresh: 3 })
+    expect(reducerSpy).to.have.been.calledOnce
   })
 
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
