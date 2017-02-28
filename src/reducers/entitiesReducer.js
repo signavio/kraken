@@ -16,10 +16,6 @@ const mergeValues = (obj1, obj2) => (
   )
 )
 
-const hasAllPropertiesOf = (obj1, obj2) => (
-  every(keys(obj2), (key) => obj1[key] === obj2[key])
-)
-
 export default (apiTypes, typeConstant) => (state = {}, action) => {
   const { payload = {} } = action
   const entities = payload.entities && payload.entities[getCollectionName(apiTypes, typeConstant)]
@@ -32,8 +28,6 @@ export default (apiTypes, typeConstant) => (state = {}, action) => {
     case actionTypes.UPDATE_SUCCESS:
     case actionTypes.REMOVE_SUCCESS:
       return entities ? mergeValues(state, entities) : state
-    case actionTypes.REMOVE_DISPATCH:
-      return omitBy(state, (value) => hasAllPropertiesOf(value, payload.query))
     default:
       return state
   }

@@ -2,6 +2,7 @@ import { isString, mapValues, isFunction } from 'lodash'
 import { schema } from 'normalizr'
 
 import { ApiType, ApiTypeMap, MethodName, EntityType } from '../internalTypes'
+import { optimisticRemove, removeReferencesToDeletedEntities } from '../cachePolicies'
 
 export const getCollectionName = (types: ApiTypeMap, entityType: EntityType) => {
   const collection = types[entityType].collection
@@ -38,4 +39,13 @@ export const getIdAttribute = (types: ApiTypeMap, entityType: EntityType) => 'id
 
 export const getTypeNames = (types: ApiTypeMap) => (
   mapValues(types, (value: ApiType, name: string) => name)
+)
+
+
+const defaultEntityCachePolicy = optimisticRemove
+const defaultArrayCachePolicy = removeReferencesToDeletedEntities
+
+export const getCachePolicy = (types: ApiTypeMap, entityType: EntityType) => (
+  types[entityType].cachePolicy ||
+  (hasEntitySchema(types, entityType) ? defaultEntityCachePolicy : defaultArrayCachePolicy)
 )

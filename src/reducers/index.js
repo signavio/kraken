@@ -8,6 +8,7 @@ import { getTypeNames, getCollectionName } from '../types'
 
 import createEntitiesReducer from './entitiesReducer'
 import createRequestsReducer from './requestsReducer'
+import createEnhanceWithSideEffects from './enhanceWithSideEffects'
 
 export { createRequestsReducer, createEntitiesReducer }
 
@@ -17,23 +18,28 @@ const createReducer = (apiTypes: ApiTypeMap) => {
     constants,
     (constant) => getCollectionName(apiTypes, constant)
   )
+  const enhanceWithSideEffects = createEnhanceWithSideEffects(apiTypes)
 
-  return combineReducers({
+  return enhanceWithSideEffects(
+    combineReducers({
 
-    entities: combineReducers(
-      mapValues(
-        constantsByCollection,
-        (constantsWithSameCollection) => reduceReducers(
-          ...constantsWithSameCollection.map(createEntitiesReducer.bind(null, apiTypes))
+      entities: combineReducers(
+        mapValues(
+          constantsByCollection,
+          (constantsWithSameCollection) => reduceReducers(
+            ...constantsWithSameCollection.map(
+              (typeConstant) => createEntitiesReducer(apiTypes, typeConstant)
+            )
+          )
         )
-      )
-    ),
+      ),
 
-    requests: combineReducers(
-      mapValues(constants, createRequestsReducer.bind(null, apiTypes))
-    ),
+      requests: combineReducers(
+        mapValues(constants, (typeConstant) => createRequestsReducer(apiTypes, typeConstant))
+      ),
 
-  })
+    })
+  )
 }
 
 export default createReducer

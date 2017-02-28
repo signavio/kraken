@@ -2,6 +2,7 @@ import createReducer from './reducers'
 import createSaga from './sagas'
 import createConnect from './components'
 import createActions, { actionTypes } from './actions'
+import * as cachePolicies from './cachePolicies'
 
 const apiCreator = (types) => {
   types = Object.keys(types).reduce(
@@ -35,4 +36,5 @@ export {
   typeUtils,
   callApi,
   actionTypes,
+  cachePolicies,
 }
