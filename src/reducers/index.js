@@ -2,31 +2,44 @@ import { combineReducers } from 'redux'
 import { mapValues, groupBy } from 'lodash'
 import reduceReducers from 'reduce-reducers'
 
-import { typeConstants, getCollection } from '../types'
+import { ApiTypeMap } from '../internalTypes'
 
-import createEntitiesReducer from './entityReducer'
-import createPromisesReducer from './promiseReducer'
+import { getTypeNames, getCollectionName } from '../types'
 
-export { createPromisesReducer, createEntitiesReducer }
+import createEntitiesReducer from './entitiesReducer'
+import createRequestsReducer from './requestsReducer'
+import createEnhanceWithSideEffects from './enhanceWithSideEffects'
 
-export default (apiTypes) => {
-  const constants = typeConstants(apiTypes)
-  const constantsByCollection = groupBy(constants, constant => getCollection(apiTypes, constant))
+export { createRequestsReducer, createEntitiesReducer }
 
-  return combineReducers({
+const createReducer = (apiTypes: ApiTypeMap) => {
+  const constants = getTypeNames(apiTypes)
+  const constantsByCollection = groupBy(
+    constants,
+    (constant) => getCollectionName(apiTypes, constant)
+  )
+  const enhanceWithSideEffects = createEnhanceWithSideEffects(apiTypes)
 
-    entities: combineReducers(
-      mapValues(
-        constantsByCollection,
-        (constantsWithSameCollection) => reduceReducers(
-          ...constantsWithSameCollection.map(createEntitiesReducer.bind(null, apiTypes))
+  return enhanceWithSideEffects(
+    combineReducers({
+
+      entities: combineReducers(
+        mapValues(
+          constantsByCollection,
+          (constantsWithSameCollection) => reduceReducers(
+            ...constantsWithSameCollection.map(
+              (typeConstant) => createEntitiesReducer(apiTypes, typeConstant)
+            )
+          )
         )
-      )
-    ),
+      ),
 
-    promises: combineReducers(
-      mapValues(constants, createPromisesReducer.bind(null, apiTypes))
-    ),
+      requests: combineReducers(
+        mapValues(constants, (typeConstant) => createRequestsReducer(apiTypes, typeConstant))
+      ),
 
-  })
+    })
+  )
 }
+
+export default createReducer

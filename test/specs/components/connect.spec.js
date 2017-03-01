@@ -4,15 +4,17 @@ import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
 
-import createConnect from '../../../src/components/connect'
-
-import { FETCH_ENTITY, CREATE_ENTITY } from '../../../src/actions'
+import createConnect from '../../../src/components'
+import createActionCreators, { actionTypes } from '../../../src/actions'
+import { deriveRequestIdFromAction } from '../../../src/utils'
 
 import expect from '../../expect'
 
 import { types, apiTypes, data } from '../fixtures'
 
 const connect = createConnect(apiTypes)
+
+const { dispatchFetch, dispatchCreate } = createActionCreators(apiTypes)
 
 const renderSpy = sinon.spy()
 
@@ -21,22 +23,37 @@ const MyComp = (props) => {
   return <div />
 }
 
+const fetchUserJaneAction = dispatchFetch({ entityType: types.USER, id: 'user-jane' })
+
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
-  cache: {
-    promises: {
-      [types.USER]: {},
+  genericApi: {
+    requests: {
+      [types.USER]: {
+        [deriveRequestIdFromAction(fetchUserJaneAction)]: {
+          value: 'user-jane',
+          fulfilled: true,
+          refresh: 2,
+        }
+      },
     },
     entities: {
-      [types.USER]: {},
+      [apiTypes.USER.collection]: {
+        'user-jane': {
+          id: 'user-jane',
+          firstName: 'Jane',
+          lastName: 'Doe',
+        }
+      },
     },
   },
 })
 
-const TestComponent = connect(({ id }) => ({
+const TestComponent = connect(({ id, refresh }) => ({
   fetchUser: {
     type: types.USER,
     id,
+    refresh,
   },
 }))(MyComp)
 
@@ -52,16 +69,16 @@ describe('connect', () => {
     reducerSpy.reset()
   })
 
-  it('should dispatch the FETCH_ENTITY action on mount', () => {
+  it('should dispatch the FETCH_DISPATCH action on mount', () => {
     mount(<TestContainer id={ data.user.id } />)
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: FETCH_ENTITY,
+        type: actionTypes.FETCH_DISPATCH,
         payload: {
-          entity: types.USER,
+          entityType: types.USER,
           query: {
             id: data.user.id,
           },
@@ -70,7 +87,7 @@ describe('connect', () => {
     )
   })
 
-  it('should dispatch the FETCH_ENTITY action when the promise props update', () => {
+  it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
 
@@ -81,9 +98,9 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: FETCH_ENTITY,
+        type: actionTypes.FETCH_DISPATCH,
         payload: {
-          entity: types.USER,
+          entityType: types.USER,
           query: {
             id: 'user-2',
           },
@@ -92,7 +109,15 @@ describe('connect', () => {
     )
   })
 
-  it('should not dispatch FETCH_ENTITY action on update when promise props did not change', () => {
+  it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
+    const wrapper = mount(<TestContainer id="user-jane" />)
+    expect(reducerSpy).to.have.not.been.called // it's already cached
+
+    wrapper.setProps({ refresh: 3 })
+    expect(reducerSpy).to.have.been.calledOnce
+  })
+
+  it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
@@ -130,7 +155,8 @@ describe('connect', () => {
       mount(
         <Provider store={testStore}>
           <InvalidComp />
-        </Provider>)
+        </Provider>
+      )
     }
 
     expect(invalidType).to.throw(/^Invalid type value/)
@@ -165,11 +191,11 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledWithMatch(
       {},
       {
-        type: CREATE_ENTITY,
+        type: actionTypes.CREATE_DISPATCH,
         payload: {
-          entity: types.USER,
-          requestId: sinon.match.string,
+          entityType: types.USER,
           body,
+          query: {},
         },
       }
     )

@@ -1,8 +1,10 @@
-import mapValues from 'lodash/fp/mapValues'
+import { mapValues } from 'lodash/fp'
+
+import { ApiTypeMap } from '../../internalTypes'
 
 import { getIdAttribute } from '../../types'
 
-const mapIdToQuery = (types) => mapValues((props) => {
+const mapIdToQuery = (types: ApiTypeMap) => mapValues((props) => {
   const { id, query, type, ...rest } = props
 
   if (id && !query) {

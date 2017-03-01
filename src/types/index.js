@@ -1,30 +1,51 @@
-import isString from 'lodash/isString'
-import mapValues from 'lodash/mapValues'
-import isFunction from 'lodash/isFunction'
-import { Schema as EntitySchema } from 'normalizr'
+import { isString, mapValues, isFunction } from 'lodash'
+import { schema } from 'normalizr'
 
-// ... while type definitions are accessed through getters
-export const getCollection = (types, type) => {
-  const collection = types[type].collection
-  if (!isString(collection)) throw new Error(`collection of type: '${type}' must be a string`)
+import { ApiType, ApiTypeMap, MethodName, EntityType } from '../internalTypes'
+import { optimisticRemove, removeReferencesToDeletedEntities } from '../cachePolicies'
+
+export const getCollectionName = (types: ApiTypeMap, entityType: EntityType) => {
+  const collection = types[entityType].collection
+
+  if (!isString(collection)) {
+    throw new Error(`collection of type: '${entityType}' must be a string`)
+  }
+
   return collection
 }
 
-const createMethodFunctionGetter = method => (types, type) => {
-  const methodFn = types[type][method]
-  if (!isFunction(methodFn)) {
-    throw new Error(`Implementation of '${type}' type does not provide a ${method} function`)
+const createMethodFunctionGetter = (methodName: MethodName) => (types: ApiTypeMap, entityType: EntityType) => {
+  const method = types[entityType][methodName]
+
+  if (!isFunction(method)) {
+    throw new Error(`Implementation of '${entityType}' type does not provide a ${methodName} function.`)
   }
-  return methodFn
+
+  return method
 }
 
-export const getFetch = createMethodFunctionGetter('fetch')
+export const getFetch  = createMethodFunctionGetter('fetch')
 export const getCreate = createMethodFunctionGetter('create')
 export const getUpdate = createMethodFunctionGetter('update')
 export const getRemove = createMethodFunctionGetter('remove')
 
-export const hasEntitySchema = (types, type) => types[type].schema instanceof EntitySchema
+export const hasEntitySchema = (types: ApiTypeMap, entityType: EntityType): boolean => (
+  types[entityType].schema instanceof schema.Entity
+)
 
-export const getIdAttribute = (types, type) => types[type].schema.getIdAttribute()
+// Temporary workaround: normalizr 3.x has dropped getIdAttribute
+export const getIdAttribute = (types: ApiTypeMap, entityType: EntityType) => 'id'
+// export const getIdAttribute = (types: ApiTypes, entityType: EntityType) => types[entityType].schema.getIdAttribute()
 
-export const typeConstants = (types) => mapValues(types, (val, key) => key)
+export const getTypeNames = (types: ApiTypeMap) => (
+  mapValues(types, (value: ApiType, name: string) => name)
+)
+
+
+const defaultEntityCachePolicy = optimisticRemove
+const defaultArrayCachePolicy = removeReferencesToDeletedEntities
+
+export const getCachePolicy = (types: ApiTypeMap, entityType: EntityType) => (
+  types[entityType].cachePolicy ||
+  (hasEntitySchema(types, entityType) ? defaultEntityCachePolicy : defaultArrayCachePolicy)
+)
