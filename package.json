@@ -1,6 +1,6 @@
 {
   "name": "@signavio/generic-api",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Load API entities",
   "repository": "git@github.com:effektif/generic-api.git",
   "main": "lib/index.js",
