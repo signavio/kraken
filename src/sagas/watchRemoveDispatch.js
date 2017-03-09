@@ -15,15 +15,13 @@ export function createRemoveDispatch(types: ApiTypeMap) {
     const entityType = action.payload.entityType
 
     const remove = getRemove(types, entityType)
-    const result = yield call(remove, action.payload.query)
+    const { response, error } = yield call(remove, action.payload.query)
 
-    if (result.response) {
+    if (!error) {
       yield put(
         actions.succeedRemove({
           entityType,
           requestId,
-          value: result.response.result,
-          entities: result.response.entities,
         })
       )
     } else {
