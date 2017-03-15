@@ -46,8 +46,9 @@ const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (Wrappe
         const promisePropUpdated = !prevPromiseProps[propName] ||
           !promisePropsEqual(promiseProp, prevPromiseProps[propName])
 
+        const fetchOnMount = !!props.fetchOnMount && prevProps === undefined
         const isInCache = !!props[propName].value
-        const needsFetch = !isInCache || ( // if not in cache or needs refresh
+        const needsFetch = fetchOnMount || !isInCache || ( // if not in cache or needs refresh
           promiseProp.refresh !== undefined &&
           promiseProp.refresh !== props[propName].refresh
         )
