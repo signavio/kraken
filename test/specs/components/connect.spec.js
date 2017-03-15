@@ -117,6 +117,26 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledOnce
   })
 
+  it('should dispatch FETCH_DISPATCH action if `fetchOnMount` is true', () => {
+    mount(<TestContainer id="user-jane" fetchOnMount />)
+
+    expect(reducerSpy).to.have.been.calledOnce
+  })
+
+  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is false', () => {
+    mount(<TestContainer id="user-jane" fetchOnMount={false} />)
+
+    expect(reducerSpy).to.have.not.been.called
+  })
+
+  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is true and lifecycle event is not componentWillMount', () => {
+    const wrapper = mount(<TestContainer id="user-jane" />)
+    expect(reducerSpy).to.have.not.been.called
+
+    wrapper.setProps({ fetchOnMount: true })
+    expect(reducerSpy).to.have.not.been.called
+  })
+
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
