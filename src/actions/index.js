@@ -69,6 +69,7 @@ export const actionTypes = {
   FETCH_FAILURE: 'GENERIC_API_FETCH_FAILURE',
   REMOVE_FAILURE: 'GENERIC_API_REMOVE_FAILURE',
   REQUEST_START: 'GENERIC_API_REQUEST_START',
+  WIPE_CACHE: 'GENERIC_API_WIPE_CACHE',
 }
 
 const actionCreatorMap: ActionCreatorMap = {
@@ -166,6 +167,11 @@ const actionCreatorMap: ActionCreatorMap = {
   },
 }
 
+// Non entityType specific action creator
+const wipe = () => ({
+  type: actionTypes.WIPE_CACHE,
+})
+
 
 const enhanceWithEntityTypeValidation
   = (types: ApiTypeMap, actionCreator: ActionCreator, actionCreatorName: string) =>
@@ -181,9 +187,12 @@ const enhanceWithEntityTypeValidation
   }
 
 
-const createActionCreators = (types: ApiTypeMap) => mapValues/*<ActionCreatorMap>*/(
-  actionCreatorMap,
-  enhanceWithEntityTypeValidation.bind(null, types)
-)
+const createActionCreators = (types: ApiTypeMap) => ({
+  ...mapValues/*<ActionCreatorMap>*/(
+    actionCreatorMap,
+    enhanceWithEntityTypeValidation.bind(null, types)
+  ),
+  wipe,
+})
 
 export default createActionCreators
