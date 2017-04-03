@@ -6,8 +6,8 @@ import {
   DispatchAction,
 } from '../internalTypes'
 
-const stringifyQuery = (query) => {
-  const stringifiedQuery = chain(query)
+const stringifyQuery = (query) => (
+  chain(query)
     .toPairs()
     .sort()
     .reduce(
@@ -15,9 +15,7 @@ const stringifyQuery = (query) => {
       ''
     )
     .value()
-
-  return btoa(stringifiedQuery)
-}
+)
 
 const isDispatchAction = (action: Action)/* : action is DispatchAction */ => {
   return action.type === actionTypes.CREATE_DISPATCH
