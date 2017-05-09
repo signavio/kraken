@@ -49,11 +49,13 @@ const testStore = createStore(reducerSpy, {
   },
 })
 
-const TestComponent = connect(({ id, refresh }) => ({
+const TestComponent = connect(({ id, refresh, lazy, fetchOnMount }) => ({
   fetchUser: {
     type: types.USER,
     id,
     refresh,
+    lazy,
+    fetchOnMount,
   },
 }))(MyComp)
 
