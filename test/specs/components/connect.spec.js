@@ -89,6 +89,21 @@ describe('connect', () => {
     )
   })
 
+  it('should set `pending` flag on the injected prop if a request is dispatched', () => {
+    const wrapper = mount(<TestContainer id={ data.user.id } />)
+    expect(wrapper.find(MyComp).props().fetchUser).to.have.property('pending', true)
+  })
+
+  it('should set `fulfilled` flag and the value on the injected prop if the enitity is found in cache', () => {
+    const wrapper = mount(<TestContainer id="user-jane" />)
+    expect(wrapper.find(MyComp).props().fetchUser).to.have.property('fulfilled', true)
+    expect(wrapper.find(MyComp).props().fetchUser.value).to.deep.equal({
+      id: 'user-jane',
+      firstName: 'Jane',
+      lastName: 'Doe',
+    })
+  })
+
   it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
