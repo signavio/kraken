@@ -10,3 +10,7 @@ npm-debug.log
 
 # build
 lib
+
+# test
+xunit.xml
+coverage
