@@ -97,6 +97,7 @@ describe('connect', () => {
   it('should set `fulfilled` flag and the value on the injected prop if the enitity is found in cache', () => {
     const wrapper = mount(<TestContainer id="user-jane" />)
     expect(wrapper.find(MyComp).props().fetchUser).to.have.property('fulfilled', true)
+    expect(wrapper.find(MyComp).props().fetchUser.pending).to.be.false
     expect(wrapper.find(MyComp).props().fetchUser.value).to.deep.equal({
       id: 'user-jane',
       firstName: 'Jane',
