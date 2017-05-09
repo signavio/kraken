@@ -119,19 +119,27 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledOnce
   })
 
+  it('should never dispatch FETCH_DISPATCH action if the `lazy` flag is set', () => {
+    const wrapper = mount(<TestContainer id="id-of-non-cached-item" fetchOnMount lazy />)
+    expect(reducerSpy).to.have.not.been.called
+
+    wrapper.setProps({ refresh: 3 })
+    expect(reducerSpy).to.have.not.been.called
+  })
+
   it('should dispatch FETCH_DISPATCH action if `fetchOnMount` is true', () => {
     mount(<TestContainer id="user-jane" fetchOnMount />)
 
     expect(reducerSpy).to.have.been.calledOnce
   })
 
-  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is false', () => {
+  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is false and the value is in cache', () => {
     mount(<TestContainer id="user-jane" fetchOnMount={false} />)
 
     expect(reducerSpy).to.have.not.been.called
   })
 
-  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is true and lifecycle event is not componentWillMount', () => {
+  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is only set after mount', () => {
     const wrapper = mount(<TestContainer id="user-jane" />)
     expect(reducerSpy).to.have.not.been.called
 
