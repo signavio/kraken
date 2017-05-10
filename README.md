@@ -1,51 +1,82 @@
-# generic-api
+# kraken
 
-This module provides a means to easily create wrappers around your API.
-It then provides you with a higher-order component to hook up your React components to your API.
-With that in place components will re-render whenever the state of an API request changes.
-This enables you to write your components in a declarative manner without caring about lifecycle management of your API requests.
+The problem is always the same.
+You create an application and need to connect it to your API. 
+That means you need to think about caches, cache invalidation, request lifecycles and more. 
+The `kraken` helps you to focus on what is really important: everything else but that. 
+This library takes your types (e.g. users) and creates everything that is needed to manage the data. 
+All you need to care about is from where and when to fetch. 
+
+`kraken` is built on top of [Redux](http://redux.js.org/docs/introduction/) and [redux-saga](https://github.com/redux-saga/redux-saga) and connects to your [React](https://facebook.github.io/react/) components.
 
 ## Installation
 
 ```shell
 # using npm
-npm install --save @signavio/generic-api
+npm install --save @signavio/kraken
 
 # using yarn
-yarn add @signavio/generic-api
+yarn add @signavio/kraken
 ```
 
 ## Usage
 
-`@signavio/generic-api` provides you with the building blocks to create a wrapper around your API types. 
-You probably will never use components of `@signavio/generic-api` directly within your components.
-More likely you are going to create your own HOCs based upon the functionality this library provides. 
+`@signavio/kraken` provides you with the building blocks to create a wrapper around your API types. 
+You probably will never use components of `@signavio/kraken` directly within your components.
+More likely you are going to create your own [higher-order components](https://medium.com/@franleplant/react-higher-order-components-in-depth-cf9032ee6c3e) based upon the functionality this library provides. 
 
 ### API Types
 
 The core idea of the library is that you can split you API into different types. 
 Each type must export a certain set of attributes.
+These contain descirptions about the structure of each type and also methods to read, create or modify an instance of that type.
 
 | Attribute   | Required  | Description |
 | ---         | ---       | --- |
-| schema      | `true`    | [normalizr](https://github.com/paularmstrong/normalizr) |
+| schema      | `true`    | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data. |
 | collection  | `true`    | Identifier where all retrieved instances for that type will be stored. |
-| fetch       | `false`   | Function that describes how an instance is retrieved for a given ID. |
+| fetch       | `false`   | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
 | create      | `false`   | Function that describes how an instance is created. |
 | update      | `false`   | Function that describes how an instance is updaetd. |
 | remove      | `false`   | Function that describes how an instance is removed. |
 | cachePolicy | `false`   | The cache policy that should be used for that type. See [cache policies](TODO) for the possible options. |
+
+### `callApi(fullUrl, schema[, options])`
+
+For every method you implement (i.e. fetch, create, update, remove) you will need to call the `callAPI` method from `kraken` in the end. 
+It requires the two paramters `fullUrl` and `schema` and accepts extra options through the third parameter `options`.
+
+#### `fullUrl`
+The URL to which the request is sent.
+
+#### `schema`
+The [normalizr](https://github.com/paularmstrong/normalizr) for the concerned API type. 
+
+#### `options`
+A set of extra parameters that are also understood by [`fetch`](https://github.com/github/fetch#usage) (the browser fetch method).
 
 #### Example
 
 ```es6
 import { schema as schemas } from 'normalizr'
 
-import { callApi } from '@signavio/generic-api'
+import { callApi } from '@signavio/kraken'
 
 export const collection = 'users'
 export const schema = new schemas.Entity(collection)
-export const fetch = ({ id }) => callApi(`users/${id}`, schema)
+
+export const fetch = ({ id }) => (
+  callApi(`users/${id}`, schema)
+)
+export const create = (body) => (
+  callApi('users', schema, { method: 'POST', body })
+)
+export const update = ({ id }, body) => (
+  callApi(`users/{id}`, schema, { method: 'PUT', body })
+)
+export const remove = ({ id }) => (
+  callApi(`users/{id}`, schema, { method: 'DELETE' })
+)
 ```
 
 In the example above we created a `user` type. 
@@ -56,13 +87,13 @@ As we only want to be able to fetch `users` for now, we only need to define the 
 
 ### Library Setup
 
-After you have declared your types you can setup your connection between `@signavio/generic-api` and your code. 
-For this you need to initialize the `generic-api` with your types. 
+After you have declared your types you can setup your connection between `@signavio/kraken` and your code. 
+For this you need to initialize the `kraken` with your types. 
 
 ```es6
 import { mapValues } from 'lodash'
 
-import creator, { promise, actionTypes } from '@signavio/generic-api' 
+import creator, { promise, actionTypes } from '@signavio/kraken' 
 
 // These are the types you have declared
 import apiTypes from './types'
@@ -78,7 +109,7 @@ export { connect, types }
 Whenever you use this library to access a resource using you API, you will need to provide the respective `type` you want to access. 
 Therefore all you `type` declarations must be available for your components. 
 
-### Connecting your component
+### Connecting your components
 
 Once you have finished the setup and declared your types, you can start using your API methods in your comopnents. 
 The following code shows how you can fetch and display a user.
@@ -139,17 +170,39 @@ You include certain configuration options to get more power over when and how re
 
 When connect creates such a promise-like prop it adds certain lifecycle information that can be used to render a resource. 
 
-| Name        | Type    | Description |
-| ---         | ---     | --- |
-| pending     | boolean | `true` when the request is sent out but has not returned yet. `false` otherwise. |
-| fullfilled  | boolean | `true` when the request returned without errors. `false` otherwise. |
-| rejected    | boolean | `true` when the request returned with errors. `false` otherwise. |
-| reason      | string  | When `rejected` is true, we try to include the error message we got from the server in this property. |
+| Name        | Type      | Description |
+| ---         | ---       | --- |
+| pending     | `boolean` | `true` when the request is sent out but has not returned yet. `false` otherwise. |
+| fullfilled  | `boolean` | `true` when the request returned without errors. `false` otherwise. |
+| rejected    | `boolean` | `true` when the request returned with errors. `false` otherwise. |
+| reason      | `string`  | When `rejected` is true, we try to include the error message we got from the server in this property. |
 
 ### Cache Policies
 
 TODO. 
 
+## Questions
+
+If you have any questions please talk to one of the [authors](./AUTHORS) or create an issue. 
+
 ## Contribute
 
 Feel free to submit PRs!
+
+Every PR that adds new features or fixes a bug should include tests that cover the new code. 
+Also the code should comply to our common code style. 
+You can use the following commands in order to check that while you are developing. 
+
+```shell
+# Install all dependencies
+yarn
+
+# Run the test suite
+yarn test
+
+# Check test coverage
+yarn coverage
+
+# Check whether you have any linting errors
+yarn lint
+```
