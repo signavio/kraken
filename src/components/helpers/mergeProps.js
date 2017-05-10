@@ -11,7 +11,7 @@ const mergeProps = ({ finalMapPropsToPromiseProps }) => (stateProps, dispatchPro
 
     if (promiseProps[propName].method === 'fetch') {
       initialPromise = {
-        pending: !entity,
+        pending: !entity && !promiseProps[propName].lazy,
         fulfilled: !!entity,
       }
     } else {
