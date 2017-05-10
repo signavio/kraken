@@ -49,11 +49,13 @@ const testStore = createStore(reducerSpy, {
   },
 })
 
-const TestComponent = connect(({ id, refresh }) => ({
+const TestComponent = connect(({ id, refresh, lazy, fetchOnMount }) => ({
   fetchUser: {
     type: types.USER,
     id,
     refresh,
+    lazy,
+    fetchOnMount,
   },
 }))(MyComp)
 
@@ -87,6 +89,22 @@ describe('connect', () => {
     )
   })
 
+  it('should set `pending` flag on the injected prop if a request is dispatched', () => {
+    const wrapper = mount(<TestContainer id={ data.user.id } />)
+    expect(wrapper.find(MyComp).props().fetchUser).to.have.property('pending', true)
+  })
+
+  it('should set `fulfilled` flag and the value on the injected prop if the enitity is found in cache', () => {
+    const wrapper = mount(<TestContainer id="user-jane" />)
+    expect(wrapper.find(MyComp).props().fetchUser).to.have.property('fulfilled', true)
+    expect(wrapper.find(MyComp).props().fetchUser.pending).to.be.false
+    expect(wrapper.find(MyComp).props().fetchUser.value).to.deep.equal({
+      id: 'user-jane',
+      firstName: 'Jane',
+      lastName: 'Doe',
+    })
+  })
+
   it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
     const wrapper = mount(<TestContainer id={ data.user.id } />)
     reducerSpy.reset()
@@ -117,19 +135,27 @@ describe('connect', () => {
     expect(reducerSpy).to.have.been.calledOnce
   })
 
+  it('should never dispatch FETCH_DISPATCH action if the `lazy` flag is set', () => {
+    const wrapper = mount(<TestContainer id="id-of-non-cached-item" fetchOnMount lazy />)
+    expect(reducerSpy).to.have.not.been.called
+
+    wrapper.setProps({ refresh: 3 })
+    expect(reducerSpy).to.have.not.been.called
+  })
+
   it('should dispatch FETCH_DISPATCH action if `fetchOnMount` is true', () => {
     mount(<TestContainer id="user-jane" fetchOnMount />)
 
     expect(reducerSpy).to.have.been.calledOnce
   })
 
-  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is false', () => {
+  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is false and the value is in cache', () => {
     mount(<TestContainer id="user-jane" fetchOnMount={false} />)
 
     expect(reducerSpy).to.have.not.been.called
   })
 
-  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is true and lifecycle event is not componentWillMount', () => {
+  it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is only set after mount', () => {
     const wrapper = mount(<TestContainer id="user-jane" />)
     expect(reducerSpy).to.have.not.been.called
 
