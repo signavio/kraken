@@ -21,15 +21,13 @@ yarn add @signavio/kraken
 
 ## Usage
 
-`@signavio/kraken` provides you with the building blocks to create a wrapper around your API types. 
-You probably will never use components of `@signavio/kraken` directly within your components.
-More likely you are going to create your own [higher-order components](https://medium.com/@franleplant/react-higher-order-components-in-depth-cf9032ee6c3e) based upon the functionality this library provides. 
+`@signavio/kraken` provides you with the building blocks to connect React components to your backend API. Instead of using the `kraken` directly from your application, you are supposed to create wrapper module that defines the API types for application based upon the functionality this library provides. The main export of the `kraken` is a creator function that takes your custom type definitions as an argument and returns a ready-to-use module for connecting to your API.
 
 ### API Types
 
 The core idea of the library is that you can split you API into different types. 
 Each type must export a certain set of attributes.
-These contain descirptions about the structure of each type and also methods to read, create or modify an instance of that type.
+These contain descriptions about the structure of each type and also methods to read, create or modify an instance of that type.
 
 | Attribute   | Required  | Description |
 | ---         | ---       | --- |
@@ -85,10 +83,9 @@ Based on the `collection` we can create an [`Entity` schema](https://github.com/
 As we only want to be able to fetch `users` for now, we only need to define the `fetch` method. 
 `fetch` will then map the `id` of a `user` to an API call at `/users/{id}`. 
 
-### Library Setup
+### Exporting the pre-configured API module
 
-After you have declared your types you can setup your connection between `@signavio/kraken` and your code. 
-For this you need to initialize the `kraken` with your types. 
+After you have declared your types you can use the creator function, the default export of the `kraken`, to initialize your pre-configured API module. The rest of your application should never have use the `kraken` directly, but only ever interact with the pre-configured API module. To create your custom API module using your types, you will need some glue code similar to the following snippet:
 
 ```es6
 import { mapValues } from 'lodash'
@@ -106,13 +103,11 @@ const types = mapValues(apiTypes, (definition, key) => key)
 export { connect, types }
 ```
 
-Whenever you use this library to access a resource using you API, you will need to provide the respective `type` you want to access. 
-Therefore all you `type` declarations must be available for your components. 
+Whenever you use this library to access a resource using you API, you will need to provide the identifying key of the respective type you want to access. As a safeguard against nasty errors caused by typos in type references it is advisable to export the type keys as string constants that can be imported from any component module you want to connect to the API.
 
 ### Connecting your components
 
-Once you have finished the setup and declared your types, you can start using your API methods in your comopnents. 
-The following code shows how you can fetch and display a user.
+Once you have finished the setup and declared your types, you can start using your API methods in your comopnents. `connect` is a [higher-order component creator](https://medium.com/@franleplant/react-higher-order-components-in-depth-cf9032ee6c3e), which you can use to connect React components to your API.
 
 ```es6
 import { connect, types } from 'your-api'
