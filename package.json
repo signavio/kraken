@@ -1,6 +1,6 @@
 {
-  "name": "@signavio/generic-api",
-  "version": "2.2.3",
+  "name": "@signavio/kraken",
+  "version": "2.2.4",
   "description": "Load API entities",
   "repository": "git@github.com:effektif/generic-api.git",
   "main": "lib/index.js",
@@ -11,7 +11,7 @@
     "lint": "eslint src test",
     "test": "mocha",
     "coverage": "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
-    "prepublish": "npm run test && npm run build"
+    "prepublish": "yarn build"
   },
   "author": "Jan-Felix Schwarz",
   "license": "UNLICENSED",
@@ -36,6 +36,7 @@
     "chai-enzyme": "0.6.1",
     "cheerio": "0.22.0",
     "enzyme": "2.7.1",
+    "eslint": "^3.19.0",
     "eslint-config-signavio": "1.4.2",
     "eslint-config-signavio-test": "1.2.1",
     "install": "0.8.4",
