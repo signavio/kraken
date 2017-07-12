@@ -27,7 +27,7 @@ const fetchUserJaneAction = dispatchFetch({ entityType: types.USER, id: 'user-ja
 
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
-  genericApi: {
+  kraken: {
     requests: {
       [types.USER]: {
         [deriveRequestIdFromAction(fetchUserJaneAction)]: {

@@ -21,7 +21,7 @@ const fetchAction = {
 const requestId = deriveRequestIdFromAction(fetchAction)
 
 const state = {
-  genericApi: {
+  kraken: {
     requests: {
       [types.USER]: {
         [requestId]: {
