@@ -4,7 +4,7 @@ import deriveRequestIdFromAction from './deriveRequestIdFromAction'
 
 const getRequestState = (types: ApiTypeMap, state: State, action: DispatchAction) => {
   const requestId = deriveRequestIdFromAction(action)
-  const entityTypeRequests = state.genericApi.requests[action.payload.entityType]
+  const entityTypeRequests = state.kraken.requests[action.payload.entityType]
 
   if (entityTypeRequests === undefined) {
     return undefined

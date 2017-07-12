@@ -16,8 +16,8 @@ const mapStateToProps = ({
 
   return (state, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
     invariant(
-      !!state.genericApi,
-      'Could not find an API cache in the state (looking at: `state.genericApi`)'
+      !!state.kraken,
+      'Could not find an API cache in the state (looking at: `state.kraken`)'
     )
     const promiseProps = finalMapPropsToPromiseProps(ownProps)
     // keep promise and entity states in separate props, so that react-redux' connect
