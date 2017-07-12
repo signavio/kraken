@@ -20,7 +20,6 @@
     "invariant": "^2.2.2",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
-    "react-redux": "^5.0.2",
     "reduce-reducers": "^0.1.2"
   },
   "devDependencies": {
@@ -45,6 +44,7 @@
     "react": "15.4.2",
     "react-addons-test-utils": "15.4.2",
     "react-dom": "15.4.2",
+    "react-redux": "^5.0.2",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.3",
     "rimraf": "^2.6.1",
@@ -55,6 +55,7 @@
   "peerDependencies": {
     "normalizr": "^3.1.0",
     "react": "^15.4.2",
+    "react-redux": "^5.0.2",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.3"
   }
