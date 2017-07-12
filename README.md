@@ -138,8 +138,8 @@ const store = createStore(
   applyMiddleware(sagaMiddleware)
 )
 
-// Then run your pre-configured API saga (must not happen before creating the store)
-sagaMiddleware.run(saga)
+// Then run your pre-configured API saga
+sagaMiddleware.run(saga, store.getState)
 
 // Export a provider component wrapping the redux Provider
 const ApiProvider = ({ children }) =>
