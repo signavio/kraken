@@ -1,22 +1,24 @@
 # kraken
 
 The problem is always the same.
-You create an application and need to connect it to your API. 
-That means you need to think about caches, cache invalidation, request lifecycles and more. 
-The `kraken` helps you to focus on what is really important: everything else but that. 
-This library takes your types (e.g. users) and creates everything that is needed to manage the data. 
-All you need to care about is from where and when to fetch. 
+You create an application and need to connect it to your API.
+That means you need to think about caches, cache invalidation, request lifecycles and more.
+The `kraken` helps you to focus on what is really important: everything else but that.
+This library takes your types (e.g. users) and creates everything that is needed to manage the data.
+All you need to care about is from where and when to fetch.
 
 `kraken` is built on top of [Redux](http://redux.js.org/docs/introduction/) and [redux-saga](https://github.com/redux-saga/redux-saga) and connects to your [React](https://facebook.github.io/react/) components.
 
 ## Installation
 
+Install the @signavio/kraken module and its peer depedencies:
+
 ```shell
 # using npm
-npm install --save @signavio/kraken
+npm install --save @signavio/kraken react redux react-redux redux-saga normalizr
 
 # using yarn
-yarn add @signavio/kraken
+yarn add @signavio/kraken react redux react-redux redux-saga normalizr
 ```
 
 ## Usage
@@ -25,7 +27,7 @@ yarn add @signavio/kraken
 
 ### API Types
 
-The core idea of the library is that you can split you API into different types. 
+The core idea of the library is that you can split you API into different types.
 Each type must export a certain set of attributes.
 These contain descriptions about the structure of each type and also methods to read, create or modify an instance of that type.
 
@@ -41,14 +43,14 @@ These contain descriptions about the structure of each type and also methods to 
 
 ### `callApi(fullUrl, schema[, options])`
 
-For every method you implement (i.e. fetch, create, update, remove) you will need to call the `callAPI` method from `kraken` in the end. 
+For every method you implement (i.e. fetch, create, update, remove) you will need to call the `callAPI` method from `kraken` in the end.
 It requires the two paramters `fullUrl` and `schema` and accepts extra options through the third parameter `options`.
 
 #### `fullUrl`
 The URL to which the request is sent.
 
 #### `schema`
-The [normalizr](https://github.com/paularmstrong/normalizr) for the concerned API type. 
+The [normalizr](https://github.com/paularmstrong/normalizr) for the concerned API type.
 
 #### `options`
 A set of extra parameters that are also understood by [`fetch`](https://github.com/github/fetch#usage) (the browser fetch method).
@@ -77,11 +79,11 @@ export const remove = ({ id }) => (
 )
 ```
 
-In the example above we created a `user` type. 
-It defines its collection as `users` since it makes sense to store all fetched users together in a large user database. 
+In the example above we created a `user` type.
+It defines its collection as `users` since it makes sense to store all fetched users together in a large user database.
 Based on the `collection` we can create an [`Entity` schema](https://github.com/paularmstrong/normalizr/blob/master/docs/api.md#entitykey-definition---options--) that describes a user.
-As we only want to be able to fetch `users` for now, we only need to define the `fetch` method. 
-`fetch` will then map the `id` of a `user` to an API call at `/users/{id}`. 
+As we only want to be able to fetch `users` for now, we only need to define the `fetch` method.
+`fetch` will then map the `id` of a `user` to an API call at `/users/{id}`.
 
 ### Exporting the pre-configured API module
 
@@ -90,12 +92,12 @@ After you have declared your types you can use the creator function, the default
 ```es6
 import { mapValues } from 'lodash'
 
-import creator, { promise, actionTypes } from '@signavio/kraken' 
+import creator, { promise, actionTypes } from '@signavio/kraken'
 
 // These are the types you have declared
 import apiTypes from './types'
 
-const { connect } = creator(apiTypes)
+const { connect, saga, reducer } = creator(apiTypes)
 
 // create a set of keys for all the types you have declared
 const types = mapValues(apiTypes, (definition, key) => key)
@@ -104,6 +106,51 @@ export { connect, types }
 ```
 
 Whenever you use this library to access a resource using you API, you will need to provide the identifying key of the respective type you want to access. As a safeguard against nasty errors caused by typos in type references it is advisable to export the type keys as string constants that can be imported from any component module you want to connect to the API.
+
+
+### Integrating the API module in your application
+
+The kraken uses redux and redux-saga under the hood to manage the cache state. To integrate it in an existing redux application you basically have to follow two steps:
+
+##### Apply saga middleware
+Apply redux-saga's `sagaMiddleware` to your redux store and use it to run the `saga` returned by the `creator` function.
+
+##### Hook in cache reducer
+The kraken expects to find its state under the key `kraken` in the redux store. Use `combineReducers` to hook the `reducer` returned by the `creator` function under the `kraken` key in your root reducer.
+
+If your application is not using redux yet, you can hide this integration complexity inside the pre-configured API module by additionally exporting an `ApiProvider` component which provides the minimal setup:
+
+```es6
+import React from 'react'
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import createSagaMiddleware from 'redux-saga'
+
+// These are the configured API building blocks returned by the kraken `creator` call
+import { reducer, saga } from '../configuredApi'
+
+// Create the saga middleware
+const sagaMiddleware = createSagaMiddleware()
+
+// Mount it on the Store
+const store = createStore(
+  combineReducers({ cache: reducer }),
+  applyMiddleware(sagaMiddleware)
+)
+
+// Then run your pre-configured API saga
+sagaMiddleware.run(saga, store.getState)
+
+// Export a provider component wrapping the redux Provider
+const ApiProvider = ({ children }) =>
+  <Provider store={store}>
+    {children}
+  </Provider>
+
+export default ApiProvider
+
+```
+
 
 ### Connecting your components
 
@@ -124,7 +171,7 @@ function User({ userFetch }) {
   if (userFetch.rejected) {
     return (
       <div>
-        Could not fetch user: 
+        Could not fetch user:
         <br />
         { userFetch.reason }
       </div>
@@ -150,10 +197,10 @@ const enhance = connect(({ value }) => ({
 export default enhance(User)
 ```
 
-As you can see using the `connect` method requires minimal setup. 
-Also in this case we didn't have to state that we want to `fetch` as this is the default action. 
-When we enhance a component using `connect` we can hook it up to as many API resources as we want to. 
-In this example we only used the `user` resource and created a new prop `userFetch` that represents the API request. 
+As you can see using the `connect` method requires minimal setup.
+Also in this case we didn't have to state that we want to `fetch` as this is the default action.
+When we enhance a component using `connect` we can hook it up to as many API resources as we want to.
+In this example we only used the `user` resource and created a new prop `userFetch` that represents the API request.
 You include certain configuration options to get more power over when and how requests go out.
 
 | Option    | Default     | Required  | Description |
@@ -163,7 +210,7 @@ You include certain configuration options to get more power over when and how re
 | method    | `fetch`     | `false`   | Either one of `fetch`, `create`, `update`, or `remove`. |
 | lazy      | `false`     | `false`   | If set to true the handler must be called (e.g. `userFetch()`) in order to sent a request. |
 
-When connect creates such a promise-like prop it adds certain lifecycle information that can be used to render a resource. 
+When connect creates such a promise-like prop it adds certain lifecycle information that can be used to render a resource.
 
 | Name        | Type      | Description |
 | ---         | ---       | --- |
@@ -174,19 +221,19 @@ When connect creates such a promise-like prop it adds certain lifecycle informat
 
 ### Cache Policies
 
-TODO. 
+TODO.
 
 ## Questions
 
-If you have any questions please talk to one of the [authors](./AUTHORS) or create an issue. 
+If you have any questions please talk to one of the [authors](./AUTHORS) or create an issue.
 
 ## Contribute
 
 Feel free to submit PRs!
 
-Every PR that adds new features or fixes a bug should include tests that cover the new code. 
-Also the code should comply to our common code style. 
-You can use the following commands in order to check that while you are developing. 
+Every PR that adds new features or fixes a bug should include tests that cover the new code.
+Also the code should comply to our common code style.
+You can use the following commands in order to check that while you are developing.
 
 ```shell
 # Install all dependencies

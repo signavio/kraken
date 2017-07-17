@@ -22,7 +22,7 @@ const MyComp = (props) => {
 
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
-  genericApi: {
+  kraken: {
     requests: {
       [types.USER]: {},
     },

@@ -7,5 +7,5 @@ export default function getEntityCollectionState(
   state: State,
   entityType: EntityType
 ) {
-  return state.genericApi.entities[getCollectionName(types, entityType)]
+  return state.kraken.entities[getCollectionName(types, entityType)]
 }

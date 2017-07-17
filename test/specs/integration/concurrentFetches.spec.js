@@ -27,7 +27,7 @@ const fetchStub = sinon.stub(apiTypes.USER, 'fetch', () => new Promise((resolve)
 const { reducer, saga, connect } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
-  genericApi: reducer,
+  kraken: reducer,
 })
 
 function configureStore(initialState) {

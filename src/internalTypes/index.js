@@ -32,7 +32,7 @@ export type EntitiesState = {
 }
 
 export type State = {
-  genericApi: {
+  kraken: {
     requests: RequestsState,
     entities: EntitiesState,
   },

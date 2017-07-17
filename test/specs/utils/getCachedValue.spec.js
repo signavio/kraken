@@ -13,7 +13,7 @@ const fetchAction = {
 describe('Utils - getCachedValue', () => {
   it('should return undefined if no value has been cached.', () => {
     const state = {
-      genericApi: {
+      kraken: {
         requests: {},
         entities: {},
       },
@@ -26,7 +26,7 @@ describe('Utils - getCachedValue', () => {
 
   it('should return the cached value if it is in the cache.', () => {
     const state = {
-      genericApi: {
+      kraken: {
         requests: {},
         entities: {
           [apiTypes.USER.collection]: {
@@ -44,7 +44,7 @@ describe('Utils - getCachedValue', () => {
 
   it('should not return a value if the refresh option is set.', () => {
     const state = {
-      genericApi: {
+      kraken: {
         requests: {},
         entities: {
           [apiTypes.USER.collection]: {
@@ -71,7 +71,7 @@ describe('Utils - getCachedValue', () => {
 
   it('should return the current promise value if the value has not been loaded.', () => {
     const state = {
-      genericApi: {
+      kraken: {
         requests: {
           [types.USER]: {
             [deriveRequestIdFromAction(fetchAction)]: {
