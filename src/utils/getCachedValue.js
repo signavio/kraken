@@ -19,7 +19,10 @@ const getCachedValue = (
   }
 
   if (action.type === actionTypes.FETCH_DISPATCH) {
-    if (action.payload.refresh !== undefined && action.payload.refresh !== requestState.refresh) {
+    if (
+      action.payload.refresh !== undefined &&
+      action.payload.refresh !== requestState.refresh
+    ) {
       return undefined
     }
   }
