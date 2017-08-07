@@ -1,3 +1,4 @@
+import { denormalize } from 'normalizr'
 import { hasEntitySchema } from '../types'
 import { ApiTypeMap, State, DispatchAction, Entity } from '../internalTypes'
 
@@ -6,21 +7,37 @@ import getCachedValue from './getCachedValue'
 
 type MaybeEntity = Entity | undefined
 
-const getEntityState = (types: ApiTypeMap, state: State, action: DispatchAction): MaybeEntity => {
+const getEntityState = (
+  types: ApiTypeMap,
+  state: State,
+  action: DispatchAction
+): MaybeEntity => {
   const value = getCachedValue(types, state, action)
 
   if (value === undefined) {
     return undefined
   }
 
-  const entityCollection = getEntityCollectionState(types, state, action.payload.entityType)
+  const entityCollection = getEntityCollectionState(
+    types,
+    state,
+    action.payload.entityType
+  )
 
   if (typeof value === 'string') {
     if (hasEntitySchema(types, action.payload.entityType)) {
-      return entityCollection[value]
+      return denormalize(
+        entityCollection[value],
+        types[action.payload.entityType].schema,
+        state.kraken.entities
+      )
     }
   } else {
-    return value.map((id: string) => entityCollection[id])
+    return denormalize(
+      value,
+      types[action.payload.entityType].schema,
+      state.kraken.entities
+    )
   }
 
   return undefined
