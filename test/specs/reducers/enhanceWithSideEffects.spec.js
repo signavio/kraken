@@ -3,8 +3,8 @@ import { combineReducers } from 'redux'
 import expect from '../../expect'
 
 import createEnhanceWithSideEffects from '../../../src/reducers/enhanceWithSideEffects'
-import createActionCreators, { actionTypes } from '../../../src/actions'
-import { apiTypes, types, data } from '../fixtures'
+import createActionCreators from '../../../src/actions'
+import { apiTypes, types } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
 const enhanceWithSideEffects = createEnhanceWithSideEffects(apiTypes)
@@ -18,10 +18,10 @@ describe('enhanceWithSideEffects', () => {
   const reducer = enhanceWithSideEffects(baseReducer)
 
   it('should apply the side effects reducers in the correct state structure', () => {
-    const initialState = reducer({}, { type: '@@redux/PROBE_UNKNOWN_ACTION'})
+    const initialState = reducer({}, { type: '@@redux/PROBE_UNKNOWN_ACTION' })
     expect(initialState).to.deep.equal({
-      entities: { users: {}, posts: {} },
-      requests: { USER: {}, USERS: {}, POST: {}, POSTS: {} },
+      entities: { users: {}, posts: {}, comments: {} },
+      requests: { USER: {}, USERS: {}, POST: {}, POSTS: {}, COMMENT: {} },
     })
   })
 
@@ -31,47 +31,51 @@ describe('enhanceWithSideEffects', () => {
         {
           entities: {
             users: {
-              user1: { id: 'user1' }
+              user1: { id: 'user1' },
             },
-            posts: {}
+            posts: {},
           },
           requests: { USER: {}, USERS: {}, POST: {}, POSTS: {} },
         },
-        actions.dispatchRemove({ entityType: types.USER, query: { id: 'user1' } })
+        actions.dispatchRemove({
+          entityType: types.USER,
+          query: { id: 'user1' },
+        })
       )
       expect(state.entities.users).to.not.have.property('user1')
     })
   })
 
   describe('`removeDeleted` cache policy (default for array types)', () => {
-    it('should remove the deleted entities\' ids from the request results', () => {
+    it("should remove the deleted entities' ids from the request results", () => {
       const state = reducer(
         {
           entities: {
             users: {
               user1: { id: 'user1' },
-              user2: { id: 'user2' }
+              user2: { id: 'user2' },
             },
-            posts: {}
+            posts: {},
           },
           requests: {
             USER: {},
             USERS: {
-              'fetch_xyz': {
+              fetch_xyz: {
                 fulfilled: true,
-                value: [ 'user1', 'user2' ]
-              }
+                value: ['user1', 'user2'],
+              },
             },
             POST: {},
-            POSTS: {}
+            POSTS: {},
           },
         },
-        actions.dispatchRemove({ entityType: types.USER, query: { id: 'user1' } })
+        actions.dispatchRemove({
+          entityType: types.USER,
+          query: { id: 'user1' },
+        })
       )
       expect(state.entities.users).to.not.have.property('user1')
-      expect(state.requests.USERS.fetch_xyz.value).to.deep.equal([ 'user2' ])
+      expect(state.requests.USERS.fetch_xyz.value).to.deep.equal(['user2'])
     })
   })
-
-
 })
