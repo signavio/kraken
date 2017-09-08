@@ -21,10 +21,9 @@ export default (apiTypes, typeConstant) => (state = {}, action) => {
     payload.entities &&
     payload.entities[getCollectionName(apiTypes, typeConstant)]
 
-  if (payload.entityType !== typeConstant) return state
-
   switch (action.type) {
     case actionTypes.UPDATE_DISPATCH:
+      if (payload.entityType !== typeConstant) return state
       // remove empty props in cache coming from body
       return {
         ...state,

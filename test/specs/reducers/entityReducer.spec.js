@@ -19,14 +19,15 @@ const requestId = deriveRequestIdFromAction({
   payload: { query: { id } },
 })
 const collection = typeUtils.getCollectionName(apiTypes, types.USER)
-const entityReducerForEntity = createEntitiesReducer(apiTypes, types.USER)
+const entityReducerForUser = createEntitiesReducer(apiTypes, types.USER)
+const entityReducerForComment = createEntitiesReducer(apiTypes, types.COMMENT)
 
 const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 describe('entityReducer', () => {
   describe('FETCH_SUCCESS', () => {
     it('should add all entities to the current state.', () => {
-      const newState = entityReducerForEntity(
+      const newState = entityReducerForUser(
         {},
         actions.succeedFetch({
           entityType: types.USER,
@@ -41,7 +42,7 @@ describe('entityReducer', () => {
 
     it('should not remove fields when merging partial JSON response', () => {
       // first request return full JSON
-      const state = entityReducerForEntity(
+      const state = entityReducerForUser(
         {},
         actions.succeedFetch({
           entityType: types.USER,
@@ -56,7 +57,7 @@ describe('entityReducer', () => {
 
       expect(firstName).to.exist
 
-      const nextState = entityReducerForEntity(
+      const nextState = entityReducerForUser(
         state,
         actions.succeedFetch({
           entityType: types.USER,
@@ -68,11 +69,32 @@ describe('entityReducer', () => {
 
       expect(nextState['user-1'].firstName).to.equal(firstName)
     })
+
+    it('should update caches for side-loaded enitities', () => {
+      const { entities: postEntities, result: postResult } = normalize(
+        data.post,
+        apiTypes.POST.schema
+      )
+
+      const state = entityReducerForComment(
+        {},
+        actions.succeedFetch({
+          entityType: types.POST,
+          requestId,
+          value: postResult,
+          entities: postEntities,
+        })
+      )
+
+      expect(state).to.be.deep.equal({
+        'comment-1': postEntities.comments['comment-1'],
+      })
+    })
   })
 
   describe('UPDATE_SUCCESS', () => {
     it('should update cache to new response', () => {
-      const state = entityReducerForEntity(
+      const state = entityReducerForUser(
         {},
         actions.succeedFetch({
           entityType: types.USER,
@@ -82,7 +104,7 @@ describe('entityReducer', () => {
         })
       )
 
-      let nextState = entityReducerForEntity(
+      let nextState = entityReducerForUser(
         state,
         actions.dispatchUpdate({
           entityType: types.USER,
@@ -96,7 +118,7 @@ describe('entityReducer', () => {
 
       expect(nextState['user-1'].age).to.be.undefined
 
-      nextState = entityReducerForEntity(
+      nextState = entityReducerForUser(
         nextState,
         actions.succeedUpdate({
           entityType: types.USER,
@@ -119,7 +141,7 @@ describe('entityReducer', () => {
     })
 
     it('should remove empty entries from cache before update', () => {
-      const state = entityReducerForEntity(
+      const state = entityReducerForUser(
         {},
         actions.succeedFetch({
           entityType: types.USER,
@@ -129,7 +151,7 @@ describe('entityReducer', () => {
         })
       )
 
-      let nextState = entityReducerForEntity(
+      let nextState = entityReducerForUser(
         state,
         actions.dispatchUpdate({
           entityType: types.USER,
@@ -144,7 +166,7 @@ describe('entityReducer', () => {
 
       expect(nextState['user-1'].lastName).to.be.null
 
-      nextState = entityReducerForEntity(
+      nextState = entityReducerForUser(
         nextState,
         actions.succeedUpdate({
           entityType: types.USER,
@@ -166,7 +188,7 @@ describe('entityReducer', () => {
     })
 
     it('should remove empty entries from cache and update it with new value', () => {
-      const state = entityReducerForEntity(
+      const state = entityReducerForUser(
         {},
         actions.succeedFetch({
           entityType: types.USER,
@@ -176,7 +198,7 @@ describe('entityReducer', () => {
         })
       )
 
-      let nextState = entityReducerForEntity(
+      let nextState = entityReducerForUser(
         state,
         actions.dispatchUpdate({
           entityType: types.USER,
@@ -191,7 +213,7 @@ describe('entityReducer', () => {
 
       expect(nextState['user-1'].lastName).to.be.null
 
-      nextState = entityReducerForEntity(
+      nextState = entityReducerForUser(
         nextState,
         actions.succeedUpdate({
           entityType: types.USER,
@@ -215,7 +237,7 @@ describe('entityReducer', () => {
 
   describe.skip('REMOVE_DISPATCH', () => {
     it('should remove entities from the state when a remove action is fired', () => {
-      const state = entityReducerForEntity(
+      const state = entityReducerForUser(
         {
           [id]: { id },
           someotherid: {},
@@ -231,7 +253,7 @@ describe('entityReducer', () => {
     })
 
     it('should select the entity to remove by comparing query params with entity attributes', () => {
-      const state = entityReducerForEntity(
+      const state = entityReducerForUser(
         { [id]: { foo: 'bar', baz: 1, boo: true } },
         actions.dispatchRemove({
           entityType: types.USER,
