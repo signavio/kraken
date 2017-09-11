@@ -1,3 +1,4 @@
+import { isArray } from 'lodash'
 import { hasEntitySchema } from '../types'
 import { ApiTypeMap, State, DispatchAction, Entity } from '../internalTypes'
 
@@ -19,7 +20,7 @@ const getEntityState = (
     action.payload.entityType
   )
 
-  if (typeof value === 'array') {
+  if (isArray(value)) {
     return value.map((id: string) => entityCollection[id])
   } else if (hasEntitySchema(types, action.payload.entityType)) {
     return entityCollection[value]

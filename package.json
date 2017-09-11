@@ -9,8 +9,9 @@
     "build": "babel src --out-dir lib",
     "prebuild": "yarn run clean",
     "lint": "eslint src test",
-    "test": "mocha",
-    "coverage": "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
+    "test": "node --max-old-space-size=10240 node_modules/.bin/_mocha",
+    "coverage":
+      "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
     "prepublish": "yarn build"
   },
   "author": "Jan-Felix Schwarz",
