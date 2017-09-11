@@ -15,7 +15,7 @@ const connect = createConnect(apiTypes)
 
 const renderSpy = sinon.spy()
 
-const MyComp = (props) => {
+const MyComp = props => {
   renderSpy(props)
   return <div />
 }
@@ -27,7 +27,7 @@ const testStore = createStore(reducerSpy, {
       [types.USER]: {},
     },
     entities: {
-      [types.USER]: {},
+      users: {},
     },
   },
 })
@@ -44,7 +44,7 @@ const TestComponent = connect(({ id }) => ({
   },
 }))(MyComp)
 
-const TestContainer = (props) => (
+const TestContainer = props => (
   <Provider store={testStore}>
     <TestComponent {...props} />
   </Provider>
@@ -57,53 +57,47 @@ describe('connectWithQuery', () => {
   })
 
   it('should dispatch the FETCH_DISPATCH action on mount', () => {
-    mount(<TestContainer id={ data.user.id } />)
+    mount(<TestContainer id={data.user.id} />)
 
     expect(reducerSpy).to.have.been.calledOnce
-    expect(reducerSpy).to.have.been.calledWithMatch(
-      testStore.getState(),
-      {
-        type: actionTypes.FETCH_DISPATCH,
-        payload: {
-          entityType: types.USER,
-          query: {
-            id: data.user.id,
-            nestedQuery: {
-              something: 'string',
-            },
+    expect(reducerSpy).to.have.been.calledWithMatch(testStore.getState(), {
+      type: actionTypes.FETCH_DISPATCH,
+      payload: {
+        entityType: types.USER,
+        query: {
+          id: data.user.id,
+          nestedQuery: {
+            something: 'string',
           },
         },
-      }
-    )
+      },
+    })
   })
 
   it('should dispatch the FETCH_DISPATCH action when the promise props update', () => {
-    const wrapper = mount(<TestContainer id={ data.user.id } />)
+    const wrapper = mount(<TestContainer id={data.user.id} />)
     reducerSpy.reset()
 
     expect(reducerSpy).to.have.not.been.called
     wrapper.setProps({ id: 'user-2' })
 
     expect(reducerSpy).to.have.been.calledOnce
-    expect(reducerSpy).to.have.been.calledWithMatch(
-      testStore.getState(),
-      {
-        type: actionTypes.FETCH_DISPATCH,
-        payload: {
-          entityType: types.USER,
-          query: {
-            id: 'user-2',
-            nestedQuery: {
-              something: 'string',
-            },
+    expect(reducerSpy).to.have.been.calledWithMatch(testStore.getState(), {
+      type: actionTypes.FETCH_DISPATCH,
+      payload: {
+        entityType: types.USER,
+        query: {
+          id: 'user-2',
+          nestedQuery: {
+            something: 'string',
           },
         },
-      }
-    )
+      },
+    })
   })
 
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
-    const wrapper = mount(<TestContainer id={ data.user.id } />)
+    const wrapper = mount(<TestContainer id={data.user.id} />)
 
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
