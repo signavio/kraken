@@ -1,11 +1,11 @@
 import { takeEvery } from 'redux-saga'
-import { put, call } from 'redux-saga/effects'
+import { put, call, fork } from 'redux-saga/effects'
 
-import { ApiTypeMap, UpdateDispatchAction } from '../internalTypes'
+import { ApiTypeMap, UpdateDispatchAction, Action } from '../internalTypes'
 
 import createActionCreators, { actionTypes } from '../actions'
 import { getUpdate } from '../types'
-import { deriveRequestIdFromAction } from '../utils'
+import { deriveRequestIdFromAction, stringifyQuery } from '../utils'
 
 export function createUpdateDispatch(types: ApiTypeMap) {
   const actions = createActionCreators(types)
@@ -38,10 +38,20 @@ export function createUpdateDispatch(types: ApiTypeMap) {
   }
 }
 
+const mapActionToEntity = ({
+  type,
+  payload: { entityType, query },
+}: Action) => {
+  if (type !== actionTypes.UPDATE_DISPATCH) {
+    return false
+  }
+  return `${entityType}_${stringifyQuery(query)}`
+}
+
 export default function createWatchUpdateDispatch(types: ApiTypeMap) {
   const updateDispatch = createUpdateDispatch(types)
 
   return function* watchUpdateDispatch() {
-    yield* takeEvery(actionTypes.UPDATE_DISPATCH, (action: UpdateDispatchAction) => updateDispatch(action))
+    yield* takeLatestOfEvery(mapActionToEntity, updateDispatch)
   }
 }

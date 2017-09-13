@@ -1,27 +1,14 @@
-import { chain } from 'lodash'
-
 import { actionTypes } from '../actions'
-import {
-  Action,
-  DispatchAction,
-} from '../internalTypes'
+import { Action, DispatchAction } from '../internalTypes'
+import stringifyQuery from './stringifyQuery'
 
-const stringifyQuery = (query) => (
-  chain(query)
-    .toPairs()
-    .sort()
-    .reduce(
-      (previous, current) => previous + JSON.stringify(current),
-      ''
-    )
-    .value()
-)
-
-const isDispatchAction = (action: Action)/* : action is DispatchAction */ => {
-  return action.type === actionTypes.CREATE_DISPATCH
-    || action.type === actionTypes.UPDATE_DISPATCH
-    || action.type === actionTypes.FETCH_DISPATCH
-    || action.type === actionTypes.REMOVE_DISPATCH
+const isDispatchAction = (action: Action /* : action is DispatchAction */) => {
+  return (
+    action.type === actionTypes.CREATE_DISPATCH ||
+    action.type === actionTypes.UPDATE_DISPATCH ||
+    action.type === actionTypes.FETCH_DISPATCH ||
+    action.type === actionTypes.REMOVE_DISPATCH
+  )
 }
 
 const getMethodName = (action: Action) => {
@@ -48,9 +35,9 @@ const getMethodName = (action: Action) => {
 const deriveRequestId = (action: DispatchAction): string => {
   const stringifiedQuery = stringifyQuery(action.payload.query)
   const methodName = getMethodName(action)
-  return (action.type === actionTypes.CREATE_DISPATCH) ?
-    `${methodName}_${stringifiedQuery}_${action.payload.elementId}` :
-    `${methodName}_${stringifiedQuery}`
+  return action.type === actionTypes.CREATE_DISPATCH
+    ? `${methodName}_${stringifiedQuery}_${action.payload.elementId}`
+    : `${methodName}_${stringifiedQuery}`
 }
 
 const deriveRequestIdFromAction = (action: Action) => {
