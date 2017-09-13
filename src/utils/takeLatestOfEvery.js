@@ -21,4 +21,4 @@ const takeLatestOfEvery = (getBucketKey, saga, ...args) =>
     }
   })
 
-export default takeLatestOf
+export default takeLatestOfEvery

@@ -5,7 +5,11 @@ import { ApiTypeMap, UpdateDispatchAction, Action } from '../internalTypes'
 
 import createActionCreators, { actionTypes } from '../actions'
 import { getUpdate } from '../types'
-import { deriveRequestIdFromAction, stringifyQuery } from '../utils'
+import {
+  deriveRequestIdFromAction,
+  stringifyQuery,
+  takeLatestOfEvery,
+} from '../utils'
 
 export function createUpdateDispatch(types: ApiTypeMap) {
   const actions = createActionCreators(types)
