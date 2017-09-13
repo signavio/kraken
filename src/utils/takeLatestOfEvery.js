@@ -1,4 +1,4 @@
-import { call, take, cancel, fork } from 'redux-saga/effects'
+import { take, cancel, fork, call } from 'redux-saga/effects'
 
 const takeLatestOfEvery = (getBucketKey, saga, ...args) =>
   fork(function*() {

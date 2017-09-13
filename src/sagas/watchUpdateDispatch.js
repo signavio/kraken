@@ -1,5 +1,4 @@
-import { takeEvery } from 'redux-saga'
-import { put, call, fork } from 'redux-saga/effects'
+import { put, call } from 'redux-saga/effects'
 
 import { ApiTypeMap, UpdateDispatchAction, Action } from '../internalTypes'
 
@@ -56,6 +55,6 @@ export default function createWatchUpdateDispatch(types: ApiTypeMap) {
   const updateDispatch = createUpdateDispatch(types)
 
   return function* watchUpdateDispatch() {
-    yield* takeLatestOfEvery(mapActionToEntity, updateDispatch)
+    yield takeLatestOfEvery(mapActionToEntity, updateDispatch)
   }
 }
