@@ -43,11 +43,12 @@ export function createUpdateDispatch(types: ApiTypeMap) {
 
 const mapActionToEntity = ({
   type,
-  payload: { entityType, query },
+  payload = {},
 }: Action) => {
   if (type !== actionTypes.UPDATE_DISPATCH) {
     return false
   }
+  const { entityType, query } = payload
   return `${entityType}_${stringifyQuery(query)}`
 }
 
