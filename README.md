@@ -206,7 +206,8 @@ You include certain configuration options to get more power over when and how re
 | Option    | Default     | Required  | Description |
 | ---       | ---         | ---       | --- |
 | type      | `undefined` | `true`    | The API type which is concered. |
-| id        | `undefined` | `true` (fetch/update/remove)<br /> `false` (create) | Value to identify a resource. |
+| query     | `undefined` | `false`   | An object of query parameters. |
+| id        | `undefined` | `false`   | Shortcut to provide an ID query parameter, `id: 1` is equivalent to `query: { id: 1 }`  |
 | method    | `fetch`     | `false`   | Either one of `fetch`, `create`, `update`, or `remove`. |
 | lazy      | `false`     | `false`   | If set to true the handler must be called (e.g. `userFetch()`) in order to sent a request. |
 
