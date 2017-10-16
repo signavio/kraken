@@ -209,15 +209,22 @@ You include certain configuration options to get more power over when and how re
 | query     | `undefined` | `false`   | An object of query parameters. |
 | id        | `undefined` | `false`   | Shortcut to provide an ID query parameter, `id: 1` is equivalent to `query: { id: 1 }`  |
 | method    | `fetch`     | `false`   | Either one of `fetch`, `create`, `update`, or `remove`. |
-| lazy      | `false`     | `false`   | If set to true the handler must be called (e.g. `userFetch()`) in order to sent a request. |
+| lazy      | `false`     | `false`   | Only useful in combination with `method: 'fetch'`. Per default, the resource is fetched on component mount. Set `lazy: true` to not fetch on mount. |
+
+#### Injected props
+
+For every key returned by the function passed to `connect`, a prop with that name will be passed down to the wrapped component. This prop will be a function that you can call to trigger the request. While fetch requests will be triggered automatically on component mount, the requests for all other methods will not be dispatched until you call the injected function prop. The arguments you provide in this call will be passed as second argument to the respective type's method implemention and usually used for the request body.
+
+The function type props passed to your wrapped component carry additional properties. (JavaScript allows to assign properties to functions, too.) You can read these properties to render different stuff at different request lifecycle states. 
 
 When connect creates such a promise-like prop it adds certain lifecycle information that can be used to render a resource.
 
 | Name        | Type      | Description |
 | ---         | ---       | --- |
+| value     | `any` | The response value. It will only be set if `fullfilled === true`. |
 | pending     | `boolean` | `true` when the request is sent out but has not returned yet. `false` otherwise. |
-| fullfilled  | `boolean` | `true` when the request returned without errors. `false` otherwise. |
-| rejected    | `boolean` | `true` when the request returned with errors. `false` otherwise. |
+| fullfilled  | `boolean` | `true` when the last request returned without error. `false` otherwise. |
+| rejected    | `boolean` | `true` when the last request returned with errors. `false` otherwise. |
 | reason      | `string`  | When `rejected` is true, we try to include the error message we got from the server in this property. |
 
 ### Cache Policies
