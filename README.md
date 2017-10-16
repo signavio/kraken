@@ -213,7 +213,7 @@ You include certain configuration options to get more power over when and how re
 
 #### Injected props
 
-For every key returned by the function passed to `connect`, a prop with that name will be passed down to the wrapped component. This prop will be a function that you can call to trigger the request. While fetch requests will be triggered automatically on component mount, the requests for all other methods will not be dispatched until you call the injected function prop. The arguments you provide in this call will be passed as second argument to the respective type's method implemention and usually used for the request body.
+For every key returned by the function passed to `connect`, a prop with that name will be passed down to the wrapped component. This prop will be a function that you can call to trigger the request. While fetch requests will be triggered automatically on component mount, the requests for all other methods will not be dispatched until you call the injected function prop. The argument you provide in this call will be passed as second argument to the respective type's method implemention and is usually used as request body.
 
 The function type props passed to your wrapped component carry additional properties. (JavaScript allows to assign properties to functions, too.) You can read these properties to render different stuff at different request lifecycle states. 
 
