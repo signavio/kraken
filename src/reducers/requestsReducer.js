@@ -23,8 +23,10 @@ const requestsReducer = (state: RequestsState, action: Action) => {
         [key]: {
           ...request,
           outstanding: true,
+          query: payload.query,
           pending: true,
-          refresh: payload.refresh !== undefined ? payload.refresh : request.refresh,
+          refresh:
+            payload.refresh !== undefined ? payload.refresh : request.refresh,
           value: needsRefresh ? undefined : request.value,
         },
       }
@@ -69,7 +71,10 @@ const requestsReducer = (state: RequestsState, action: Action) => {
   return state
 }
 
-const createRequestsReducer = (apiTypes: ApiTypeMap, typeConstant) => (state: State = {}, action: Action) => {
+const createRequestsReducer = (apiTypes: ApiTypeMap, typeConstant) => (
+  state: State = {},
+  action: Action
+) => {
   const { payload = {} } = action
   if (payload.entityType !== typeConstant) {
     return state
