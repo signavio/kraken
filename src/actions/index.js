@@ -5,71 +5,66 @@ import {
   ApiTypeMap,
   Payload,
   Action,
-
   CreateDispatchPayload,
   CreateDispatchAction,
   CreateSuccessPayload,
   CreateSuccessAction,
   CreateFailurePayload,
   CreateFailureAction,
-
   UpdateDispatchPayload,
   UpdateDispatchAction,
   UpdateSuccessPayload,
   UpdateSuccessAction,
   UpdateFailurePayload,
   UpdateFailureAction,
-
   FetchDispatchPayload,
   FetchDispatchAction,
   FetchSuccessPayload,
   FetchSuccessAction,
   FetchFailurePayload,
   FetchFailureAction,
-
   RemoveDispatchPayload,
   RemoveDispatchAction,
   RemoveSuccessPayload,
   RemoveSuccessAction,
   RemoveFailurePayload,
   RemoveFailureAction,
-
   RequestStartAction,
 } from '../internalTypes'
 
-type ActionCreator = (Payload) => Action
+type ActionCreator = Payload => Action
 type ActionCreatorMap = {
   dispatchCreate(payload: CreateDispatchPayload): CreateDispatchAction,
   dispatchUpdate(payload: UpdateDispatchPayload): UpdateDispatchAction,
-  dispatchFetch (payload: FetchDispatchPayload):  FetchDispatchAction,
+  dispatchFetch(payload: FetchDispatchPayload): FetchDispatchAction,
   dispatchRemove(payload: RemoveDispatchPayload): RemoveDispatchAction,
 
   succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction,
   succeedUpdate(payload: UpdateSuccessPayload): UpdateSuccessAction,
-  succeedFetch (payload: FetchSuccessPayload):  FetchSuccessAction,
+  succeedFetch(payload: FetchSuccessPayload): FetchSuccessAction,
   succeedRemove(payload: RemoveSuccessPayload): RemoveSuccessAction,
 
   failCreate(payload: CreateFailurePayload): CreateFailureAction,
   failUpdate(payload: UpdateFailurePayload): UpdateFailureAction,
-  failFetch (payload: FetchFailurePayload):  FetchFailureAction,
+  failFetch(payload: FetchFailurePayload): FetchFailureAction,
   failRemove(payload: RemoveFailurePayload): RemoveFailureAction,
 }
 
 export const actionTypes = {
-  CREATE_DISPATCH: 'GENERIC_API_CREATE_DISPATCH',
-  UPDATE_DISPATCH: 'GENERIC_API_UPDATE_DISPATCH',
-  FETCH_DISPATCH: 'GENERIC_API_FETCH_DISPATCH',
-  REMOVE_DISPATCH: 'GENERIC_API_REMOVE_DISPATCH',
-  CREATE_SUCCESS: 'GENERIC_API_CREATE_SUCCESS',
-  UPDATE_SUCCESS: 'GENERIC_API_UPDATE_SUCCESS',
-  FETCH_SUCCESS: 'GENERIC_API_FETCH_SUCCESS',
-  REMOVE_SUCCESS: 'GENERIC_API_REMOVE_SUCCESS',
-  CREATE_FAILURE: 'GENERIC_API_CREATE_FAILURE',
-  UPDATE_FAILURE: 'GENERIC_API_UPDATE_FAILURE',
-  FETCH_FAILURE: 'GENERIC_API_FETCH_FAILURE',
-  REMOVE_FAILURE: 'GENERIC_API_REMOVE_FAILURE',
-  REQUEST_START: 'GENERIC_API_REQUEST_START',
-  WIPE_CACHE: 'GENERIC_API_WIPE_CACHE',
+  CREATE_DISPATCH: 'KRAKEN_CREATE_DISPATCH',
+  UPDATE_DISPATCH: 'KRAKEN_UPDATE_DISPATCH',
+  FETCH_DISPATCH: 'KRAKEN_FETCH_DISPATCH',
+  REMOVE_DISPATCH: 'KRAKEN_REMOVE_DISPATCH',
+  CREATE_SUCCESS: 'KRAKEN_CREATE_SUCCESS',
+  UPDATE_SUCCESS: 'KRAKEN_UPDATE_SUCCESS',
+  FETCH_SUCCESS: 'KRAKEN_FETCH_SUCCESS',
+  REMOVE_SUCCESS: 'KRAKEN_REMOVE_SUCCESS',
+  CREATE_FAILURE: 'KRAKEN_CREATE_FAILURE',
+  UPDATE_FAILURE: 'KRAKEN_UPDATE_FAILURE',
+  FETCH_FAILURE: 'KRAKEN_FETCH_FAILURE',
+  REMOVE_FAILURE: 'KRAKEN_REMOVE_FAILURE',
+  REQUEST_START: 'KRAKEN_REQUEST_START',
+  WIPE_CACHE: 'KRAKEN_WIPE_CACHE',
 }
 
 const actionCreatorMap: ActionCreatorMap = {
@@ -87,7 +82,7 @@ const actionCreatorMap: ActionCreatorMap = {
     }
   },
 
-  dispatchFetch (payload: FetchDispatchPayload): FetchDispatchAction {
+  dispatchFetch(payload: FetchDispatchPayload): FetchDispatchAction {
     return {
       type: actionTypes.FETCH_DISPATCH,
       payload,
@@ -100,7 +95,6 @@ const actionCreatorMap: ActionCreatorMap = {
       payload,
     }
   },
-
 
   succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction {
     return {
@@ -116,7 +110,7 @@ const actionCreatorMap: ActionCreatorMap = {
     }
   },
 
-  succeedFetch (payload: FetchSuccessPayload):  FetchSuccessAction {
+  succeedFetch(payload: FetchSuccessPayload): FetchSuccessAction {
     return {
       type: actionTypes.FETCH_SUCCESS,
       payload,
@@ -129,7 +123,6 @@ const actionCreatorMap: ActionCreatorMap = {
       payload,
     }
   },
-
 
   failCreate(payload: CreateFailurePayload): CreateFailureAction {
     return {
@@ -145,7 +138,7 @@ const actionCreatorMap: ActionCreatorMap = {
     }
   },
 
-  failFetch (payload: FetchFailurePayload):  FetchFailureAction {
+  failFetch(payload: FetchFailurePayload): FetchFailureAction {
     return {
       type: actionTypes.FETCH_FAILURE,
       payload,
@@ -172,24 +165,24 @@ const wipe = () => ({
   type: actionTypes.WIPE_CACHE,
 })
 
-
-const enhanceWithEntityTypeValidation
-  = (types: ApiTypeMap, actionCreator: ActionCreator, actionCreatorName: string) =>
-  (payload: Payload) => {
-    invariant(
-      !!types[payload.entityType],
-      `Payload of ${actionCreatorName} action creator must contain \`entityType\` of one of the following constants:
+const enhanceWithEntityTypeValidation = (
+  types: ApiTypeMap,
+  actionCreator: ActionCreator,
+  actionCreatorName: string
+) => (payload: Payload) => {
+  invariant(
+    !!types[payload.entityType],
+    `Payload of ${actionCreatorName} action creator must contain \`entityType\` of one of the following constants:
       \`${Object.keys(types).join(', ')}\`
       (is: \`${payload.entityType}\`)`
-    )
+  )
 
-    return actionCreator(payload)
-  }
-
+  return actionCreator(payload)
+}
 
 const createActionCreators = (types: ApiTypeMap) => ({
-  ...mapValues/*<ActionCreatorMap>*/(
-    actionCreatorMap,
+  ...mapValues(
+    /*<ActionCreatorMap>*/ actionCreatorMap,
     enhanceWithEntityTypeValidation.bind(null, types)
   ),
   wipe,

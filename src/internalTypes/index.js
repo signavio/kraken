@@ -38,16 +38,18 @@ export type State = {
   },
 }
 
-export type normalizrResult = { response: { result: any, entities: any } } | { error: any }
+export type normalizrResult =
+  | { response: { result: any, entities: any } }
+  | { error: any }
 
 export type ApiType = {
   collection: string,
   schema: schema.Entity,
 
-  fetch?: (any) => normalizrResult,
-  create?: (any) => normalizrResult,
-  remove?: (any) => normalizrResult,
-  update?: (any) => normalizrResult,
+  fetch?: any => normalizrResult,
+  create?: any => normalizrResult,
+  remove?: any => normalizrResult,
+  update?: any => normalizrResult,
 }
 
 export type ApiTypeMap = {
@@ -100,8 +102,8 @@ export type RemoveDispatchPayload = {
   entityType: string,
 }
 
-export type DispatchPayload
-  = CreateDispatchPayload
+export type DispatchPayload =
+  | CreateDispatchPayload
   | UpdateDispatchPayload
   | FetchDispatchPayload
   | RemoveDispatchPayload
@@ -139,8 +141,8 @@ export type RemoveSuccessPayload = {
   entities: Entity[],
 }
 
-export type SuccessPayload
-  = CreateSuccessPayload
+export type SuccessPayload =
+  | CreateSuccessPayload
   | UpdateSuccessPayload
   | FetchSuccessPayload
   | RemoveSuccessPayload
@@ -173,21 +175,19 @@ export type RemoveFailurePayload = {
   error: string,
 }
 
-export type FailurePayload
-  = CreateFailurePayload
+export type FailurePayload =
+  | CreateFailurePayload
   | UpdateFailurePayload
   | FetchFailurePayload
   | RemoveFailurePayload
-
 
 export type RequestStartPayload = {
   entityType: string,
   requestId: RequestId,
 }
 
-
-export type Payload
-  = DispatchPayload
+export type Payload =
+  | DispatchPayload
   | SuccessPayload
   | FailurePayload
   | RequestStartPayload
@@ -201,27 +201,27 @@ export type Payload
 ///////////////////////////
 
 export type CreateDispatchAction = {
-  type: 'GENERIC_API_CREATE_DISPATCH',
+  type: 'KRAKEN_CREATE_DISPATCH',
   payload: CreateDispatchPayload,
 }
 
 export type FetchDispatchAction = {
-  type: 'GENERIC_API_FETCH_DISPATCH',
+  type: 'KRAKEN_FETCH_DISPATCH',
   payload: FetchDispatchPayload,
 }
 
 export type UpdateDispatchAction = {
-  type: 'GENERIC_API_UPDATE_DISPATCH',
+  type: 'KRAKEN_UPDATE_DISPATCH',
   payload: UpdateDispatchPayload,
 }
 
 export type RemoveDispatchAction = {
-  type: 'GENERIC_API_REMOVE_DISPATCH',
+  type: 'KRAKEN_REMOVE_DISPATCH',
   payload: RemoveDispatchPayload,
 }
 
-export type DispatchAction
-  = FetchDispatchAction
+export type DispatchAction =
+  | FetchDispatchAction
   | CreateDispatchAction
   | UpdateDispatchAction
   | RemoveDispatchAction
@@ -231,27 +231,27 @@ export type DispatchAction
 //////////////////////////
 
 export type CreateSuccessAction = {
-  type: 'GENERIC_API_CREATE_SUCCESS',
+  type: 'KRAKEN_CREATE_SUCCESS',
   payload: CreateSuccessPayload,
 }
 
 export type UpdateSuccessAction = {
-  type: 'GENERIC_API_UPDATE_SUCCESS',
+  type: 'KRAKEN_UPDATE_SUCCESS',
   payload: UpdateSuccessPayload,
 }
 
 export type FetchSuccessAction = {
-  type: 'GENERIC_API_FETCH_SUCCESS',
+  type: 'KRAKEN_FETCH_SUCCESS',
   payload: FetchSuccessPayload,
 }
 
 export type RemoveSuccessAction = {
-  type: 'GENERIC_API_REMOVE_SUCCESS',
+  type: 'KRAKEN_REMOVE_SUCCESS',
   payload: RemoveSuccessPayload,
 }
 
-export type SuccessAction
-  = FetchSuccessAction
+export type SuccessAction =
+  | FetchSuccessAction
   | CreateSuccessAction
   | UpdateSuccessAction
   | RemoveSuccessAction
@@ -261,43 +261,42 @@ export type SuccessAction
 //////////////////////////
 
 export type CreateFailureAction = {
-  type: 'GENERIC_API_CREATE_FAILURE',
+  type: 'KRAKEN_CREATE_FAILURE',
   payload: CreateFailurePayload,
 }
 
 export type UpdateFailureAction = {
-  type: 'GENERIC_API_UPDATE_FAILURE',
+  type: 'KRAKEN_UPDATE_FAILURE',
   payload: UpdateFailurePayload,
 }
 
 export type FetchFailureAction = {
-  type: 'GENERIC_API_FETCH_FAILURE',
+  type: 'KRAKEN_FETCH_FAILURE',
   payload: FetchFailurePayload,
 }
 
 export type RemoveFailureAction = {
-  type: 'GENERIC_API_REMOVE_FAILURE',
+  type: 'KRAKEN_REMOVE_FAILURE',
   payload: RemoveFailurePayload,
 }
 
-export type FailureAction
-  = FetchFailureAction
+export type FailureAction =
+  | FetchFailureAction
   | CreateFailureAction
   | UpdateFailureAction
   | RemoveFailureAction
-
 
 //////////////////////////
 // Other Action Types //
 //////////////////////////
 
 export type RequestStartAction = {
-  type: 'GENERIC_API_REQUEST_START',
-  payload: RequestStartPayload
+  type: 'KRAKEN_REQUEST_START',
+  payload: RequestStartPayload,
 }
 
-export type Action
-  = DispatchAction
+export type Action =
+  | DispatchAction
   | SuccessAction
   | FailureAction
   | RequestStartAction
