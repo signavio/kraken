@@ -47,5 +47,34 @@ describe('Cache Policies', () => {
       expect(result.value).to.not.include('c1')
       expect(result.value).to.not.include('c3')
     })
+
+    it('should ignore query parameters with `undefined` values when matching', () => {
+      const request = {
+        value: [],
+        query: {
+          relationId: 'r1',
+          anotherKey: undefined,
+        },
+      }
+      const collection = {
+        c1: {},
+        c2: {
+          relationId: 'r1',
+        },
+        c3: {
+          relationId: 'r2',
+        },
+      }
+
+      const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+        request,
+        collection
+      )
+
+      expect(result.value).to.include('c2')
+
+      expect(result.value).to.not.include('c1')
+      expect(result.value).to.not.include('c3')
+    })
   })
 })

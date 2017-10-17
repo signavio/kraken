@@ -1,6 +1,9 @@
-import { keys, isMatch, intersection } from 'lodash'
+import { keys, isMatch as isMatchBase, intersection, omitBy } from 'lodash'
 
 import { actionTypes } from './actions'
+
+const isMatch = (obj, src) =>
+  isMatchBase(obj, omitBy(src, value => value === undefined))
 
 // ENTITIES SIDE EFFECTS
 
@@ -21,19 +24,25 @@ const removeDeleted = (request, collection) => {
     return request
   }
   const existingIds = intersection(request.value, keys(collection))
-  return existingIds.length === request.value.length ? request : {
-    ...request,
-    value: existingIds,
-  }
+  return existingIds.length === request.value.length
+    ? request
+    : {
+        ...request,
+        value: existingIds,
+      }
 }
 
 // match cached entities' properties with query params and keep the result up-to-date with cache
 const selectMatchingItemsAsValue = (request, collection) => {
-  const matchingIds = keys(collection).filter((id) => isMatch(collection[id], request.query))
-  return matchingIds.length === request.value.length ? request : {
-    ...request,
-    value: matchingIds,
-  }
+  const matchingIds = keys(collection).filter(id =>
+    isMatch(collection[id], request.query)
+  )
+  return matchingIds.length === request.value.length
+    ? request
+    : {
+        ...request,
+        value: matchingIds,
+      }
 }
 
 // CACHE POLICIES
@@ -56,12 +65,11 @@ const composeSideEffects = (first, second) => {
   if (!first && !second) return undefined
   if (!first) return second
   if (!second) return first
-  return (stateToReceiveSideEffects, ...args) => (
+  return (stateToReceiveSideEffects, ...args) =>
     first(second(stateToReceiveSideEffects, ...args), ...args)
-  )
 }
 
-export const compose = (...cachePolicies) => (
+export const compose = (...cachePolicies) =>
   cachePolicies.reduce((combinedPolicy, policy) => ({
     updateRequestOnCollectionChange: composeSideEffects(
       combinedPolicy.updateRequestOnCollectionChange,
@@ -72,4 +80,3 @@ export const compose = (...cachePolicies) => (
       policy.updateEntityOnAction
     ),
   }))
-)
