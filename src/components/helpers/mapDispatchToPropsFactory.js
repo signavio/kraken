@@ -4,8 +4,6 @@ import invariant from 'invariant'
 
 import { mapValues } from 'lodash'
 
-import { MethodName } from '../../internalTypes'
-
 import actionsCreators from '../../actions'
 
 import { ELEMENT_ID_PROP_NAME, validMethods } from './constants'
@@ -22,23 +20,30 @@ const mapDispatchToPropsFactory = ({
     const promiseProps = finalMapPropsToPromiseProps(ownProps)
     const boundActionCreators = bindActionCreators(actionCreators, dispatch)
 
-    const bindActionCreatorForPromiseProp =
-    ({ type: entityType, method, query = {}, refresh, requiredFields }, propName) => {
+    const bindActionCreatorForPromiseProp = ({
+      type: entityType,
+      method,
+      query = {},
+      refresh,
+      requiredFields,
+    }) => {
       const actionCreator = boundActionCreators[`dispatch${capitalize(method)}`]
-      invariant(!!actionCreator,
+      invariant(
+        !!actionCreator,
         `Unknown method '${method}' specified ` +
-        `(supported values: ${validMethods.map((m) => `'${m}'`).join(', ')})`
+          `(supported values: ${validMethods.map(m => `'${m}'`).join(', ')})`
       )
 
       switch (method) {
         case 'fetch':
-          return () => actionCreator({ entityType, query, refresh, requiredFields })
+          return () =>
+            actionCreator({ entityType, query, refresh, requiredFields })
         case 'create':
-          return (body) => actionCreator({ entityType, elementId, query, body })
+          return body => actionCreator({ entityType, elementId, query, body })
         case 'update':
-          return (body) => actionCreator({ entityType, query, body })
+          return body => actionCreator({ entityType, query, body })
         case 'remove':
-          return () => actionCreator({ entityType, query })
+          return body => actionCreator({ entityType, query, body })
       }
     }
 
