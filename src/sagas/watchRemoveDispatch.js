@@ -1,7 +1,7 @@
 import { takeEvery } from 'redux-saga'
 import { put, call } from 'redux-saga/effects'
 
-import { ApiTypeMap, RemoveDispatchAction, StateGetter } from '../internalTypes'
+import { ApiTypeMap, RemoveDispatchAction } from '../internalTypes'
 
 import createActionCreators, { actionTypes } from '../actions'
 import { getRemove } from '../types'
@@ -15,7 +15,11 @@ export function createRemoveDispatch(types: ApiTypeMap) {
     const entityType = action.payload.entityType
 
     const remove = getRemove(types, entityType)
-    const { response, error } = yield call(remove, action.payload.query)
+    const { error } = yield call(
+      remove,
+      action.payload.query,
+      action.payload.body
+    )
 
     if (!error) {
       yield put(
@@ -29,7 +33,7 @@ export function createRemoveDispatch(types: ApiTypeMap) {
         actions.failRemove({
           entityType,
           requestId,
-          error: result.error,
+          error,
         })
       )
     }
@@ -40,6 +44,9 @@ export default function createWatchRemoveDispatch(types: ApiTypeMap) {
   const removeDispatch = createRemoveDispatch(types)
 
   return function* watchRemoveDispatch() {
-    yield* takeEvery(actionTypes.REMOVE_DISPATCH, (action: RemoveDispatchAction) => removeDispatch(action))
+    yield* takeEvery(
+      actionTypes.REMOVE_DISPATCH,
+      (action: RemoveDispatchAction) => removeDispatch(action)
+    )
   }
 }
