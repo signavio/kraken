@@ -23,7 +23,7 @@ function configureStore(rootReducer, saga) {
 
 const App = () => <div />
 
-describe.only('Integration - remove', () => {
+describe('Integration - remove', () => {
   let remove
   let createApp
 
