@@ -1,5 +1,6 @@
 import { takeEvery } from 'redux-saga'
 import { put, call } from 'redux-saga/effects'
+import { get } from 'lodash'
 
 import { ApiTypeMap, CreateDispatchAction } from '../internalTypes'
 
@@ -17,13 +18,13 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
 
     const result = yield call(create, action.payload.body)
 
-    if (result.response) {
+    if (!result.error) {
       yield put(
         actionCreators.succeedCreate({
           entityType,
           requestId,
-          value: result.response.result,
-          entities: result.response.entities,
+          value: get(result, 'response.result'),
+          entities: get(result, 'response.entities', {}),
         })
       )
     } else {

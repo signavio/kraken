@@ -53,13 +53,17 @@ describe('Saga - createEntity', () => {
 
     const { result, entities } = normalize(body, apiTypes.USER.schema)
 
-    expect(generator.next({ response: { result, entities } }).value).to.deep.equal(
-      put(actions.succeedCreate({
-        entityType,
-        requestId: deriveRequestIdFromAction(createAction),
-        value: result,
-        entities,
-      }))
+    expect(
+      generator.next({ response: { result, entities } }).value
+    ).to.deep.equal(
+      put(
+        actions.succeedCreate({
+          entityType,
+          requestId: deriveRequestIdFromAction(createAction),
+          value: result,
+          entities,
+        })
+      )
     )
   })
 
@@ -68,7 +72,35 @@ describe('Saga - createEntity', () => {
 
     const error = 'Some error message'
 
-    expect(generator.next({ error }).value)
-      .to.deep.equal(put(actions.failCreate({ entityType: types.USER, requestId, error })))
+    expect(generator.next({ error }).value).to.deep.equal(
+      put(actions.failCreate({ entityType: types.USER, requestId, error }))
+    )
+  })
+
+  it('should not create an `error` if the server returns an empty response.', () => {
+    generator.next()
+
+    const response = null
+
+    expect(generator.next({ response }).value).to.not.deep.equal(
+      put(actions.failCreate({ entityType: types.USER, requestId }))
+    )
+  })
+
+  it('should create an empty action if the server responds with an empty result.', () => {
+    generator.next()
+
+    const response = null
+
+    expect(generator.next({ response }).value).to.deep.equal(
+      put(
+        actions.succeedCreate({
+          entityType: types.USER,
+          requestId,
+          value: undefined,
+          entities: {},
+        })
+      )
+    )
   })
 })
