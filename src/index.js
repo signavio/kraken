@@ -4,7 +4,7 @@ import createConnect from './components'
 import createActions, { actionTypes } from './actions'
 import * as cachePolicies from './cachePolicies'
 
-const apiCreator = (types) => {
+const apiCreator = types => {
   types = Object.keys(types).reduce(
     (prev, key) => ({
       ...prev,
@@ -18,7 +18,7 @@ const apiCreator = (types) => {
 
   return {
     reducer: createReducer(types),
-    saga:    createSaga(types),
+    saga: createSaga(types),
     connect: createConnect(types),
     actions: createActions(types),
   }
@@ -31,10 +31,4 @@ import callApi from './callApi'
 
 export default apiCreator
 
-export {
-  promise,
-  typeUtils,
-  callApi,
-  actionTypes,
-  cachePolicies,
-}
+export { promise, typeUtils, callApi, actionTypes, cachePolicies }
