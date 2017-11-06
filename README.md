@@ -35,10 +35,10 @@ These contain descriptions about the structure of each type and also methods to 
 | ---         | ---       | --- |
 | schema      | `true`    | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data. |
 | collection  | `true`    | Identifier where all retrieved instances for that type will be stored. |
-| fetch       | `false`   | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
-| create      | `false`   | Function that describes how an instance is created. |
-| update      | `false`   | Function that describes how an instance is updaetd. |
-| remove      | `false`   | Function that describes how an instance is removed. |
+| fetch(query) | `false`   | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
+| create(body) | `false`   | Function that describes how an instance is created. |
+| update(query, body) | `false`   | Function that describes how an instance is updaetd. |
+| remove(query, body) | `false`   | Function that describes how an instance is removed. |
 | cachePolicy | `false`   | The cache policy that should be used for that type. See [cache policies](TODO) for the possible options. |
 
 ### `callApi(fullUrl, schema[, options])`
