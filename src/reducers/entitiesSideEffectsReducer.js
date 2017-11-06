@@ -7,18 +7,23 @@ import { deriveEntityIdFromAction } from '../utils'
 import { getCollectionName, getCachePolicy } from '../types'
 import { actionTypes } from '../actions'
 
-const entitiesSideEffectsReducer = (state: EntitiesState, action: Action, updateEntityOnAction) => {
+const entitiesSideEffectsReducer = (
+  state: EntitiesState,
+  action: Action,
+  updateEntityOnAction
+) => {
   const newState = omitBy(
-    mapValues(state, (entity) => updateEntityOnAction(entity, action)),
+    mapValues(state, entity => updateEntityOnAction(entity, action)),
     isUndefined
   )
 
   return shallowEqual(state, newState) ? state : newState
 }
 
-const createEntitiesSideEffectsReducer = (apiTypes: ApiTypeMap, typeConstant) => {
-  const collectionName = getCollectionName(apiTypes, typeConstant)
-
+const createEntitiesSideEffectsReducer = (
+  apiTypes: ApiTypeMap,
+  typeConstant
+) => {
   const { updateEntityOnAction } = getCachePolicy(apiTypes, typeConstant)
 
   return (state: State = {}, action: Action) => {
@@ -26,7 +31,11 @@ const createEntitiesSideEffectsReducer = (apiTypes: ApiTypeMap, typeConstant) =>
       return state
     }
 
-    return entitiesSideEffectsReducer(state, action, updateEntityOnAction)
+    return entitiesSideEffectsReducer(
+      state,
+      action,
+      updateEntityOnAction.bind(null, typeConstant)
+    )
   }
 }
 

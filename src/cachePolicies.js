@@ -1,3 +1,4 @@
+// @flow
 import { keys, isMatch as isMatchBase, intersection, omitBy } from 'lodash'
 
 import { actionTypes } from './actions'
@@ -7,8 +8,18 @@ const isMatch = (obj, src) =>
 
 // ENTITIES SIDE EFFECTS
 
-const deleteOnMatchingRemoveDispatch = (entity, { type, payload }) => {
-  if (type === actionTypes.REMOVE_DISPATCH && isMatch(entity, payload.query)) {
+const deleteOnMatchingRemoveDispatch = (
+  typeConstant: string,
+  entity,
+  { type, payload }
+) => {
+  const { query, entityType } = payload
+
+  if (
+    type === actionTypes.REMOVE_DISPATCH &&
+    isMatch(entity, query) &&
+    typeConstant === entityType
+  ) {
     // falsy values will be filtered out
     return undefined
   }

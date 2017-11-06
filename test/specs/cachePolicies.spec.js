@@ -1,7 +1,104 @@
 import { expect } from 'chai'
-import { cachePolicies } from '../../src'
+import { cachePolicies, actionTypes } from '../../src'
 
 describe('Cache Policies', () => {
+  describe('optimistic remove', () => {
+    const entity = {
+      id: 'e1',
+      name: 'John Doe',
+    }
+
+    const typeConstant = 'USER'
+
+    it('should only match remove actions.', () => {
+      expect(
+        cachePolicies.optimisticRemove.updateEntityOnAction(
+          typeConstant,
+          entity,
+          {
+            type: 'wrong-type',
+            payload: {
+              entityType: typeConstant,
+            },
+          }
+        )
+      ).to.equal(entity)
+
+      expect(
+        cachePolicies.optimisticRemove.updateEntityOnAction(
+          typeConstant,
+          entity,
+          {
+            type: actionTypes.REMOVE_DISPATCH,
+            payload: {
+              entityType: typeConstant,
+            },
+          }
+        )
+      ).to.be.undefined
+    })
+
+    it('should only match entities that match a given query', () => {
+      expect(
+        cachePolicies.optimisticRemove.updateEntityOnAction(
+          typeConstant,
+          entity,
+          {
+            type: actionTypes.REMOVE_DISPATCH,
+            payload: {
+              query: {
+                no: 'match',
+              },
+              entityType: typeConstant,
+            },
+          }
+        )
+      ).to.equal(entity)
+
+      expect(
+        cachePolicies.optimisticRemove.updateEntityOnAction(
+          typeConstant,
+          entity,
+          {
+            type: actionTypes.REMOVE_DISPATCH,
+            payload: {
+              query: { id: 'e1' },
+              entityType: typeConstant,
+            },
+          }
+        )
+      ).to.be.undefined
+    })
+
+    it('should only match entities with the correct type.', () => {
+      expect(
+        cachePolicies.optimisticRemove.updateEntityOnAction(
+          typeConstant,
+          entity,
+          {
+            type: actionTypes.REMOVE_DISPATCH,
+            payload: {
+              entityType: 'wrong-type',
+            },
+          }
+        )
+      ).to.equal(entity)
+
+      expect(
+        cachePolicies.optimisticRemove.updateEntityOnAction(
+          typeConstant,
+          entity,
+          {
+            type: actionTypes.REMOVE_DISPATCH,
+            payload: {
+              entityType: typeConstant,
+            },
+          }
+        )
+      ).to.be.undefined
+    })
+  })
+
   describe('query from cache', () => {
     it('should extend request with cached values', () => {
       const request = {
