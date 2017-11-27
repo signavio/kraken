@@ -50,7 +50,14 @@ const selectMatchingItemsAsValue = (request, collection) => {
     isMatch(collection[id], request.query)
   )
 
-  return shallowEqual(matchingIds, request.value)
+  if (!request.value) {
+    return {
+      ...request,
+      value: matchingIds,
+    }
+  }
+
+  return shallowEqual(matchingIds, request.value || [])
     ? request
     : {
         ...request,
