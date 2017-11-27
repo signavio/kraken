@@ -1,5 +1,6 @@
 // @flow
 import { keys, isMatch as isMatchBase, intersection, omitBy } from 'lodash'
+import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import { actionTypes } from './actions'
 
@@ -48,7 +49,15 @@ const selectMatchingItemsAsValue = (request, collection) => {
   const matchingIds = keys(collection).filter(id =>
     isMatch(collection[id], request.query)
   )
-  return matchingIds.length === request.value.length
+
+  if (!request.value) {
+    return {
+      ...request,
+      value: matchingIds,
+    }
+  }
+
+  return shallowEqual(matchingIds, request.value || [])
     ? request
     : {
         ...request,

@@ -117,6 +117,23 @@ describe('Cache Policies', () => {
       expect(result.value).to.include('c1')
       expect(result.value).to.include('c2')
     })
+
+    it('should also return matching cached ids if value is still undefined', () => {
+      const request = {}
+      const collection = {
+        c1: {},
+        c2: {},
+      }
+
+      const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+        request,
+        collection
+      )
+
+      expect(result.value).to.include('c1')
+      expect(result.value).to.include('c2')
+    })
+
     it('should consider the request query when retrieving items', () => {
       const request = {
         value: [],
