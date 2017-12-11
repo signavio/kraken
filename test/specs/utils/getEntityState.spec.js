@@ -73,23 +73,7 @@ describe('Utils - getEntityState', () => {
             [requestId]: { fulfilled: true, value: 'post-1' },
           },
         },
-        entities: {
-          posts: {
-            'post-1': {
-              ...data.post,
-              comments: data.post.comments.map(({ id }) => id),
-            },
-          },
-          comments: {
-            ...data.post.comments.reduce(
-              (result, comment) => ({
-                ...result,
-                [comment.id]: comment,
-              }),
-              {}
-            ),
-          },
-        },
+        ...normalize(data.post, apiTypes.POST.schema, {}),
       },
     }
 
