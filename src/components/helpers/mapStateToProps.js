@@ -45,7 +45,7 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
                 query,
                 refresh,
                 elementId,
-                denormlizeValue: denormalize,
+                denormalizeValue: denormalize,
               },
             })
 
