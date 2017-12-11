@@ -8,10 +8,7 @@ import { actionTypes } from '../../actions'
 
 import { ELEMENT_ID_PROP_NAME } from './constants'
 
-const mapStateToProps = ({
-  types,
-  finalMapPropsToPromiseProps,
-}) => () => {
+const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
   let lastStateProps = {}
 
   return (state, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
@@ -24,53 +21,44 @@ const mapStateToProps = ({
     // function can figure out whether s.th. has changed
     const stateProps = {
       ...mapKeys(
-        mapValues(
-          promiseProps,
-          ({ query, type, method }, propName) => getRequestState(
-            types,
-            state,
-            {
-              type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
-              payload: {
-                entityType: type,
-                query,
-                elementId,
-                propName,
-              },
-            }
-          )
+        mapValues(promiseProps, ({ query, type, method }, propName) =>
+          getRequestState(types, state, {
+            type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
+            payload: {
+              entityType: type,
+              query,
+              elementId,
+              propName,
+            },
+          })
         ),
-        (val, propName) => `${propName}_request`,
+        (val, propName) => `${propName}_request`
       ),
       ...mapKeys(
         mapValues(
           promiseProps,
-          ({ query, refresh, type, method }, propName) => {
-            const entityState = getEntityState(
-              types,
-              state,
-              {
-                type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
-                payload: {
-                  entityType: type,
-                  query,
-                  refresh,
-                  elementId,
-                },
+          ({ query, refresh, type, method, denormalize }, propName) => {
+            const entityState = getEntityState(types, state, {
+              type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
+              payload: {
+                entityType: type,
+                query,
+                refresh,
+                elementId,
+                denormlizeValue: denormalize,
               },
-            )
+            })
 
             const lastEntityState = lastStateProps[`${propName}_entity`]
-            const useMemoized = (
+            const useMemoized =
               isArray(entityState) &&
               lastEntityState &&
               shallowEqual(entityState, lastEntityState)
-            )
 
             return useMemoized ? lastEntityState : entityState
           }
         ),
-        (val, propName) => `${propName}_entity`,
+        (val, propName) => `${propName}_entity`
       ),
     }
     lastStateProps = stateProps

@@ -1,4 +1,7 @@
+// @flow
 import { isArray } from 'lodash'
+import { denormalize } from 'normalizr'
+
 import { hasEntitySchema } from '../types'
 import { ApiTypeMap, State, DispatchAction, Entity } from '../internalTypes'
 
@@ -20,10 +23,23 @@ const getEntityState = (
     action.payload.entityType
   )
 
+  const { denormalizeValue, entityType } = action.payload
+  let finalValue
+
   if (isArray(value)) {
-    return value.map((id: string) => entityCollection[id])
+    finalValue = value.map((id: string) => entityCollection[id])
   } else if (hasEntitySchema(types, action.payload.entityType)) {
-    return entityCollection[value]
+    finalValue = entityCollection[value]
+  }
+
+  if (finalValue) {
+    if (denormalizeValue) {
+      const { schema } = types[entityType]
+
+      return denormalize(finalValue, schema, state.kraken.entities)
+    }
+
+    return finalValue
   }
 
   return undefined
