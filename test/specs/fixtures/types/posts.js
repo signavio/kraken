@@ -1,6 +1,5 @@
 // @flow
 import { schema as schemas } from 'normalizr'
-import { keys } from 'normalizr'
 
 import { callApi } from '../../../../src'
 import { cachePolicies } from '../../../../src'
@@ -11,12 +10,20 @@ export { collection } from './post'
 
 export const schema = new schemas.Array(baseSchema)
 
-export const fetch = ({ category, author }) => callApi([
-	'posts',
-	category ? `/${category}` : '',
-	author ? `?author=${author}` : '',
-].join(''))
+type FetchPropsT = {
+  category?: string,
+  author?: string,
+}
+
+export const fetch = ({ category, author }: FetchPropsT) =>
+  callApi(
+    [
+      'posts',
+      category ? `/${category}` : '',
+      author ? `?author=${author}` : '',
+    ].join('')
+  )
 
 export const cachePolicy = {
-	updateRequestOnCollectionChange: cachePolicies.matchCachedWithQuery,
+  updateRequestOnCollectionChange: cachePolicies.matchCachedWithQuery,
 }
