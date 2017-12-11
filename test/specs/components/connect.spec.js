@@ -3,6 +3,7 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
+import { normalize } from 'normalizr'
 
 import createConnect from '../../../src/components'
 import createActionCreators, { actionTypes } from '../../../src/actions'
@@ -14,16 +15,19 @@ import { types, apiTypes, data } from '../fixtures'
 
 const connect = createConnect(apiTypes)
 
-const { dispatchFetch, dispatchCreate } = createActionCreators(apiTypes)
+const { dispatchFetch } = createActionCreators(apiTypes)
 
 const renderSpy = sinon.spy()
 
-const MyComp = (props) => {
+const MyComp = props => {
   renderSpy(props)
   return <div />
 }
 
-const fetchUserJaneAction = dispatchFetch({ entityType: types.USER, id: 'user-jane' })
+const fetchUserJaneAction = dispatchFetch({
+  entityType: types.USER,
+  id: 'user-jane',
+})
 
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
@@ -34,33 +38,46 @@ const testStore = createStore(reducerSpy, {
           value: 'user-jane',
           fulfilled: true,
           refresh: 2,
-        }
+        },
       },
     },
-    entities: {
-      [apiTypes.USER.collection]: {
-        'user-jane': {
-          id: 'user-jane',
-          firstName: 'Jane',
-          lastName: 'Doe',
-        }
+    ...normalize(
+      {
+        id: 'user-jane',
+        firstName: 'Jane',
+        lastName: 'Doe',
+        posts: [
+          {
+            id: 'post-1',
+            name: 'Post 1',
+          },
+          {
+            id: 'post-2',
+            name: 'Post 2',
+          },
+        ],
       },
-    },
+      apiTypes.USER.schema,
+      {}
+    ),
   },
 })
 
-const TestComponent = connect(({ id, refresh, lazy, fetchOnMount }) => ({
-  fetchUser: {
-    type: types.USER,
-    id,
-    refresh,
-    lazy,
-    fetchOnMount,
-  },
-}))(MyComp)
+const TestComponent = connect(
+  ({ id, refresh, lazy, fetchOnMount, denormalize }) => ({
+    fetchUser: {
+      type: types.USER,
+      id,
+      refresh,
+      lazy,
+      fetchOnMount,
+      denormalize,
+    },
+  })
+)(MyComp)
 
-const TestContainer = (props) => (
-  <Provider store={ testStore }>
+const TestContainer = props => (
+  <Provider store={testStore}>
     <TestComponent {...props} />
   </Provider>
 )
@@ -72,7 +89,7 @@ describe('connect', () => {
   })
 
   it('should dispatch the FETCH_DISPATCH action on mount', () => {
-    mount(<TestContainer id={ data.user.id } />)
+    mount(<TestContainer id={data.user.id} />)
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(
@@ -90,23 +107,30 @@ describe('connect', () => {
   })
 
   it('should set `pending` flag on the injected prop if a request is dispatched', () => {
-    const wrapper = mount(<TestContainer id={ data.user.id } />)
-    expect(wrapper.find(MyComp).props().fetchUser).to.have.property('pending', true)
+    const wrapper = mount(<TestContainer id={data.user.id} />)
+    expect(wrapper.find(MyComp).props().fetchUser).to.have.property(
+      'pending',
+      true
+    )
   })
 
   it('should set `fulfilled` flag and the value on the injected prop if the enitity is found in cache', () => {
     const wrapper = mount(<TestContainer id="user-jane" />)
-    expect(wrapper.find(MyComp).props().fetchUser).to.have.property('fulfilled', true)
+    expect(wrapper.find(MyComp).props().fetchUser).to.have.property(
+      'fulfilled',
+      true
+    )
     expect(wrapper.find(MyComp).props().fetchUser.pending).to.be.false
     expect(wrapper.find(MyComp).props().fetchUser.value).to.deep.equal({
       id: 'user-jane',
       firstName: 'Jane',
       lastName: 'Doe',
+      posts: ['post-1', 'post-2'],
     })
   })
 
   it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
-    const wrapper = mount(<TestContainer id={ data.user.id } />)
+    const wrapper = mount(<TestContainer id={data.user.id} />)
     reducerSpy.reset()
 
     expect(reducerSpy).to.have.not.been.called
@@ -127,6 +151,35 @@ describe('connect', () => {
     )
   })
 
+  it('should inline referenced data, when denormalize is used.', () => {
+    let wrapper = mount(<TestContainer id="user-jane" />)
+
+    expect(wrapper.find(MyComp).props().fetchUser.value).to.deep.equal({
+      id: 'user-jane',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      posts: ['post-1', 'post-2'],
+    })
+
+    wrapper = mount(<TestContainer denormalize id="user-jane" />)
+
+    expect(wrapper.find(MyComp).props().fetchUser.value).to.deep.equal({
+      id: 'user-jane',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      posts: [
+        {
+          id: 'post-1',
+          name: 'Post 1',
+        },
+        {
+          id: 'post-2',
+          name: 'Post 2',
+        },
+      ],
+    })
+  })
+
   it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
     const wrapper = mount(<TestContainer id="user-jane" />)
     expect(reducerSpy).to.have.not.been.called // it's already cached
@@ -136,7 +189,9 @@ describe('connect', () => {
   })
 
   it('should never dispatch FETCH_DISPATCH action if the `lazy` flag is set', () => {
-    const wrapper = mount(<TestContainer id="id-of-non-cached-item" fetchOnMount lazy />)
+    const wrapper = mount(
+      <TestContainer id="id-of-non-cached-item" fetchOnMount lazy />
+    )
     expect(reducerSpy).to.have.not.been.called
 
     wrapper.setProps({ refresh: 3 })
@@ -164,7 +219,7 @@ describe('connect', () => {
   })
 
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
-    const wrapper = mount(<TestContainer id={ data.user.id } />)
+    const wrapper = mount(<TestContainer id={data.user.id} />)
     reducerSpy.reset()
     expect(reducerSpy).to.have.not.been.called
 
@@ -250,28 +305,30 @@ describe('connect', () => {
   describe('#getWrappedInstance', () => {
     class CompWithRefs extends Component {
       render() {
-        return (
-          <div ref="myRef">
-            Text
-          </div>
-        )
+        return <div ref="myRef">Text</div>
       }
     }
-    const ConnectedCompWithRefs = connect(({ id }) => ({
-      traceFetch: {
-        type: types.USER,
-        id,
-      },
-    }), { withRef: true })(CompWithRefs)
+    const ConnectedCompWithRefs = connect(
+      ({ id }) => ({
+        traceFetch: {
+          type: types.USER,
+          id,
+        },
+      }),
+      { withRef: true }
+    )(CompWithRefs)
 
     it('should return the wrapped instance', () => {
       const wrapper = mount(
         <Provider store={testStore}>
-          <ConnectedCompWithRefs id={ data.user.id } />
+          <ConnectedCompWithRefs id={data.user.id} />
         </Provider>
       )
       expect(
-        wrapper.find(ConnectedCompWithRefs).get(0).getWrappedInstance().refs.myRef
+        wrapper
+          .find(ConnectedCompWithRefs)
+          .get(0)
+          .getWrappedInstance().refs.myRef
       ).to.exist
     })
   })
