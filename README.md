@@ -44,8 +44,8 @@ instance of that type.
 | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | schema              | `true`   | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data.                                                                                |
 | collection          | `true`   | Identifier where all retrieved instances for that type will be stored.                                                                                                                      |
-| fetch(query)        | `false`  | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
-| create(body)        | `false`  | Function that describes how an instance is created.                                                                                                                                         |
+| fetch(query, body)  | `false`  | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
+| create(query, body) | `false`  | Function that describes how an instance is created.                                                                                                                                         |
 | update(query, body) | `false`  | Function that describes how an instance is updaetd.                                                                                                                                         |
 | remove(query, body) | `false`  | Function that describes how an instance is removed.                                                                                                                                         |
 | cachePolicy         | `false`  | The cache policy that should be used for that type. See [cache policies](TODO) for the possible options.                                                                                    |
@@ -84,7 +84,7 @@ export const schema = new schemas.Entity(collection)
 export const fetch = ({ id }) => (
   callApi(`users/${id}`, schema)
 )
-export const create = (body) => (
+export const create = (_, body) => (
   callApi('users', schema, { method: 'POST', body })
 )
 export const update = ({ id }, body) => (
