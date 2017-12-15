@@ -60,16 +60,20 @@ describe('Integration - remove', () => {
     }
   })
 
-  it('should call the remove action', () => {
+  it('should call the remove action', done => {
     const component = createApp()
 
     expect(component).to.have.prop('removeSomething')
 
     expect(remove).to.not.have.been.called
 
-    component.props().removeSomething()
+    setTimeout(() => {
+      component.props().removeSomething()
 
-    expect(remove).to.have.been.calledOnce
+      expect(remove).to.have.been.calledOnce
+
+      done()
+    })
   })
 
   it('should pass query params to the remove action', () => {
