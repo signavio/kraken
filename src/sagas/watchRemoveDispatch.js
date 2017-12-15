@@ -1,5 +1,4 @@
-import { takeEvery } from 'redux-saga'
-import { put, call } from 'redux-saga/effects'
+import { put, call, takeEvery } from 'redux-saga/effects'
 
 import { ApiTypeMap, RemoveDispatchAction } from '../internalTypes'
 
@@ -44,7 +43,7 @@ export default function createWatchRemoveDispatch(types: ApiTypeMap) {
   const removeDispatch = createRemoveDispatch(types)
 
   return function* watchRemoveDispatch() {
-    yield* takeEvery(
+    yield takeEvery(
       actionTypes.REMOVE_DISPATCH,
       (action: RemoveDispatchAction) => removeDispatch(action)
     )

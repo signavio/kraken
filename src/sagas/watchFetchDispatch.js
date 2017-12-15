@@ -1,5 +1,5 @@
-import { takeEvery, delay } from 'redux-saga'
-import { put, call } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+import { put, call, takeEvery } from 'redux-saga/effects'
 
 import {
   State,
@@ -64,9 +64,8 @@ export default function createWatchFetchEntity(types: ApiTypeMap) {
   const fetchSaga = createFetchSaga(types)
 
   return function* watchDispatchEntity(getState: () => State) {
-    yield* takeEvery(
-      actionTypes.FETCH_DISPATCH,
-      (action: FetchDispatchAction) => fetchSaga(action, getState)
+    yield takeEvery(actionTypes.FETCH_DISPATCH, (action: FetchDispatchAction) =>
+      fetchSaga(action, getState)
     )
   }
 }
