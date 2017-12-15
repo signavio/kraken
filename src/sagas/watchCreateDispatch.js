@@ -16,7 +16,7 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
     const entityType = action.payload.entityType
     const create = getCreate(types, entityType)
 
-    const result = yield call(create, action.payload.body)
+    const result = yield call(create, action.payload.query, action.payload.body)
 
     if (!result.error) {
       yield put(
