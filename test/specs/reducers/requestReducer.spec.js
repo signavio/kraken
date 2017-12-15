@@ -15,7 +15,10 @@ const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 const id = 'my-id'
 const query = { id }
-const requestId = deriveRequestIdFromAction({ type: actionTypes.FETCH_DISPATCH, payload: { query: { id } } })
+const requestId = deriveRequestIdFromAction({
+  type: actionTypes.FETCH_DISPATCH,
+  payload: { query: { id } },
+})
 // const entityReducerForEntity = entityReducer(entity)
 
 describe('requestReducer', () => {
@@ -50,36 +53,39 @@ describe('requestReducer', () => {
       expect(nextState[requestId]).to.have.property('refresh', 1)
     })
 
-    it('should keep the previous refresh token if another fetch of the same entity ' +
-    'is dispatched without a refresh token', () => {
-      const state = requestsReducerForEntity(
-        {},
-        actions.succeedFetch({
-          requestId,
-          entityType: types.USER,
-          query,
-          value: result,
-        })
-      )
+    it(
+      'should keep the previous refresh token if another fetch of the same entity ' +
+        'is dispatched without a refresh token',
+      () => {
+        const state = requestsReducerForEntity(
+          {},
+          actions.succeedFetch({
+            requestId,
+            entityType: types.USER,
+            query,
+            value: result,
+          })
+        )
 
-      const nextState = requestsReducerForEntity(
-        state,
-        actions.dispatchFetch({ entityType: types.USER, query, refresh: 1 })
-      )
+        const nextState = requestsReducerForEntity(
+          state,
+          actions.dispatchFetch({ entityType: types.USER, query, refresh: 1 })
+        )
 
-      expect(nextState[requestId]).to.have.property('refresh', 1)
+        expect(nextState[requestId]).to.have.property('refresh', 1)
 
-      requestsReducerForEntity(
-        state,
-        actions.dispatchFetch({ entityType: types.USER, query })
-      )
+        requestsReducerForEntity(
+          state,
+          actions.dispatchFetch({ entityType: types.USER, query })
+        )
 
-      // still has the previous token
-      expect(nextState[requestId]).to.have.property('refresh', 1)
-    })
+        // still has the previous token
+        expect(nextState[requestId]).to.have.property('refresh', 1)
+      }
+    )
 
-    it.skip('should set outstanding requests to not be outstanding anymore', () => {
-      const newState = requestsReducerForEntity(
+    it('should set outstanding requests to not be outstanding anymore', () => {
+      let newState = requestsReducerForEntity(
         {
           [requestId]: {
             outstanding: true,
@@ -87,6 +93,18 @@ describe('requestReducer', () => {
         },
         actions.dispatchFetch({ entityType: types.USER, requestId })
       )
+
+      expect(newState).to.have.property(requestId)
+      expect(newState[requestId]).to.have.property('outstanding', true)
+
+      newState = requestsReducerForEntity(
+        newState,
+        actions.startRequest({
+          entityType: types.USER,
+          requestId,
+        })
+      )
+
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('outstanding', false)
     })
@@ -123,7 +141,9 @@ describe('requestReducer', () => {
       )
 
       expect(newState).to.have.property(requestId)
-      expect(newState[requestId]).to.have.property('value').to.equal(result)
+      expect(newState[requestId])
+        .to.have.property('value')
+        .to.equal(result)
     })
 
     it('should set the promise status to fulfilled when not cached', () => {
@@ -155,7 +175,9 @@ describe('requestReducer', () => {
       )
       expect(newState).to.have.property(requestId)
 
-      expect(newState[requestId]).to.have.property('value').to.equal(result)
+      expect(newState[requestId])
+        .to.have.property('value')
+        .to.equal(result)
     })
   })
 
