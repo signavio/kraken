@@ -4,8 +4,15 @@ import createConnect from './components'
 import createActions, { actionTypes } from './actions'
 import * as cachePolicies from './cachePolicies'
 
-const apiCreator = types => {
-  types = Object.keys(types).reduce(
+import * as promise from './utils/promise'
+import * as typeUtils from './types'
+
+import type { ApiTypeMap } from './internalTypes'
+
+import callApi from './callApi'
+
+const apiCreator = (types: ApiTypeMap) => {
+  const preparedTypes = Object.keys(types).reduce(
     (prev, key) => ({
       ...prev,
       [key]: {
@@ -17,17 +24,12 @@ const apiCreator = types => {
   )
 
   return {
-    reducer: createReducer(types),
-    saga: createSaga(types),
-    connect: createConnect(types),
-    actions: createActions(types),
+    reducer: createReducer(preparedTypes),
+    saga: createSaga(preparedTypes),
+    connect: createConnect(preparedTypes),
+    actions: createActions(preparedTypes),
   }
 }
-
-import * as promise from './utils/promise'
-import * as typeUtils from './types'
-
-import callApi from './callApi'
 
 export default apiCreator
 

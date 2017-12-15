@@ -5,49 +5,47 @@ import {
   ApiTypeMap,
   Payload,
   Action,
-  CreateDispatchPayload,
+  DispatchPayload,
   CreateDispatchAction,
   CreateSuccessPayload,
   CreateSuccessAction,
   CreateFailurePayload,
   CreateFailureAction,
-  UpdateDispatchPayload,
   UpdateDispatchAction,
   UpdateSuccessPayload,
   UpdateSuccessAction,
   UpdateFailurePayload,
   UpdateFailureAction,
-  FetchDispatchPayload,
   FetchDispatchAction,
   FetchSuccessPayload,
   FetchSuccessAction,
   FetchFailurePayload,
   FetchFailureAction,
-  RemoveDispatchPayload,
   RemoveDispatchAction,
   RemoveSuccessPayload,
   RemoveSuccessAction,
   RemoveFailurePayload,
   RemoveFailureAction,
   RequestStartAction,
+  RequestStartPayload,
 } from '../internalTypes'
 
-type ActionCreator = Payload => Action
+type ActionCreator = (payload: Payload) => Action
 type ActionCreatorMap = {
-  dispatchCreate(payload: CreateDispatchPayload): CreateDispatchAction,
-  dispatchUpdate(payload: UpdateDispatchPayload): UpdateDispatchAction,
-  dispatchFetch(payload: FetchDispatchPayload): FetchDispatchAction,
-  dispatchRemove(payload: RemoveDispatchPayload): RemoveDispatchAction,
+  dispatchCreate: (payload: DispatchPayload) => CreateDispatchAction,
+  dispatchUpdate: (payload: DispatchPayload) => UpdateDispatchAction,
+  dispatchFetch: (payload: DispatchPayload) => FetchDispatchAction,
+  dispatchRemove: (payload: DispatchPayload) => RemoveDispatchAction,
 
-  succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction,
-  succeedUpdate(payload: UpdateSuccessPayload): UpdateSuccessAction,
-  succeedFetch(payload: FetchSuccessPayload): FetchSuccessAction,
-  succeedRemove(payload: RemoveSuccessPayload): RemoveSuccessAction,
+  succeedCreate: (payload: CreateSuccessPayload) => CreateSuccessAction,
+  succeedUpdate: (payload: UpdateSuccessPayload) => UpdateSuccessAction,
+  succeedFetch: (payload: FetchSuccessPayload) => FetchSuccessAction,
+  succeedRemove: (payload: RemoveSuccessPayload) => RemoveSuccessAction,
 
-  failCreate(payload: CreateFailurePayload): CreateFailureAction,
-  failUpdate(payload: UpdateFailurePayload): UpdateFailureAction,
-  failFetch(payload: FetchFailurePayload): FetchFailureAction,
-  failRemove(payload: RemoveFailurePayload): RemoveFailureAction,
+  failCreate: (payload: CreateFailurePayload) => CreateFailureAction,
+  failUpdate: (payload: UpdateFailurePayload) => UpdateFailureAction,
+  failFetch: (payload: FetchFailurePayload) => FetchFailureAction,
+  failRemove: (payload: RemoveFailurePayload) => RemoveFailureAction,
 }
 
 export const actionTypes = {
@@ -68,28 +66,28 @@ export const actionTypes = {
 }
 
 const actionCreatorMap: ActionCreatorMap = {
-  dispatchCreate(payload: CreateDispatchPayload): CreateDispatchAction {
+  dispatchCreate(payload: DispatchPayload): CreateDispatchAction {
     return {
       type: actionTypes.CREATE_DISPATCH,
       payload,
     }
   },
 
-  dispatchUpdate(payload: UpdateDispatchPayload): UpdateDispatchAction {
+  dispatchUpdate(payload: DispatchPayload): UpdateDispatchAction {
     return {
       type: actionTypes.UPDATE_DISPATCH,
       payload,
     }
   },
 
-  dispatchFetch(payload: FetchDispatchPayload): FetchDispatchAction {
+  dispatchFetch(payload: DispatchPayload): FetchDispatchAction {
     return {
       type: actionTypes.FETCH_DISPATCH,
       payload,
     }
   },
 
-  dispatchRemove(payload: RemoveDispatchPayload): RemoveDispatchAction {
+  dispatchRemove(payload: DispatchPayload): RemoveDispatchAction {
     return {
       type: actionTypes.REMOVE_DISPATCH,
       payload,

@@ -1,22 +1,37 @@
+// @flow
 import { bindActionCreators } from 'redux'
-
 import invariant from 'invariant'
-
 import { mapValues } from 'lodash'
 
 import actionsCreators from '../../actions'
+import type {
+  ApiTypeMap,
+  PromiseProp,
+  DispatchPayload,
+  Body,
+} from '../../internalTypes'
 
 import { ELEMENT_ID_PROP_NAME, validMethods } from './constants'
 
 const capitalize = (word: string) => word[0].toUpperCase() + word.slice(1)
 
+type ParamsT = {
+  types: ApiTypeMap,
+  finalMapPropsToPromiseProps: (
+    props: any
+  ) => { [promiseProp: string]: PromiseProp<*> },
+}
+
 const mapDispatchToPropsFactory = ({
   types,
   finalMapPropsToPromiseProps,
-}) => () => {
+}: ParamsT) => () => {
   const actionCreators = actionsCreators(types)
 
-  return (dispatch, { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }) => {
+  return (
+    dispatch,
+    { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }: DispatchPayload
+  ) => {
     const promiseProps = finalMapPropsToPromiseProps(ownProps)
     const boundActionCreators = bindActionCreators(actionCreators, dispatch)
 
@@ -31,19 +46,22 @@ const mapDispatchToPropsFactory = ({
       invariant(
         !!actionCreator,
         `Unknown method '${method}' specified ` +
-          `(supported values: ${validMethods.map(m => `'${m}'`).join(', ')})`
+          `(supported values: ${validMethods
+            .map((validMathod: string) => `'${validMathod}'`)
+            .join(', ')})`
       )
 
       switch (method) {
         case 'fetch':
-          return () =>
-            actionCreator({ entityType, query, refresh, requiredFields })
+          return (body: Body) =>
+            actionCreator({ entityType, query, refresh, requiredFields, body })
         case 'create':
-          return body => actionCreator({ entityType, elementId, query, body })
+          return (body: Body) =>
+            actionCreator({ entityType, elementId, query, body })
         case 'update':
-          return body => actionCreator({ entityType, query, body })
+          return (body: Body) => actionCreator({ entityType, query, body })
         case 'remove':
-          return body => actionCreator({ entityType, query, body })
+          return (body: Body) => actionCreator({ entityType, query, body })
       }
     }
 

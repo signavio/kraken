@@ -13,7 +13,7 @@ export type Request = {
   outstanding: boolean,
   reason: string,
 
-  result: EntityId | EntityId[] | null,
+  result: EntityId | Array<EntityId> | null,
 
   validUntil: number,
   refresh: any,
@@ -29,6 +29,16 @@ export type EntitiesState = {
   [collection: string]: {
     [entityId: string]: Entity,
   },
+}
+
+export type PromiseProp<T> = {
+  pending: boolean,
+  fulfilled: boolean,
+  rejected: boolean,
+
+  reason?: string,
+
+  value: ?T,
 }
 
 export type State = {
@@ -76,37 +86,12 @@ export type Body = {
 // Dispatch Payload Types //
 ////////////////////////////
 
-export type CreateDispatchPayload = {
+export type DispatchPayload = {
   query: Query,
   body: Body,
   elementId: string,
   entityType: string,
 }
-
-export type UpdateDispatchPayload = {
-  query: Query,
-  body: Body,
-  elementId: string,
-  entityType: string,
-}
-
-export type FetchDispatchPayload = {
-  query: Query,
-  elementId: string,
-  entityType: string,
-  refresh: any,
-}
-
-export type RemoveDispatchPayload = {
-  query: Query,
-  entityType: string,
-}
-
-export type DispatchPayload =
-  | CreateDispatchPayload
-  | UpdateDispatchPayload
-  | FetchDispatchPayload
-  | RemoveDispatchPayload
 
 ///////////////////////////
 // Success Payload Types //
@@ -115,30 +100,30 @@ export type DispatchPayload =
 export type CreateSuccessPayload = {
   requestId: RequestId,
   entityType: string,
-  result: EntityId | EntityId[],
-  entities: Entity[],
+  result: EntityId | Array<EntityId>,
+  entities: Array<Entity>,
 }
 
 export type UpdateSuccessPayload = {
   requestId: RequestId,
   entityType: string,
-  result: EntityId | EntityId[],
-  entities: Entity[],
+  result: EntityId | Array<EntityId>,
+  entities: Array<Entity>,
 }
 
 export type FetchSuccessPayload = {
   requestId: RequestId,
   entityType: string,
-  result: EntityId | EntityId[],
-  entities: Entity[],
+  result: EntityId | Array<EntityId>,
+  entities: Array<Entity>,
   isCachedResponse: boolean,
 }
 
 export type RemoveSuccessPayload = {
   requestId: RequestId,
   entityType: string,
-  result: EntityId | EntityId[],
-  entities: Entity[],
+  result: EntityId | Array<EntityId>,
+  entities: Array<Entity>,
 }
 
 export type SuccessPayload =
@@ -202,22 +187,22 @@ export type Payload =
 
 export type CreateDispatchAction = {
   type: 'KRAKEN_CREATE_DISPATCH',
-  payload: CreateDispatchPayload,
+  payload: DispatchPayload,
 }
 
 export type FetchDispatchAction = {
   type: 'KRAKEN_FETCH_DISPATCH',
-  payload: FetchDispatchPayload,
+  payload: DispatchPayload,
 }
 
 export type UpdateDispatchAction = {
   type: 'KRAKEN_UPDATE_DISPATCH',
-  payload: UpdateDispatchPayload,
+  payload: DispatchPayload,
 }
 
 export type RemoveDispatchAction = {
   type: 'KRAKEN_REMOVE_DISPATCH',
-  payload: RemoveDispatchPayload,
+  payload: DispatchPayload,
 }
 
 export type DispatchAction =

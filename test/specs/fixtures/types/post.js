@@ -13,7 +13,7 @@ export const schema = new schemas.Entity(collection, {
 
 export const fetch = ({ id }: { id: string }) => callApi(`/posts/${id}`)
 
-export const create = (body: JSON) =>
+export const create = (_, body: JSON) =>
   callApi('/posts/', schemas.Entity, { method: 'POST', body })
 
 export const cachePolicy = {
