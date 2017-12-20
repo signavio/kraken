@@ -5,7 +5,7 @@ import { createFetchSaga } from '../../../src/sagas/watchFetchDispatch'
 
 import actionsCreator, { actionTypes } from '../../../src/actions'
 import { deriveRequestIdFromAction } from '../../../src/utils'
-import { typeUtils } from '../../../src'
+import { getFetch } from '../../../src/types'
 
 import expect from '../../expect'
 
@@ -14,9 +14,11 @@ import { apiTypes, types, data } from '../fixtures'
 const fetchSaga = createFetchSaga(apiTypes)
 const actions = actionsCreator(apiTypes)
 
+const query = { id: 'user-1' }
+
 const fetchAction = {
   type: actionTypes.FETCH_DISPATCH,
-  payload: { entityType: types.USER, query: { id: 'user-1' } }
+  payload: { entityType: types.USER, query },
 }
 const requestId = deriveRequestIdFromAction(fetchAction)
 
@@ -30,29 +32,35 @@ const state = {
       },
     },
     entities: {
-      [types.USER]: {
-      },
+      [types.USER]: {},
     },
   },
 }
 
 const getState = () => state
 
-describe.skip('Saga - fetchSaga', () => {
+describe('Saga - fetchSaga', () => {
   describe('Cached', () => {
     it('should call `fetchSaga` the entity is not already cached')
-    it('should dispatch a `cacheHit` action if the entity is already in the cache')
+    it(
+      'should dispatch a `cacheHit` action if the entity is already in the cache'
+    )
   })
 
   let generator
 
   beforeEach(() => {
     generator = fetchSaga(fetchAction, getState)
+
+    // delay
+    generator.next()
+    // start request
+    generator.next()
   })
 
   it('should call the `fetch` function of the entity type passing in the query object', () => {
     expect(generator.next().value).to.deep.equal(
-      call(typeUtils.getFetch(apiTypes, types.USER), fetchAction, state)
+      call(getFetch(apiTypes, types.USER), query, undefined)
     )
   })
 
@@ -61,14 +69,18 @@ describe.skip('Saga - fetchSaga', () => {
 
     const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
-    expect(generator.next({ response: { result, entities } }).value).to.deep.equal(
-      put(actions.succeedFetch({
-        entityType: types.USER,
-        requestId,
-        value: result,
-        entities,
-        isCachedResponse: false,
-      }))
+    expect(
+      generator.next({ response: { result, entities } }).value
+    ).to.deep.equal(
+      put(
+        actions.succeedFetch({
+          entityType: types.USER,
+          requestId,
+          value: result,
+          entities,
+          isCachedResponse: false,
+        })
+      )
     )
   })
 
@@ -77,7 +89,8 @@ describe.skip('Saga - fetchSaga', () => {
 
     const error = 'Some error message'
 
-    expect(generator.next({ error }).value)
-      .to.deep.equal(put(actions.failFetch({ entityType: types.USER, requestId, error })))
+    expect(generator.next({ error }).value).to.deep.equal(
+      put(actions.failFetch({ entityType: types.USER, requestId, error }))
+    )
   })
 })

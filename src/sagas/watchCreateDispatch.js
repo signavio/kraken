@@ -1,5 +1,4 @@
-import { takeEvery } from 'redux-saga'
-import { put, call } from 'redux-saga/effects'
+import { put, call, takeEvery } from 'redux-saga/effects'
 import { get } from 'lodash'
 
 import { ApiTypeMap, CreateDispatchAction } from '../internalTypes'
@@ -16,7 +15,7 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
     const entityType = action.payload.entityType
     const create = getCreate(types, entityType)
 
-    const result = yield call(create, action.payload.body)
+    const result = yield call(create, action.payload.query, action.payload.body)
 
     if (!result.error) {
       yield put(
@@ -43,7 +42,7 @@ const createWatchCreateDispatch = (types: ApiTypeMap) => {
   const createDispatch = createCreateDispatch(types)
 
   return function* watchCreateDispatch() {
-    yield* takeEvery(actionTypes.CREATE_DISPATCH, createDispatch)
+    yield takeEvery(actionTypes.CREATE_DISPATCH, createDispatch)
   }
 }
 

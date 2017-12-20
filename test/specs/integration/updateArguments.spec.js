@@ -23,17 +23,17 @@ function configureStore(rootReducer, saga) {
 
 const App = () => <div />
 
-describe('Integration - remove', () => {
-  let remove
+describe('Integration - update', () => {
+  let update
   let createApp
 
   beforeEach(() => {
-    remove = stub().returns({})
+    update = stub().returns({})
 
     const types = {
       [entityType]: {
         collection: 'test',
-        remove,
+        update,
       },
     }
 
@@ -45,9 +45,9 @@ describe('Integration - remove', () => {
 
     createApp = query => {
       const ConnectedApp = connect(() => ({
-        removeSomething: {
+        updateSomething: {
           type: entityType,
-          method: 'remove',
+          method: 'update',
           query,
         },
       }))(App)
@@ -60,45 +60,41 @@ describe('Integration - remove', () => {
     }
   })
 
-  it('should call the remove action', done => {
+  it('should call the update action', () => {
     const component = createApp()
 
-    expect(component).to.have.prop('removeSomething')
+    expect(component).to.have.prop('updateSomething')
 
-    expect(remove).to.not.have.been.called
+    expect(update).to.not.have.been.called
 
-    setTimeout(() => {
-      component.props().removeSomething()
+    component.props().updateSomething({ id: 'foo' })
 
-      expect(remove).to.have.been.calledOnce
-
-      done()
-    })
+    expect(update).to.have.been.calledOnce
   })
 
-  it('should pass query params to the remove action', () => {
+  it('should pass query params to the update action', () => {
     const query = { foo: 'bar' }
 
     const component = createApp(query)
 
-    expect(remove).to.not.have.been.called
+    expect(update).to.not.have.been.called
 
-    component.props().removeSomething()
+    component.props().updateSomething({ id: 'foo' })
 
-    expect(remove).to.have.been.calledOnce
-    expect(remove).to.have.been.calledWith(query)
+    expect(update).to.have.been.calledOnce
+    expect(update).to.have.been.calledWith(query)
   })
 
-  it('should pass the body to the remove action', () => {
+  it('should pass the body to the update action', () => {
     const body = { id: 'foo' }
 
     const component = createApp()
 
-    expect(remove).to.not.have.been.called
+    expect(update).to.not.have.been.called
 
-    component.props().removeSomething(body)
+    component.props().updateSomething(body)
 
-    expect(remove).to.have.been.calledOnce
-    expect(remove).to.have.been.calledWith({}, body)
+    expect(update).to.have.been.calledOnce
+    expect(update).to.have.been.calledWith({}, body)
   })
 })

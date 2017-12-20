@@ -23,17 +23,17 @@ function configureStore(rootReducer, saga) {
 
 const App = () => <div />
 
-describe('Integration - remove', () => {
-  let remove
+describe('Integration - fetch', () => {
+  let fetch
   let createApp
 
   beforeEach(() => {
-    remove = stub().returns({})
+    fetch = stub().returns({})
 
     const types = {
       [entityType]: {
         collection: 'test',
-        remove,
+        fetch,
       },
     }
 
@@ -43,12 +43,12 @@ describe('Integration - remove', () => {
       kraken: reducer,
     })
 
-    createApp = query => {
+    createApp = options => {
       const ConnectedApp = connect(() => ({
-        removeSomething: {
+        fetchSomething: {
           type: entityType,
-          method: 'remove',
-          query,
+          method: 'fetch',
+          ...options,
         },
       }))(App)
 
@@ -60,45 +60,57 @@ describe('Integration - remove', () => {
     }
   })
 
-  it('should call the remove action', done => {
-    const component = createApp()
-
-    expect(component).to.have.prop('removeSomething')
-
-    expect(remove).to.not.have.been.called
+  it('should call the fetch action', done => {
+    createApp()
 
     setTimeout(() => {
-      component.props().removeSomething()
-
-      expect(remove).to.have.been.calledOnce
+      expect(fetch).to.have.been.calledOnce
 
       done()
     })
   })
 
-  it('should pass query params to the remove action', () => {
-    const query = { foo: 'bar' }
+  it('should not call the fetch function if the `lazy` prop is set.', done => {
+    const component = createApp({ lazy: true })
 
-    const component = createApp(query)
+    setTimeout(() => {
+      expect(fetch).to.not.have.been.called
 
-    expect(remove).to.not.have.been.called
+      component.props().fetchSomething()
 
-    component.props().removeSomething()
+      setTimeout(() => {
+        expect(fetch).to.have.been.calledOnce
 
-    expect(remove).to.have.been.calledOnce
-    expect(remove).to.have.been.calledWith(query)
+        done()
+      }, 2)
+    })
   })
 
-  it('should pass the body to the remove action', () => {
+  it('should pass query params to the fetch action', () => {
+    const query = { foo: 'bar' }
+
+    createApp({ query })
+
+    setTimeout(() => {
+      expect(fetch).to.have.been.calledOnce
+      expect(fetch).to.have.been.calledWith(query)
+    })
+  })
+
+  it('should pass the body to the fetch action', done => {
     const body = { id: 'foo' }
 
-    const component = createApp()
+    const component = createApp({ lazy: true })
 
-    expect(remove).to.not.have.been.called
+    expect(fetch).to.not.have.been.called
 
-    component.props().removeSomething(body)
+    component.props().fetchSomething(body)
 
-    expect(remove).to.have.been.calledOnce
-    expect(remove).to.have.been.calledWith({}, body)
+    setTimeout(() => {
+      expect(fetch).to.have.been.calledOnce
+      expect(fetch).to.have.been.calledWith({}, body)
+
+      done()
+    }, 2)
   })
 })

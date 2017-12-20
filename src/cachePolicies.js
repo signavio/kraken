@@ -1,11 +1,9 @@
 // @flow
-import { keys, isMatch as isMatchBase, intersection, omitBy } from 'lodash'
+import { keys, intersection } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import { actionTypes } from './actions'
-
-const isMatch = (obj, src) =>
-  isMatchBase(obj, omitBy(src, value => value === undefined))
+import { isMatch } from './utils'
 
 // ENTITIES SIDE EFFECTS
 

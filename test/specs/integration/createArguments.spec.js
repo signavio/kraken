@@ -23,17 +23,17 @@ function configureStore(rootReducer, saga) {
 
 const App = () => <div />
 
-describe('Integration - remove', () => {
-  let remove
+describe('Integration - create', () => {
+  let create
   let createApp
 
   beforeEach(() => {
-    remove = stub().returns({})
+    create = stub().returns({})
 
     const types = {
       [entityType]: {
         collection: 'test',
-        remove,
+        create,
       },
     }
 
@@ -45,9 +45,9 @@ describe('Integration - remove', () => {
 
     createApp = query => {
       const ConnectedApp = connect(() => ({
-        removeSomething: {
+        createSomething: {
           type: entityType,
-          method: 'remove',
+          method: 'create',
           query,
         },
       }))(App)
@@ -60,45 +60,41 @@ describe('Integration - remove', () => {
     }
   })
 
-  it('should call the remove action', done => {
+  it('should call the create action', () => {
     const component = createApp()
 
-    expect(component).to.have.prop('removeSomething')
+    expect(component).to.have.prop('createSomething')
 
-    expect(remove).to.not.have.been.called
+    expect(create).to.not.have.been.called
 
-    setTimeout(() => {
-      component.props().removeSomething()
+    component.props().createSomething()
 
-      expect(remove).to.have.been.calledOnce
-
-      done()
-    })
+    expect(create).to.have.been.calledOnce
   })
 
-  it('should pass query params to the remove action', () => {
+  it('should pass query params to the create action', () => {
     const query = { foo: 'bar' }
 
     const component = createApp(query)
 
-    expect(remove).to.not.have.been.called
+    expect(create).to.not.have.been.called
 
-    component.props().removeSomething()
+    component.props().createSomething()
 
-    expect(remove).to.have.been.calledOnce
-    expect(remove).to.have.been.calledWith(query)
+    expect(create).to.have.been.calledOnce
+    expect(create).to.have.been.calledWith(query)
   })
 
-  it('should pass the body to the remove action', () => {
+  it('should pass the body to the create action', () => {
     const body = { id: 'foo' }
 
     const component = createApp()
 
-    expect(remove).to.not.have.been.called
+    expect(create).to.not.have.been.called
 
-    component.props().removeSomething(body)
+    component.props().createSomething(body)
 
-    expect(remove).to.have.been.calledOnce
-    expect(remove).to.have.been.calledWith({}, body)
+    expect(create).to.have.been.calledOnce
+    expect(create).to.have.been.calledWith({}, body)
   })
 })
