@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import { cachePolicies, actionTypes } from '../../src'
+import { normalize } from 'normalizr'
 
 import { apiTypes } from './fixtures'
 
@@ -92,6 +93,57 @@ describe('Cache Policies', () => {
           }
         )
       ).to.deep.equal(emptyState)
+    })
+
+    it('should remove self-referential schemas', () => {
+      const post = {
+        id: 'post-1',
+        comments: [
+          {
+            id: 'comment-1',
+            title: 'Comment #1',
+          },
+          {
+            id: 'comment-2',
+            title: 'Comment #1',
+            parent: { id: 'comment-1' },
+          },
+        ],
+      }
+
+      const { entities: state } = normalize(post, apiTypes.POST.schema)
+      const result = cachePolicies.optimisticRemove.updateEntitiesOnAction(
+        apiTypes,
+        state,
+        {
+          type: actionTypes.REMOVE_DISPATCH,
+          payload: {
+            entityType: 'COMMENT',
+            query: { id: 'comment-1' },
+          },
+        }
+      )
+
+      const expectedPost = {
+        id: 'post-1',
+        comments: [
+          {
+            id: 'comment-2',
+            title: 'Comment #1',
+          },
+        ],
+      }
+      const { entities: expectedState } = normalize(
+        expectedPost,
+        apiTypes.POST.schema
+      )
+
+      expect(result).to.deep.equal({
+        ...emptyState,
+        ...expectedState,
+      })
+      expect(result.posts['post-1'].comments).to.have.length(1)
+      expect(result.comments['comment-2'].parent).to.be.undefined
     })
   })
 

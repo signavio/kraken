@@ -54,27 +54,32 @@ const deleteOnMatchingRemoveDispatch = (
   const schemaOfRemovedEntities = apiTypes[actionTypeConstant].schema
 
   const constants = getTypeNames(apiTypes)
-  const constantsByCollection = groupBy(constants, constant =>
+  const constantsByCollection = groupBy(constants, (constant: string) =>
     getCollectionName(apiTypes, constant)
   )
 
+  const collectionsWithCleanedReferences = mapValues(
+    constantsByCollection,
+    (
+      constantsWithSameCollection: Array<string>,
+      collectionNameOfAllTheseTypes: string
+    ) =>
+      removeReferencesFromAllInCollection(
+        entities[collectionNameOfAllTheseTypes],
+        constantsWithSameCollection.map(
+          (constant: string) => apiTypes[constant].schema
+        ),
+        schemaOfRemovedEntities,
+        idsToRemove
+      )
+  )
+
   return {
-    ...mapValues(
-      constantsByCollection,
-      (
-        constantsWithSameCollection: Array<string>,
-        collectionNameOfAllTheseTypes: string
-      ) =>
-        removeReferencesFromAllInCollection(
-          entities[collectionNameOfAllTheseTypes],
-          constantsWithSameCollection.map(
-            (constant: string) => apiTypes[constant].schema
-          ),
-          schemaOfRemovedEntities,
-          idsToRemove
-        )
+    ...collectionsWithCleanedReferences,
+    [collectionName]: omit(
+      collectionsWithCleanedReferences[collectionName],
+      idsToRemove
     ),
-    [collectionName]: omit(entities[collectionName], idsToRemove),
   }
 }
 
