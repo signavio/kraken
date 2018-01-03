@@ -36,7 +36,7 @@ const getEntityState = (
     if (denormalizeValue) {
       const { schema } = types[entityType]
 
-      return denormalize(finalValue, schema, state.kraken.entities)
+      return denormalize(value, schema, state.kraken.entities)
     }
 
     return finalValue
