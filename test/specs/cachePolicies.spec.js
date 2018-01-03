@@ -1,93 +1,89 @@
 import { expect } from 'chai'
 import { cachePolicies, actionTypes } from '../../src'
 
+import { apiTypes } from './fixtures'
+
 describe('Cache Policies', () => {
   describe('optimistic remove', () => {
-    const entity = {
-      id: 'e1',
-      name: 'John Doe',
+    const emptyState = {
+      comments: {},
+      posts: {},
+      users: {},
+    }
+
+    const entitiesState = {
+      ...emptyState,
+      users: {
+        e1: {
+          id: 'e1',
+          name: 'John Doe',
+        },
+      },
     }
 
     const typeConstant = 'USER'
 
-    it('should only match remove actions.', () => {
+    const assertWithWrongType = action =>
       expect(
-        cachePolicies.optimisticRemove.updateEntityOnAction(
-          typeConstant,
-          entity,
-          {
-            type: 'wrong-type',
-            payload: {
-              entityType: typeConstant,
-            },
-          }
+        cachePolicies.optimisticRemove.updateEntitiesOnAction(
+          apiTypes,
+          entitiesState,
+          action
         )
-      ).to.equal(entity)
+      ).to.equal(entitiesState)
 
+    const assertWithDeleteType = () =>
       expect(
-        cachePolicies.optimisticRemove.updateEntityOnAction(
-          typeConstant,
-          entity,
+        cachePolicies.optimisticRemove.updateEntitiesOnAction(
+          apiTypes,
+          entitiesState,
           {
             type: actionTypes.REMOVE_DISPATCH,
             payload: {
               entityType: typeConstant,
+              query: { id: 'e1' },
             },
           }
         )
-      ).to.be.undefined
+      ).to.deep.equal(emptyState)
+
+    it('should remove matching entities for remove action.', () => {
+      assertWithWrongType({
+        type: 'wrong-type',
+        payload: {
+          entityType: typeConstant,
+        },
+      })
+
+      assertWithDeleteType()
     })
 
-    it('should only match entities that match a given query', () => {
-      expect(
-        cachePolicies.optimisticRemove.updateEntityOnAction(
-          typeConstant,
-          entity,
-          {
-            type: actionTypes.REMOVE_DISPATCH,
-            payload: {
-              query: {
-                no: 'match',
-              },
-              entityType: typeConstant,
-            },
-          }
-        )
-      ).to.equal(entity)
+    it('should only remove entities that match the given query', () => {
+      assertWithWrongType({
+        type: actionTypes.REMOVE_DISPATCH,
+        payload: {
+          query: {
+            no: 'match',
+          },
+          entityType: typeConstant,
+        },
+      })
 
-      expect(
-        cachePolicies.optimisticRemove.updateEntityOnAction(
-          typeConstant,
-          entity,
-          {
-            type: actionTypes.REMOVE_DISPATCH,
-            payload: {
-              query: { id: 'e1' },
-              entityType: typeConstant,
-            },
-          }
-        )
-      ).to.be.undefined
+      assertWithDeleteType()
     })
 
     it('should only match entities with the correct type.', () => {
-      expect(
-        cachePolicies.optimisticRemove.updateEntityOnAction(
-          typeConstant,
-          entity,
-          {
-            type: actionTypes.REMOVE_DISPATCH,
-            payload: {
-              entityType: 'wrong-type',
-            },
-          }
-        )
-      ).to.equal(entity)
+      assertWithWrongType({
+        type: actionTypes.REMOVE_DISPATCH,
+        payload: {
+          entityType: 'COMMENT',
+        },
+      })
 
       expect(
-        cachePolicies.optimisticRemove.updateEntityOnAction(
-          typeConstant,
-          entity,
+        cachePolicies.optimisticRemove.updateEntitiesOnAction(
+          apiTypes,
+          entitiesState,
           {
             type: actionTypes.REMOVE_DISPATCH,
             payload: {
@@ -95,7 +91,7 @@ describe('Cache Policies', () => {
             },
           }
         )
-      ).to.be.undefined
+      ).to.deep.equal(emptyState)
     })
   })
 

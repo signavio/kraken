@@ -1,41 +1,19 @@
-import { mapValues, omitBy, isUndefined } from 'lodash'
-import shallowEqual from 'react-redux/lib/utils/shallowEqual'
+import { getCachePolicy } from '../types'
 
-import { ApiTypeMap, EntitiesState, Action } from '../internalTypes'
-
-import { deriveEntityIdFromAction } from '../utils'
-import { getCollectionName, getCachePolicy } from '../types'
-import { actionTypes } from '../actions'
-
-const entitiesSideEffectsReducer = (
-  state: EntitiesState,
-  action: Action,
-  updateEntityOnAction
-) => {
-  const newState = omitBy(
-    mapValues(state, entity => updateEntityOnAction(entity, action)),
-    isUndefined
-  )
-
-  return shallowEqual(state, newState) ? state : newState
-}
+import type { ApiTypeMap, Action, State } from '../internalTypes'
 
 const createEntitiesSideEffectsReducer = (
   apiTypes: ApiTypeMap,
   typeConstant
 ) => {
-  const { updateEntityOnAction } = getCachePolicy(apiTypes, typeConstant)
+  const { updateEntitiesOnAction } = getCachePolicy(apiTypes, typeConstant)
 
   return (state: State = {}, action: Action) => {
-    if (!updateEntityOnAction) {
+    if (!updateEntitiesOnAction) {
       return state
     }
 
-    return entitiesSideEffectsReducer(
-      state,
-      action,
-      updateEntityOnAction.bind(null, typeConstant)
-    )
+    return updateEntitiesOnAction(apiTypes, state, action)
   }
 }
 
