@@ -1,29 +1,86 @@
 // @flow
-import { keys, intersection } from 'lodash'
+import { keys, intersection, mapValues, omit, groupBy } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import { actionTypes } from './actions'
-import { isMatch } from './utils'
+import { isMatch, removeReferences } from './utils'
+import { getCollectionName, getTypeNames } from './types'
+
+import type { Action, ApiTypeMap, Entity, EntitiesState } from './internalTypes'
 
 // ENTITIES SIDE EFFECTS
 
-const deleteOnMatchingRemoveDispatch = (
-  typeConstant: string,
-  entity,
-  { type, payload }
-) => {
-  const { query, entityType } = payload
+const removeReferencesFromAllInCollection = (
+  collection: Entity,
+  responsibleSchemas: Array<Object>,
+  schemaOfRemovedEntities: Object,
+  idsToRemove: Array<string>
+): Entity => {
+  const newCollectionState = mapValues(collection, (entityState: Entity) =>
+    removeReferences(
+      entityState,
+      responsibleSchemas,
+      schemaOfRemovedEntities,
+      idsToRemove
+    )
+  )
 
-  if (
-    type === actionTypes.REMOVE_DISPATCH &&
-    isMatch(entity, query) &&
-    typeConstant === entityType
-  ) {
-    // falsy values will be filtered out
-    return undefined
+  return shallowEqual(newCollectionState, collection)
+    ? collection
+    : newCollectionState
+}
+
+const deleteOnMatchingRemoveDispatch = (
+  apiTypes: ApiTypeMap,
+  entities: EntitiesState,
+  action: Action
+): EntitiesState => {
+  if (action.type !== actionTypes.REMOVE_DISPATCH) {
+    return entities
   }
 
-  return entity
+  const { query, entityType: actionTypeConstant } = action.payload
+  const collectionName = getCollectionName(apiTypes, actionTypeConstant)
+  const idsToRemove = [
+    ...keys(entities[collectionName]).filter((key: string) =>
+      isMatch(entities[collectionName][key], query)
+    ),
+  ]
+
+  if (idsToRemove.length === 0) {
+    return entities
+  }
+
+  const schemaOfRemovedEntities = apiTypes[actionTypeConstant].schema
+
+  const constants = getTypeNames(apiTypes)
+  const constantsByCollection = groupBy(constants, (constant: string) =>
+    getCollectionName(apiTypes, constant)
+  )
+
+  const collectionsWithCleanedReferences = mapValues(
+    constantsByCollection,
+    (
+      constantsWithSameCollection: Array<string>,
+      collectionNameOfAllTheseTypes: string
+    ) =>
+      removeReferencesFromAllInCollection(
+        entities[collectionNameOfAllTheseTypes],
+        constantsWithSameCollection.map(
+          (constant: string) => apiTypes[constant].schema
+        ),
+        schemaOfRemovedEntities,
+        idsToRemove
+      )
+  )
+
+  return {
+    ...collectionsWithCleanedReferences,
+    [collectionName]: omit(
+      collectionsWithCleanedReferences[collectionName],
+      idsToRemove
+    ),
+  }
 }
 
 // REQUESTS SIDE EFFECTS
@@ -74,7 +131,7 @@ export const queryFromCache = {
 }
 
 export const optimisticRemove = {
-  updateEntityOnAction: deleteOnMatchingRemoveDispatch,
+  updateEntitiesOnAction: deleteOnMatchingRemoveDispatch,
 }
 
 // CACHE POLICY COMPOSITION UTIL
@@ -93,8 +150,8 @@ export const compose = (...cachePolicies) =>
       combinedPolicy.updateRequestOnCollectionChange,
       policy.updateRequestOnCollectionChange
     ),
-    updateEntityOnAction: composeSideEffects(
-      combinedPolicy.updateEntityOnAction,
-      policy.updateEntityOnAction
+    updateEntitiesOnAction: composeSideEffects(
+      combinedPolicy.updateEntitiesOnAction,
+      policy.updateEntitiesOnAction
     ),
   }))
