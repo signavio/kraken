@@ -11,7 +11,7 @@
     "lint": "eslint src test",
     "test": "node --max-old-space-size=10240 node_modules/.bin/_mocha",
     "coverage": "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
-    "prepublish": "yarn build"
+    "prepublishOnly": "yarn build"
   },
   "author": "Jan-Felix Schwarz",
   "license": "UNLICENSED",
