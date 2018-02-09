@@ -28,25 +28,6 @@ references:
       path: xunit.xml
       prefix: tests
 
-  run_tests: &run_tests
-    steps:
-      - checkout
-
-      - *restore_deps
-
-      - run: yarn test --reporter xunit-file
-
-      - *publish_test_results
-      - *store_test_results
-
-  run_linter: &run_linter
-    steps:
-      - checkout
-
-      - *restore_deps
-
-      - run: yarn lint
-
 jobs:
   build:
     <<: *container_config
@@ -64,7 +45,6 @@ jobs:
             - *dep_backup_cache_key
 
       - run: yarn install
-      - run: yarn build
 
       - save_cache:
           key: deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -74,16 +54,25 @@ jobs:
   test:
     <<: *container_config
 
-    working_directory: ~/repo/packages/access
+    steps:
+      - checkout
 
-    <<: *run_tests
+      - *restore_deps
+
+      - run: yarn test --reporter xunit-file
+
+      - *publish_test_results
+      - *store_test_results
 
   lint:
     <<: *container_config
 
-    working_directory: ~/repo/packages/access
+    steps:
+      - checkout
 
-    <<: *run_linter
+      - *restore_deps
+
+      - run: yarn lint
 
 workflows:
   version: 2
