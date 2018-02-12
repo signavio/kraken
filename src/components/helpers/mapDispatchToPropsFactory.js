@@ -62,6 +62,8 @@ const mapDispatchToPropsFactory = ({
           return (body: Body) => actionCreator({ entityType, query, body })
         case 'remove':
           return (body: Body) => actionCreator({ entityType, query, body })
+        default:
+          throw new Error(`Unkown dispatch method ${method}`)
       }
     }
 

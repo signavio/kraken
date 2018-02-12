@@ -3,8 +3,8 @@ import { combineReducers } from 'redux'
 import expect from '../../expect'
 
 import createEnhanceWithSideEffects from '../../../src/reducers/enhanceWithSideEffects'
-import createActionCreators, { actionTypes } from '../../../src/actions'
-import { apiTypes, types, data } from '../fixtures'
+import createActionCreators from '../../../src/actions'
+import { apiTypes, types } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
 const enhanceWithSideEffects = createEnhanceWithSideEffects(apiTypes)

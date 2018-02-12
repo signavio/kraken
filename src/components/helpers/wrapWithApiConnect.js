@@ -4,14 +4,15 @@ import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
 import { forEach } from 'lodash'
 
-
 import { promisePropsEqual } from '../../utils'
 import getDisplayName from './getDisplayName'
 import { ELEMENT_ID_PROP_NAME } from './constants'
 
-const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (WrappedComponent) => {
+const wrapWithApiConnect = ({
+  finalMapPropsToPromiseProps,
+  withRef,
+}) => WrappedComponent => {
   class ApiConnect extends Component {
-
     componentWillMount() {
       this.loadEntities(this.props)
     }
@@ -22,17 +23,17 @@ const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (Wrappe
 
     render() {
       const { [ELEMENT_ID_PROP_NAME]: elementId, ...rest } = this.props
-      return createElement(
-        WrappedComponent, {
-          ...rest,
-          ...(withRef ? { ref: 'wrappedInstance' } : {}),
-        }
-      )
+      return createElement(WrappedComponent, {
+        ...rest,
+        ...(withRef ? { ref: 'wrappedInstance' } : {}),
+      })
     }
 
     loadEntities(props, prevProps) {
       const promiseProps = finalMapPropsToPromiseProps(props)
-      const prevPromiseProps = prevProps ? finalMapPropsToPromiseProps(prevProps) : {}
+      const prevPromiseProps = prevProps
+        ? finalMapPropsToPromiseProps(prevProps)
+        : {}
 
       forEach(promiseProps, (promiseProp, propName) => {
         const { method } = promiseProp
@@ -43,17 +44,17 @@ const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (Wrappe
 
         // always refresh on any change of the query or if the refresh token is set
         // and changed since the last render
-        const promisePropUpdated = !prevPromiseProps[propName] ||
+        const promisePropUpdated =
+          !prevPromiseProps[propName] ||
           !promisePropsEqual(promiseProp, prevPromiseProps[propName])
 
-        const { fetchOnMount, refresh } = promiseProps[propName]
+        const { fetchOnMount } = promiseProps[propName]
         const hasJustMounted = prevProps === undefined
         const shallForceFetch = fetchOnMount && hasJustMounted
         const isInCache = !!props[propName].value
-        const hasNewRefreshToken = (
+        const hasNewRefreshToken =
           promiseProp.refresh !== undefined &&
           promiseProp.refresh !== props[propName].refresh
-        )
         const needsFetch = shallForceFetch || !isInCache || hasNewRefreshToken
 
         if (promisePropUpdated && needsFetch && !promiseProp.lazy) {
@@ -63,9 +64,10 @@ const wrapWithApiConnect = ({ finalMapPropsToPromiseProps, withRef }) => (Wrappe
     }
 
     getWrappedInstance() {
-      invariant(withRef,
+      invariant(
+        withRef,
         'To access the wrapped instance, you need to specify ' +
-        '{ withRef: true } as the second argument of the connect() call.'
+          '{ withRef: true } as the second argument of the connect() call.'
       )
 
       return this.refs.wrappedInstance
