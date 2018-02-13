@@ -66,9 +66,9 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           reason: payload.error,
         },
       }
+    default:
+      return state
   }
-
-  return state
 }
 
 const createRequestsReducer = (apiTypes: ApiTypeMap, typeConstant) => (

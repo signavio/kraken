@@ -1,3 +1,6 @@
 {
-  "extends": "signavio-test"
+  "extends": "react-app",
+  "rules": {
+    "no-unused-expressions": "off"
+  }
 }

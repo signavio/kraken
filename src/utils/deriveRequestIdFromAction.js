@@ -29,6 +29,9 @@ const getMethodName = (action: Action) => {
     case actionTypes.REMOVE_SUCCESS:
     case actionTypes.REMOVE_FAILURE:
       return 'remove'
+
+    default:
+      throw new Error(`Unkown action type ${action.type}`)
   }
 }
 
