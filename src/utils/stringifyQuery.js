@@ -1,10 +1,10 @@
-import { chain } from 'lodash'
+import { toPairs, reduce } from 'lodash'
 
 const stringifyQuery = query =>
-  chain(query)
-    .toPairs()
-    .sort()
-    .reduce((previous, current) => previous + JSON.stringify(current), '')
-    .value()
+  reduce(
+    toPairs(query).sort(),
+    (previous, current) => previous + JSON.stringify(current),
+    ''
+  )
 
 export default stringifyQuery
