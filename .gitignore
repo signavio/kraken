@@ -10,6 +10,7 @@ npm-debug.log
 
 # build
 lib
+lib-es6
 
 # test
 xunit.xml
