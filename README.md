@@ -81,18 +81,13 @@ import { callApi } from '@signavio/kraken'
 export const collection = 'users'
 export const schema = new schemas.Entity(collection)
 
-export const fetch = ({ id }) => (
-  callApi(`users/${id}`, schema)
-)
-export const create = (_, body) => (
+export const fetch = ({ id }) => callApi(`users/${id}`, schema)
+export const create = (_, body) =>
   callApi('users', schema, { method: 'POST', body })
-)
-export const update = ({ id }, body) => (
+export const update = ({ id }, body) =>
   callApi(`users/{id}`, schema, { method: 'PUT', body })
-)
-export const remove = ({ id }) => (
+export const remove = ({ id }) =>
   callApi(`users/{id}`, schema, { method: 'DELETE' })
-)
 ```
 
 In the example above we created a `user` type. It defines its collection as
@@ -176,10 +171,9 @@ const store = createStore(
 sagaMiddleware.run(saga, store.getState)
 
 // Export a provider component wrapping the redux Provider
-const ApiProvider = ({ children }) =>
-  <Provider store={store}>
-    {children}
-  </Provider>
+const ApiProvider = ({ children }) => (
+  <Provider store={store}>{children}</Provider>
+)
 
 export default ApiProvider
 ```
@@ -196,11 +190,7 @@ import { connect, types } from 'your-api'
 
 function User({ userFetch }) {
   if (userFetch.pending) {
-    return (
-      <div>
-        Loading user...
-      </div>
-    )
+    return <div>Loading user...</div>
   }
 
   if (userFetch.rejected) {
@@ -208,7 +198,7 @@ function User({ userFetch }) {
       <div>
         Could not fetch user:
         <br />
-        { userFetch.reason }
+        {userFetch.reason}
       </div>
     )
   }
@@ -217,7 +207,7 @@ function User({ userFetch }) {
 
   return (
     <div>
-      { user.firstName } { user.lastName }
+      {user.firstName} {user.lastName}
     </div>
   )
 }
@@ -298,9 +288,90 @@ information that can be used to render a resource.
 | rejected   | `boolean` | `true` when the last request returned with errors. `false` otherwise.                                 |
 | reason     | `string`  | When `rejected` is true, we try to include the error message we got from the server in this property. |
 
-### Cache Policies
+## Cache Policies
 
-TODO.
+`kraken` builds up a cache of your data.
+When you integrate `kraken` into your app you might want to change how certain data is handled during its lifecycle.
+In order to do this we provide some prebuild cache policies and also allow you to create your own.
+
+In order to activate certain cache policies you need to export under the key `cachePolicy` from your api type.
+
+### Query from cache (`cachePolicies.queryFromCache`)
+
+This policy is mainly used as an optimistic create.
+It will enhance request results with data that is already present in the cache.
+By doing so a promise prop will already have a `value` attribute even when the request didn't return yet from the server.
+The objects from the cache will be filtered by using the `query` option that was set inside the `connect` call.
+
+```es6
+// type definition
+import { cachePolicies } from '@signavio/kraken'
+
+export const cachePolicy = cachePolicies.queryFromCache
+
+// component
+
+const AddUser = ({ createUser }) => (
+  <button onClick={() => createUser({ fullName: 'John Doe' })}>
+    {createUser.pending
+      ? `Creating: ${createUser.value.fullName}`
+      : 'Create new user'}
+  </button>
+)
+
+const enhance = connect(() => ({
+  createhUser: {
+    type: types.USER,
+    method: 'create',
+  },
+}))
+
+export default enhance(AddUser)
+```
+
+In the example above the type declared that the `queryFromCache` policy should be used.
+Now the moment the `createUser` method is called the value will be available on the promise prop.
+This way, we can already use the `value` on the promise prop to show the `fullName` of the user even though the server didn't return a response yet.
+
+### Optimistic remove (`cachePolicies.optimisticRemove`)
+
+Using this policy you can specify that entities are removed when the remove action is dispatched.
+Otherwise entities would only be removed once the respective request returns successfully from the server.
+
+### Remove references to deleted entities (`cachePolicies.removeReferencesToDeletedEntities`)
+
+If your application becomes larger then certain entities might have a relation to one another.
+For instance To-Dos could have assignees.
+The question then is, what happens when for instance the assignee for a certain To-Do is removed.
+By default these changes will not be reflected and you need to perform the necessary updates yourself.
+However, for this particular use case `kraken` also offers a cache policy you can use.
+It ensures that once an entity is deleted all references to that entity will also be cleaned up in your local state.
+In the To-Do example this would mean that once the assignee is deleted also the respective To-Do would no longer point to the stale `id`.
+
+### Adding your own cache policy
+
+There are two possiblities to influence the cache. You can either change the request state or the entity state.
+
+```es6
+export type CachePolicyT = {
+  updateRequestOnCollectionChange?: (
+    request: Request,
+    collection: EntityCollectionT
+  ) => Request,
+  updateEntitiesOnAction?: (
+    apiTypes: ApiTypeMap,
+    entities: EntitiesState,
+    action: Action
+  ) => EntitiesState,
+}
+```
+
+In order to influence the entity state you can export a method under the key `updateEntitiesOnAction`.
+It will be called for every action that is executed by the entities reducer.
+You will get access to all the api types you have declared, the current state and also get the action that was dispatched.
+
+If you want to influence the state of a certain request when some data changes, you need to export your policy under the key `updateRequestOnCollectionChange`.
+This method will be called for every request and will also be handed the entity collection which is influenced by the request.
 
 ## Questions
 
