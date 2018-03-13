@@ -87,7 +87,7 @@ jobs:
     steps:
       - checkout
 
-      - *restore_deps_global
+      - *restore_deps
 
       # again create .npmrc so that yarn lockfile generation won't fail
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
