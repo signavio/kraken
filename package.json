@@ -14,7 +14,8 @@
     "lint": "eslint src test",
     "test": "mocha",
     "coverage": "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "renovate": "renovate"
   },
   "author": "Jan-Felix Schwarz",
   "license": "UNLICENSED",
@@ -55,6 +56,7 @@
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
     "redux-saga": "^0.15.4",
+    "renovate": "^11.36.2",
     "rimraf": "^2.6.1",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",

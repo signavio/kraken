@@ -9,9 +9,9 @@ references:
       - image: circleci/node:latest
 
   dep_cache_key: &dep_cache_key
-    deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    deps-{{ checksum "yarn.lock" }}
   dep_backup_cache_key: &dep_backup_cache_key
-    deps-{{ .Branch }}
+    deps
 
   restore_deps: &restore_deps
     restore_cache:
@@ -41,13 +41,13 @@ jobs:
 
       - restore_cache:
           keys:
-            - deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - deps-{{ checksum "yarn.lock" }}
             - *dep_backup_cache_key
 
       - run: yarn install
 
       - save_cache:
-          key: deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: deps-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 
@@ -78,8 +78,25 @@ jobs:
 
       - run: yarn lint
 
+
+  renovate:
+    <<: *container_config
+
+    working_directory: *workspace_root
+
+    steps:
+      - checkout
+
+      - *restore_deps_global
+
+      # again create .npmrc so that yarn lockfile generation won't fail
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+
+      - run: yarn renovate --npm-token $NPM_TOKEN --token $GITHUB_ACCESS_TOKEN
+
 workflows:
   version: 2
+
   build_and_test:
     jobs:
       - build
@@ -88,5 +105,20 @@ workflows:
           requires:
             - build
       - lint:
+          requires:
+            - build
+
+  renovate:
+    triggers:
+      - schedule:
+          cron: "0 2 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
+
+      - renovate:
           requires:
             - build
