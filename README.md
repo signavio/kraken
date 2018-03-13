@@ -292,9 +292,9 @@ information that can be used to render a resource.
 
 `kraken` builds up a cache of your data.
 When you integrate `kraken` into your app you might want to change how certain data is handled during its lifecycle.
-In order to do this we provide some prebuild cache policies and also allow you to create your own.
+To activate a cache policy you need to export it under the key `cachePolicy` in your api type definition file (where you also define the `schema`, etc.).
 
-In order to activate certain cache policies you need to export under the key `cachePolicy` from your api type.
+In order to do this we provide some prebuild cache policies and also allow you to create your own.
 
 ### Query from cache (`cachePolicies.queryFromCache`)
 
@@ -320,7 +320,7 @@ const AddUser = ({ createUser }) => (
 )
 
 const enhance = connect(() => ({
-  createhUser: {
+  createUser: {
     type: types.USER,
     method: 'create',
   },
@@ -333,12 +333,19 @@ In the example above the type declared that the `queryFromCache` policy should b
 Now the moment the `createUser` method is called the value will be available on the promise prop.
 This way, we can already use the `value` on the promise prop to show the `fullName` of the user even though the server didn't return a response yet.
 
+#### Caveats
+
+In order for this mechanism to work the `query` params you specify must match attributes on the actual entities.
+
 ### Optimistic remove (`cachePolicies.optimisticRemove`)
 
+**This policy is active by default for all [`Entity`](https://github.com/paularmstrong/normalizr/blob/master/docs/api.md#entitykey-definition---options--) types**
+
 Using this policy you can specify that entities are removed when the remove action is dispatched.
-Otherwise entities would only be removed once the respective request returns successfully from the server.
 
 ### Remove references to deleted entities (`cachePolicies.removeReferencesToDeletedEntities`)
+
+**This policy is active by default for all [`Array`](https://github.com/paularmstrong/normalizr/blob/master/docs/api.md#arraydefinition-schemaattribute) types**
 
 If your application becomes larger then certain entities might have a relation to one another.
 For instance To-Dos could have assignees.
@@ -347,6 +354,10 @@ By default these changes will not be reflected and you need to perform the neces
 However, for this particular use case `kraken` also offers a cache policy you can use.
 It ensures that once an entity is deleted all references to that entity will also be cleaned up in your local state.
 In the To-Do example this would mean that once the assignee is deleted also the respective To-Do would no longer point to the stale `id`.
+
+#### Caveats
+
+In order for this mechanism to work the `query` params you specify must match attributes on the actual entities.
 
 ### Adding your own cache policy
 
@@ -372,6 +383,8 @@ You will get access to all the api types you have declared, the current state an
 
 If you want to influence the state of a certain request when some data changes, you need to export your policy under the key `updateRequestOnCollectionChange`.
 This method will be called for every request and will also be handed the entity collection which is influenced by the request.
+
+To apply multiple cache policies at the same time you can use `cachePolicies.compose` and hand in all policies that you want to apply.
 
 ## Questions
 
