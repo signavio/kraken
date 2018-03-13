@@ -1,29 +1,42 @@
 // @flow
-import type { CachePolicyT } from '../internalTypes'
+import type {
+  EntityCachePolicyT,
+  RequestCachePolicyT,
+  CachePolicyT,
+  Request,
+  EntitiesState,
+} from '../internalTypes'
 
-const composeSideEffects = (first?: Function, second?: Function) => {
-  if (first && second) {
-    return (stateToReceiveSideEffects, ...args) =>
-      first(second(stateToReceiveSideEffects, ...args), ...args)
-  }
+type PolicyT = EntityCachePolicyT | RequestCachePolicyT
 
-  if (!first) {
-    return second
-  }
+const composeSideEffects = (first?: PolicyT, second?: PolicyT) => {
+  return (stateToReceiveSideEffects: Request | EntitiesState, ...args) => {
+    if (!first && second) {
+      return second(stateToReceiveSideEffects, ...args)
+    }
 
-  if (!second) {
-    return first
+    if (first && !second) {
+      return first(stateToReceiveSideEffects, ...args)
+    }
+
+    if (first && second) {
+      return first(second(stateToReceiveSideEffects, ...args), ...args)
+    }
+
+    return stateToReceiveSideEffects
   }
 }
 
 export const compose = (...cachePolicies: Array<CachePolicyT>) =>
-  cachePolicies.reduce((combinedPolicy, policy) => ({
-    updateRequestOnCollectionChange: composeSideEffects(
-      combinedPolicy.updateRequestOnCollectionChange,
-      policy.updateRequestOnCollectionChange
-    ),
-    updateEntitiesOnAction: composeSideEffects(
-      combinedPolicy.updateEntitiesOnAction,
-      policy.updateEntitiesOnAction
-    ),
-  }))
+  cachePolicies.reduce(
+    (combinedPolicy: CachePolicyT, policy: CachePolicyT) => ({
+      updateRequestOnCollectionChange: composeSideEffects(
+        combinedPolicy.updateRequestOnCollectionChange,
+        policy.updateRequestOnCollectionChange
+      ),
+      updateEntitiesOnAction: composeSideEffects(
+        combinedPolicy.updateEntitiesOnAction,
+        policy.updateEntitiesOnAction
+      ),
+    })
+  )

@@ -292,14 +292,18 @@ export type Action =
   | FailureAction
   | RequestStartAction
 
+export type RequestCachePolicyT = (
+  request: Request,
+  collection: EntityCollectionT
+) => Request
+
+export type EntityCachePolicyT = (
+  apiTypes: ApiTypeMap,
+  entities: EntitiesState,
+  action: Action
+) => EntitiesState
+
 export type CachePolicyT = {
-  updateRequestOnCollectionChange?: (
-    request: Request,
-    collection: EntityCollectionT
-  ) => Request,
-  updateEntitiesOnAction?: (
-    apiTypes: ApiTypeMap,
-    entities: EntitiesState,
-    action: Action
-  ) => EntitiesState,
+  updateRequestOnCollectionChange?: RequestCachePolicyT,
+  updateEntitiesOnAction?: EntityCachePolicyT,
 }
