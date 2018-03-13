@@ -1,10 +1,15 @@
 // @flow
 import { omit, groupBy, mapValues, keys } from 'lodash'
 
-import { actionTypes } from './actions'
-import { getCollectionName, getTypeNames } from './types'
-import { removeReferences, isMatch } from './utils'
-import type { Action, ApiTypeMap, EntitiesState, Entity } from './internalTypes'
+import { actionTypes } from '../actions'
+import { getCollectionName, getTypeNames } from '../types'
+import { removeReferences, isMatch, shallowEqual } from '../utils'
+import type {
+  Action,
+  ApiTypeMap,
+  EntitiesState,
+  Entity,
+} from '../internalTypes'
 
 const removeReferencesFromAllInCollection = (
   collection: Entity,

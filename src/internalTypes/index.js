@@ -19,16 +19,20 @@ export type Request = {
   refresh: any,
 }
 
+export type RequestCollectionT = {
+  [requestId: string]: Request,
+}
+
 export type RequestsState = {
-  [entityType: string]: {
-    [requestId: string]: Request,
-  },
+  [entityType: string]: RequestCollectionT,
+}
+
+export type EntityCollectionT = {
+  [entityId: string]: Entity,
 }
 
 export type EntitiesState = {
-  [collection: string]: {
-    [entityId: string]: Entity,
-  },
+  [collection: string]: EntityCollectionT,
 }
 
 export type PromiseProp<T> = {
@@ -211,6 +215,8 @@ export type DispatchAction =
   | UpdateDispatchAction
   | RemoveDispatchAction
 
+export type DispatchT = (payload: DispatchPayload) => DispatchAction
+
 //////////////////////////
 // Success Action Types //
 //////////////////////////
@@ -285,3 +291,15 @@ export type Action =
   | SuccessAction
   | FailureAction
   | RequestStartAction
+
+export type CachePolicyT = {
+  updateRequestOnCollectionChange?: (
+    request: Request,
+    collection: EntityCollectionT
+  ) => Request,
+  updateEntitiesOnAction?: (
+    apiTypes: ApiTypeMap,
+    entities: EntitiesState,
+    action: Action
+  ) => EntitiesState,
+}

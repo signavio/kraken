@@ -1,7 +1,10 @@
 // @flow
+import type { CachePolicyT } from '../internalTypes'
+
 const composeSideEffects = (first?: Function, second?: Function) => {
-  if (!first && !second) {
-    return undefined
+  if (first && second) {
+    return (stateToReceiveSideEffects, ...args) =>
+      first(second(stateToReceiveSideEffects, ...args), ...args)
   }
 
   if (!first) {
@@ -11,12 +14,9 @@ const composeSideEffects = (first?: Function, second?: Function) => {
   if (!second) {
     return first
   }
-
-  return (stateToReceiveSideEffects, ...args) =>
-    first(second(stateToReceiveSideEffects, ...args), ...args)
 }
 
-export const compose = (...cachePolicies) =>
+export const compose = (...cachePolicies: Array<CachePolicyT>) =>
   cachePolicies.reduce((combinedPolicy, policy) => ({
     updateRequestOnCollectionChange: composeSideEffects(
       combinedPolicy.updateRequestOnCollectionChange,

@@ -5,6 +5,7 @@
   "repository": "git@github.com:signavio/kraken.git",
   "main": "lib/index.js",
   "module": "lib-es6/index.js",
+  "sideEffects": false,
   "scripts": {
     "clean": "rimraf lib lib-es6",
     "build": "yarn build:es5 && yarn build:es6",
@@ -16,7 +17,8 @@
     "coverage":
       "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
     "prepublishOnly": "yarn build",
-    "renovate": "renovate"
+    "renovate": "renovate",
+    "flow": "flow check"
   },
   "author": "Jan-Felix Schwarz",
   "license": "UNLICENSED",
@@ -46,6 +48,7 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.6.1",
+    "flow-bin": "^0.67.1",
     "install": "0.8.4",
     "istanbul": "^1.1.0-alpha.1",
     "jsdom": "9.9.1",

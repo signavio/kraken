@@ -1,8 +1,10 @@
 // @flow
 import { keys, intersection } from 'lodash'
 
+import type { Request, EntityCollectionT } from '../internalTypes'
+
 // clean result values from ids that are no longer existent in the cache
-const removeDeleted = (request, collection) => {
+const removeDeleted = (request: Request, collection: EntityCollectionT) => {
   if (!request.value) {
     return request
   }

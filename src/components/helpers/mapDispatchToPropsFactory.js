@@ -8,6 +8,7 @@ import type {
   ApiTypeMap,
   PromiseProp,
   DispatchPayload,
+  DispatchT,
   Body,
 } from '../../internalTypes'
 
@@ -29,7 +30,7 @@ const mapDispatchToPropsFactory = ({
   const actionCreators = actionsCreators(types)
 
   return (
-    dispatch,
+    dispatch: DispatchT,
     { [ELEMENT_ID_PROP_NAME]: elementId, ...ownProps }: DispatchPayload
   ) => {
     const promiseProps = finalMapPropsToPromiseProps(ownProps)

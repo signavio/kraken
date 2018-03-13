@@ -1,10 +1,15 @@
+// @flow
 import { keys } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
-import { isMatch } from './utils'
+import type { Request, EntityCollectionT } from '../internalTypes'
+import { isMatch } from '../utils'
 
 // match cached entities' properties with query params and keep the result up-to-date with cache
-const selectMatchingItemsAsValue = (request, collection) => {
+const selectMatchingItemsAsValue = (
+  request: Request,
+  collection: EntityCollectionT
+): Request => {
   const matchingIds = keys(collection).filter(id =>
     isMatch(collection[id], request.query)
   )
