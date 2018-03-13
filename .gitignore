@@ -3,7 +3,8 @@
 
 # NPM
 node_modules
-npm-debug.log
+
+*.log
 
 # EDITOR
 *.sublime-workspace
