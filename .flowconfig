@@ -1,5 +1,7 @@
 [ignore]
-
+<PROJECT_ROOT>/node_modules/npm.*
+<PROJECT_ROOT>/node_modules/json-dup-key-validator.*
+<PROJECT_ROOT>/node_modules/config-chain/test
 [include]
 
 [libs]

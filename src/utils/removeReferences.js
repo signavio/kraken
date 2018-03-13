@@ -2,9 +2,9 @@
 import { schema as normalizrSchema } from 'normalizr'
 import { uniq, keys, difference } from 'lodash'
 
-import isArraySchemaOf from './isArraySchemaOf'
+import type { Entity } from '../internalTypes'
 
-import type { Entity } from './internalTypes'
+import isArraySchemaOf from './isArraySchemaOf'
 
 const getEntitySchema = (entityOrArraySchema: Object): Entity => {
   if (entityOrArraySchema instanceof normalizrSchema.Array) {

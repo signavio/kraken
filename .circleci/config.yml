@@ -78,7 +78,6 @@ jobs:
 
       - run: yarn lint
 
-
   renovate:
     <<: *container_config
 
@@ -94,6 +93,18 @@ jobs:
 
       - run: yarn renovate --npm-token $NPM_TOKEN --token $GITHUB_ACCESS_TOKEN
 
+  flow:
+    <<: *container_config
+
+    working_directory: *workspace_root
+
+    steps:
+      - checkout
+
+      - *restore_deps
+
+      - run: yarn flow
+
 workflows:
   version: 2
 
@@ -104,7 +115,12 @@ workflows:
       - test:
           requires:
             - build
+
       - lint:
+          requires:
+            - build
+
+      - flow:
           requires:
             - build
 

@@ -8,7 +8,7 @@ import { ApiTypeMap, State, DispatchAction, Entity } from '../internalTypes'
 import getEntityCollectionState from './getEntityCollectionState'
 import getCachedValue from './getCachedValue'
 
-type MaybeEntity = Entity | undefined
+type MaybeEntity = Entity | typeof undefined
 
 const getEntityState = (
   types: ApiTypeMap,
