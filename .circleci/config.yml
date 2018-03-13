@@ -79,7 +79,7 @@ jobs:
       - run: yarn lint
 
   renovate:
-     <<: *container_config
+    <<: *container_config
 
     working_directory: *workspace_root
 
