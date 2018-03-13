@@ -343,6 +343,10 @@ In order for this mechanism to work the `query` params you specify must match at
 
 Using this policy you can specify that entities are removed when the remove action is dispatched.
 
+#### Caveats
+
+In order for this mechanism to work the `query` params you specify must match attributes on the actual entities.
+
 ### Remove references to deleted entities (`cachePolicies.removeReferencesToDeletedEntities`)
 
 **This policy is active by default for all [`Array`](https://github.com/paularmstrong/normalizr/blob/master/docs/api.md#arraydefinition-schemaattribute) types**
@@ -354,10 +358,6 @@ By default these changes will not be reflected and you need to perform the neces
 However, for this particular use case `kraken` also offers a cache policy you can use.
 It ensures that once an entity is deleted all references to that entity will also be cleaned up in your local state.
 In the To-Do example this would mean that once the assignee is deleted also the respective To-Do would no longer point to the stale `id`.
-
-#### Caveats
-
-In order for this mechanism to work the `query` params you specify must match attributes on the actual entities.
 
 ### Adding your own cache policy
 
