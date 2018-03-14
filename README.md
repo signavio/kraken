@@ -1,4 +1,5 @@
 # kraken
+[![CircleCI](https://circleci.com/gh/signavio/kraken/tree/master.svg?style=svg)](https://circleci.com/gh/signavio/kraken/tree/master)
 
 The problem is always the same. You create an application and need to connect it
 to your API. That means you need to think about caches, cache invalidation,
