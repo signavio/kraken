@@ -1,5 +1,7 @@
 # kraken
-[![CircleCI](https://circleci.com/gh/signavio/kraken/tree/master.svg?style=svg)](https://circleci.com/gh/signavio/kraken/tree/master)
+
+[![CircleCI][build-badge]][build]
+[![npm package][npm-badge]][npm]
 
 The problem is always the same. You create an application and need to connect it
 to your API. That means you need to think about caches, cache invalidation,
@@ -413,3 +415,7 @@ yarn coverage
 # Check whether you have any linting errors
 yarn lint
 ```
+[build-badge]: https://circleci.com/gh/signavio/kraken/tree/master.svg?style=shield&circle-token=:circle-token
+[build]: https://circleci.com/gh/signavio/kraken/tree/master
+[npm-badge]: https://img.shields.io/npm/v/@signavio/kraken.png?style=flat-square
+[npm]: https://www.npmjs.org/package/@signavio/kraken
