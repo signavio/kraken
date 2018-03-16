@@ -57,7 +57,7 @@
     "react": "15.4.2",
     "react-addons-test-utils": "15.4.2",
     "react-dom": "15.4.2",
-    "react-redux": "5.0.5",
+    "react-redux": "5.0.7",
     "redux": "3.7.1",
     "redux-saga": "0.15.4",
     "renovate": "11.36.2",
