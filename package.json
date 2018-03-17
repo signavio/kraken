@@ -63,7 +63,7 @@
     "renovate": "11.36.2",
     "rimraf": "2.6.1",
     "sinon": "1.17.7",
-    "sinon-chai": "2.8.0",
+    "sinon-chai": "2.14.0",
     "xunit-file": "1.0.0"
   },
   "peerDependencies": {
