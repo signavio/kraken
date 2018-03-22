@@ -58,7 +58,7 @@
     "react-addons-test-utils": "15.6.2",
     "react-dom": "15.4.2",
     "react-redux": "5.0.7",
-    "redux": "3.7.1",
+    "redux": "3.7.2",
     "redux-saga": "0.15.4",
     "renovate": "11.36.2",
     "rimraf": "2.6.1",
@@ -70,7 +70,7 @@
     "normalizr": "^3.2.4",
     "react": ">=15.0.0 || >=16.0.0",
     "react-redux": "^5.0.2",
-    "redux": "^3.6.0",
+    "redux": "^3.7.2",
     "redux-saga": ">=0.14.3"
   }
 }
