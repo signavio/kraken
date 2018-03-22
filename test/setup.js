@@ -1,18 +1,22 @@
 /* eslint-disable */
+const jsdom = require('jsdom').jsdom
+const enzyme = require('enzyme')
+const Adapter = require('enzyme-adapter-react-16')
 
-var jsdom = require('jsdom').jsdom;
+enzyme.configure({ adapter: new Adapter() })
 
-var exposedProperties = ['window', 'navigator', 'document'];
+const exposedProperties = ['window', 'navigator', 'document']
 
-global.document = jsdom('');
-global.window = document.defaultView;
-Object.keys(document.defaultView).forEach((property) => {
+global.document = jsdom('')
+global.window = document.defaultView
+
+Object.keys(document.defaultView).forEach(property => {
   if (typeof global[property] === 'undefined') {
-    exposedProperties.push(property);
-    global[property] = document.defaultView[property];
+    exposedProperties.push(property)
+    global[property] = document.defaultView[property]
   }
-});
+})
 
 global.navigator = {
-  userAgent: 'node.js'
-};
+  userAgent: 'node.js',
+}
