@@ -1597,9 +1597,9 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.15.0:
-  version "2.15.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.0.tgz#ad2a23a1c3b036e392469b8012cec6b33b4c1322"
+commander@2.15.1:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
 commander@2.9.0:
   version "2.9.0"
@@ -3566,7 +3566,7 @@ json-stringify-pretty-compact@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/json-stringify-pretty-compact/-/json-stringify-pretty-compact-1.1.0.tgz#4fa5b898f61a287d64828691baa822a41f3ad5ab"
 
-json-stringify-safe@5.0.1, json-stringify-safe@~5.0.1:
+json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
@@ -4882,9 +4882,9 @@ pluralize@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-7.0.0.tgz#298b89df8b93b0221dbf421ad2b1b1ea23fc6777"
 
-pnpm@1.35.10:
-  version "1.35.10"
-  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-1.35.10.tgz#1a8aaa8ae2233765274961d30cec38f8914bfa07"
+pnpm@1.36.1:
+  version "1.36.1"
+  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-1.36.1.tgz#43537276c39cc2d9e749d1fd7a3c159b2db39877"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -5320,9 +5320,9 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@11.36.2:
-  version "11.36.2"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-11.36.2.tgz#16422ef3d66ec3a05b47d1cd0410b5c3a53619df"
+renovate@11.39.0:
+  version "11.39.0"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-11.39.0.tgz#48a58c60fd4dbbf0d26713afc7dab4e32626e50f"
   dependencies:
     "@yarnpkg/lockfile" "1.0.0"
     bunyan "1.8.12"
@@ -5330,7 +5330,7 @@ renovate@11.36.2:
     chalk "2.3.2"
     changelog "1.4.2"
     child-process-promise "2.2.1"
-    commander "2.15.0"
+    commander "2.15.1"
     compare-versions "3.1.0"
     conventional-commits-detector "0.1.1"
     convert-hrtime "2.0.0"
@@ -5349,7 +5349,6 @@ renovate@11.36.2:
     js-yaml "3.11.0"
     json-dup-key-validator "1.0.2"
     json-stringify-pretty-compact "1.1.0"
-    json-stringify-safe "5.0.1"
     later "1.2.0"
     lodash "4.17.5"
     minimatch "3.0.4"
@@ -5358,7 +5357,7 @@ renovate@11.36.2:
     npm "5.7.1"
     openpgp "2.6.2"
     parse-link-header "1.0.1"
-    pnpm "1.35.10"
+    pnpm "1.36.1"
     registry-auth-token "3.3.2"
     root-require "0.3.1"
     semver "5.5.0"
