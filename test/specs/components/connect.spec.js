@@ -82,7 +82,7 @@ const TestContainer = props => (
   </Provider>
 )
 
-describe('connect', () => {
+describe.only('connect', () => {
   beforeEach(() => {
     renderSpy.reset()
     reducerSpy.reset()
@@ -281,7 +281,7 @@ describe('connect', () => {
     // should pass in action creator function as createSubject prop
     expect(renderSpy).to.have.been.calledOnce
     const { createUser } = renderSpy.args[0][0] // first arg of first call
-    expect(createUser).to.be.a.function
+    expect(createUser).to.be.a('function')
 
     // dispatch action
     const body = { firstName: 'Henry' }
@@ -324,10 +324,11 @@ describe('connect', () => {
           <ConnectedCompWithRefs id={data.user.id} />
         </Provider>
       )
+
       expect(
         wrapper
           .find(ConnectedCompWithRefs)
-          .get(0)
+          .instance(0)
           .getWrappedInstance().refs.myRef
       ).to.exist
     })
