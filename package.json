@@ -23,7 +23,7 @@
   "author": "Jan-Felix Schwarz",
   "license": "UNLICENSED",
   "dependencies": {
-    "hoist-non-react-statics": "^1.2.0",
+    "hoist-non-react-statics": "^2.0.0",
     "invariant": "^2.2.2",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
