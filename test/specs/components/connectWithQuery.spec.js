@@ -52,8 +52,8 @@ const TestContainer = props => (
 
 describe('connectWithQuery', () => {
   beforeEach(() => {
-    renderSpy.reset()
-    reducerSpy.reset()
+    renderSpy.resetHistory()
+    reducerSpy.resetHistory()
   })
 
   it('should dispatch the FETCH_DISPATCH action on mount', () => {
@@ -76,7 +76,7 @@ describe('connectWithQuery', () => {
 
   it('should dispatch the FETCH_DISPATCH action when the promise props update', () => {
     const wrapper = mount(<TestContainer id={data.user.id} />)
-    reducerSpy.reset()
+    reducerSpy.resetHistory()
 
     expect(reducerSpy).to.have.not.been.called
     wrapper.setProps({ id: 'user-2' })
@@ -99,7 +99,7 @@ describe('connectWithQuery', () => {
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={data.user.id} />)
 
-    reducerSpy.reset()
+    reducerSpy.resetHistory()
     expect(reducerSpy).to.have.not.been.called
     wrapper.setProps({ bla: 'blups' })
 
