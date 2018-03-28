@@ -62,7 +62,7 @@
     "redux-saga": "0.16.0",
     "renovate": "11.39.0",
     "rimraf": "2.6.2",
-    "sinon": "1.17.7",
+    "sinon": "4.4.10",
     "sinon-chai": "2.14.0",
     "xunit-file": "1.0.0"
   },
