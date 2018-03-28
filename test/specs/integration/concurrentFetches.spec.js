@@ -10,19 +10,25 @@ import expect from '../../expect'
 import apiCreator from '../../../src'
 import { apiTypes, types, data } from '../fixtures'
 
-
-const fetchStub = sinon.stub(apiTypes.USER, 'fetch', () => new Promise((resolve) => {
-  setTimeout(() => resolve({
-    response: {
-      result: data.user.id,
-      entities: {
-        users: {
-          [data.user.id]: data.user,
-        },
-      },
-    },
-  }), 1)
-}))
+const fetchStub = sinon.stub(apiTypes.USER, 'fetch').callsFake(
+  () =>
+    new Promise(resolve => {
+      setTimeout(
+        () =>
+          resolve({
+            response: {
+              result: data.user.id,
+              entities: {
+                users: {
+                  [data.user.id]: data.user,
+                },
+              },
+            },
+          }),
+        1
+      )
+    })
+)
 
 const { reducer, saga, connect } = apiCreator(apiTypes)
 
@@ -33,9 +39,7 @@ const rootReducer = combineReducers({
 function configureStore(initialState) {
   const sagaMiddleware = createSagaMiddleware()
 
-  const finalCreateStore = compose(
-    applyMiddleware(sagaMiddleware)
-  )(createStore)
+  const finalCreateStore = compose(applyMiddleware(sagaMiddleware))(createStore)
 
   const store = finalCreateStore(rootReducer, initialState)
   sagaMiddleware.run(saga, store.getState)
@@ -46,11 +50,7 @@ describe('concurrent fetches', () => {
   let store
 
   const UserPure = ({ fetchUser }) => {
-    return (
-      <div>
-        { fetchUser.value && fetchUser.value.firstName }
-      </div>
-    )
+    return <div>{fetchUser.value && fetchUser.value.firstName}</div>
   }
 
   const User = connect(({ id }) => ({
@@ -61,10 +61,10 @@ describe('concurrent fetches', () => {
   }))(UserPure)
 
   const App = () => (
-    <Provider store={ store }>
+    <Provider store={store}>
       <div>
-        <User id={ data.user.id } />
-        <User id={ data.user.id } />
+        <User id={data.user.id} />
+        <User id={data.user.id} />
       </div>
     </Provider>
   )
@@ -73,11 +73,13 @@ describe('concurrent fetches', () => {
 
   let app
 
-  beforeEach((done) => {
+  beforeEach(done => {
     store = configureStore()
     fetchStub.reset()
     app = mount(<App />)
-    setTimeout(() => { done() }, 30)
+    setTimeout(() => {
+      done()
+    }, 30)
   })
 
   it('should call the fetch function only once', () => {
@@ -85,11 +87,23 @@ describe('concurrent fetches', () => {
   })
 
   it('should render the firstName in both components', () => {
-    expect(app.find(UserPure).first().find('div').text()).to.equal(data.user.firstName)
-    expect(app.find(UserPure).last().find('div').text()).to.equal(data.user.firstName)
+    expect(
+      app
+        .find(UserPure)
+        .first()
+        .find('div')
+        .text()
+    ).to.equal(data.user.firstName)
+    expect(
+      app
+        .find(UserPure)
+        .last()
+        .find('div')
+        .text()
+    ).to.equal(data.user.firstName)
   })
 
-  it('should use caches after the first fetch and not call fetch again', (done) => {
+  it('should use caches after the first fetch and not call fetch again', done => {
     expect(fetchStub).to.have.been.calledOnce
     app = mount(<App />)
     setTimeout(() => {

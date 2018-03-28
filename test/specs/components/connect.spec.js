@@ -84,8 +84,8 @@ const TestContainer = props => (
 
 describe.only('connect', () => {
   beforeEach(() => {
-    renderSpy.reset()
-    reducerSpy.reset()
+    renderSpy.resetHistory()
+    reducerSpy.resetHistory()
   })
 
   it('should dispatch the FETCH_DISPATCH action on mount', () => {
@@ -131,7 +131,7 @@ describe.only('connect', () => {
 
   it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
     const wrapper = mount(<TestContainer id={data.user.id} />)
-    reducerSpy.reset()
+    reducerSpy.resetHistory()
 
     expect(reducerSpy).to.have.not.been.called
     wrapper.setProps({ id: 'user-2' })
@@ -220,7 +220,7 @@ describe.only('connect', () => {
 
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={data.user.id} />)
-    reducerSpy.reset()
+    reducerSpy.resetHistory()
     expect(reducerSpy).to.have.not.been.called
 
     wrapper.setProps({ bla: 'blups' })
