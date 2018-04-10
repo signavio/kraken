@@ -38,13 +38,13 @@ export const createFetchSaga = (types: ApiTypeMap) => {
       action.payload.body
     )
 
-    if (response) {
+    if (!error) {
       yield put(
         actionCreators.succeedFetch({
           entityType,
           requestId,
-          value: response.result,
-          entities: response.entities,
+          value: response && response.result,
+          entities: response && response.entities,
           isCachedResponse: false,
         })
       )
