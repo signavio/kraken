@@ -27,7 +27,7 @@ const composeSideEffects = (first?: PolicyT, second?: PolicyT) => {
   }
 }
 
-export const compose = (...cachePolicies: Array<CachePolicyT>) =>
+const compose = (...cachePolicies: Array<CachePolicyT>) =>
   cachePolicies.reduce(
     (combinedPolicy: CachePolicyT, policy: CachePolicyT) => ({
       updateRequestOnCollectionChange: composeSideEffects(
@@ -40,3 +40,5 @@ export const compose = (...cachePolicies: Array<CachePolicyT>) =>
       ),
     })
   )
+
+export default compose
