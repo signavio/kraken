@@ -1321,7 +1321,26 @@ byline@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/byline/-/byline-5.0.0.tgz#741c5216468eadc457b03410118ad77de8c1ddb1"
 
-cacache@10.0.4, cacache@^10.0.0, cacache@^10.0.4:
+cacache@11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/cacache/-/cacache-11.0.1.tgz#63cde88b51aa5f50741e34833c9d0048a138d1dd"
+  dependencies:
+    bluebird "^3.5.1"
+    chownr "^1.0.1"
+    figgy-pudding "^3.1.0"
+    glob "^7.1.2"
+    graceful-fs "^4.1.11"
+    lru-cache "^4.1.2"
+    mississippi "^3.0.0"
+    mkdirp "^0.5.1"
+    move-concurrently "^1.0.1"
+    promise-inflight "^1.0.1"
+    rimraf "^2.6.2"
+    ssri "^6.0.0"
+    unique-filename "^1.1.0"
+    y18n "^4.0.0"
+
+cacache@^10.0.0, cacache@^10.0.4:
   version "10.0.4"
   resolved "https://registry.yarnpkg.com/cacache/-/cacache-10.0.4.tgz#6452367999eff9d4188aefd9a14e9d7c6a263460"
   dependencies:
@@ -1445,6 +1464,10 @@ chalk@^1.1.0, chalk@^1.1.3:
     has-ansi "^2.0.0"
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
+
+changelog-filename-regex@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/changelog-filename-regex/-/changelog-filename-regex-1.1.1.tgz#8a2eb3049a652e3c03c8b601e3cbb032ee9f4e6d"
 
 changelog@1.4.2:
   version "1.4.2"
@@ -2439,6 +2462,10 @@ fbjs@^0.8.16:
     promise "^7.1.1"
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
+
+figgy-pudding@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.1.0.tgz#a77ed2284175976c424b390b298569e9df86dd1e"
 
 figures@^2.0.0:
   version "2.0.0"
@@ -3753,6 +3780,12 @@ libnpx@^10.0.1:
     y18n "^4.0.0"
     yargs "^11.0.0"
 
+linkify-it@^2.0.0:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-2.0.3.tgz#d94a4648f9b1c179d64fa97291268bdb6ce9434f"
+  dependencies:
+    uc.micro "^1.0.1"
+
 load-json-file@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/load-json-file/-/load-json-file-1.1.0.tgz#956905708d58b4bab4c2261b04f59f31c99374c0"
@@ -4004,7 +4037,7 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-lru-cache@^4.1.1, lru-cache@~4.1.1:
+lru-cache@^4.1.1, lru-cache@^4.1.2, lru-cache@~4.1.1:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.2.tgz#45234b2e6e2f2b33da125624c4664929a0224c3f"
   dependencies:
@@ -4036,6 +4069,20 @@ make-fetch-happen@^2.5.0, make-fetch-happen@^2.6.0:
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
+
+markdown-it@8.4.1:
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-8.4.1.tgz#206fe59b0e4e1b78a7c73250af9b34a4ad0aaf44"
+  dependencies:
+    argparse "^1.0.7"
+    entities "~1.1.1"
+    linkify-it "^2.0.0"
+    mdurl "^1.0.1"
+    uc.micro "^1.0.5"
+
+mdurl@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
 
 meant@~1.0.1:
   version "1.0.1"
@@ -4210,7 +4257,11 @@ moment@2.20.1:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
-moment@2.21.0, "moment@>= 2.9.0", moment@^2.10.6:
+moment@2.22.0:
+  version "2.22.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.0.tgz#7921ade01017dd45186e7fee5f424f0b8663a730"
+
+"moment@>= 2.9.0", moment@^2.10.6:
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
 
@@ -4994,9 +5045,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-pnpm@1.37.3:
-  version "1.37.3"
-  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-1.37.3.tgz#592f62fb50633506494bd683a0533a95520ef968"
+pnpm@1.38.3:
+  version "1.38.3"
+  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-1.38.3.tgz#84b7ce1eee5d893c51995752e8afc2ee726539e3"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -5457,15 +5508,16 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@11.44.0:
-  version "11.44.0"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-11.44.0.tgz#ca681f38201acf54b0499f50ca3b67b3d0fe4aa9"
+renovate@12.1.9:
+  version "12.1.9"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-12.1.9.tgz#54e2b4f28ca69513f461d5d5f1bedd11599eae83"
   dependencies:
     "@yarnpkg/lockfile" "1.0.0"
     bunyan "1.8.12"
-    cacache "10.0.4"
+    cacache "11.0.1"
     chalk "2.3.2"
     changelog "1.4.2"
+    changelog-filename-regex "1.1.1"
     child-process-promise "2.2.1"
     clean-git-ref "1.0.3"
     commander "2.15.1"
@@ -5489,13 +5541,14 @@ renovate@11.44.0:
     json-stringify-pretty-compact "1.1.0"
     later "1.2.0"
     lodash "4.17.5"
+    markdown-it "8.4.1"
     minimatch "3.0.4"
-    moment "2.21.0"
+    moment "2.22.0"
     moment-timezone "0.5.14"
     npm "5.8.0"
     openpgp "2.6.2"
     parse-link-header "1.0.1"
-    pnpm "1.37.3"
+    pnpm "1.38.3"
     registry-auth-token "3.3.2"
     root-require "0.3.1"
     semver "5.5.0"
@@ -5506,7 +5559,7 @@ renovate@11.44.0:
     tmp-promise "1.0.4"
     traverse "0.6.6"
     upath "1.0.4"
-    vso-node-api "6.3.2"
+    vso-node-api "6.5.0"
     yarn "1.5.1"
 
 repeat-element@^1.1.2:
@@ -5971,6 +6024,10 @@ ssri@^5.0.0, ssri@^5.2.4:
   dependencies:
     safe-buffer "^5.1.1"
 
+ssri@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/ssri/-/ssri-6.0.0.tgz#fc21bfc90e03275ac3e23d5a42e38b8a1cbc130d"
+
 stealthy-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
@@ -6276,6 +6333,10 @@ ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
 
+uc.micro@^1.0.1, uc.micro@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.5.tgz#0c65f15f815aa08b560a61ce8b4db7ffc3f45376"
+
 uglify-js@^2.6:
   version "2.8.23"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.23.tgz#8230dd9783371232d62a7821e2cf9a817270a8a0"
@@ -6297,7 +6358,7 @@ umask@^1.1.0, umask@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/umask/-/umask-1.1.0.tgz#f29cebf01df517912bb58ff9c4e50fde8e33320d"
 
-underscore@1.8.3, underscore@^1.8.3:
+underscore@1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
 
@@ -6429,13 +6490,13 @@ verror@1.3.6:
   dependencies:
     extsprintf "1.0.2"
 
-vso-node-api@6.3.2:
-  version "6.3.2"
-  resolved "https://registry.yarnpkg.com/vso-node-api/-/vso-node-api-6.3.2.tgz#bc6d4c8a6e0351eee1c0e622dda95f0e929fdd32"
+vso-node-api@6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/vso-node-api/-/vso-node-api-6.5.0.tgz#5f3453f27d211b0fd54423c4c73116c1e8fea0c6"
   dependencies:
     tunnel "0.0.4"
     typed-rest-client "^0.12.0"
-    underscore "^1.8.3"
+    underscore "1.8.3"
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"
