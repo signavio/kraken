@@ -1,6 +1,6 @@
 {
   "name": "@signavio/kraken",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "Load API entities",
   "repository": "git@github.com:signavio/kraken.git",
   "main": "lib/index.js",
@@ -14,8 +14,7 @@
     "prebuild": "yarn run clean",
     "lint": "eslint src test",
     "test": "mocha",
-    "coverage":
-      "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
+    "coverage": "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
     "prepublishOnly": "yarn build",
     "renovate": "renovate",
     "flow": "flow check"
@@ -46,7 +45,7 @@
     "eslint": "4.19.1",
     "eslint-config-react-app": "2.1.0",
     "eslint-plugin-flowtype": "2.46.1",
-    "eslint-plugin-import": "2.9.0",
+    "eslint-plugin-import": "2.10.0",
     "eslint-plugin-jsx-a11y": "5.1.1",
     "eslint-plugin-react": "7.7.0",
     "flow-bin": "0.69.0",

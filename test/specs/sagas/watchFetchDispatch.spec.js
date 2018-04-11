@@ -93,4 +93,20 @@ describe('Saga - fetchSaga', () => {
       put(actions.failFetch({ entityType: types.USER, requestId, error }))
     )
   })
+
+  it('should dispatch success action if request is 204 (empty response)', () => {
+    generator.next()
+
+    expect(generator.next({ response: undefined }).value).to.deep.equal(
+      put(
+        actions.succeedFetch({
+          entityType: types.USER,
+          requestId,
+          value: undefined,
+          entities: undefined,
+          isCachedResponse: false,
+        })
+      )
+    )
+  })
 })
