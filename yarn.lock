@@ -5045,9 +5045,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-pnpm@1.38.3:
-  version "1.38.3"
-  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-1.38.3.tgz#84b7ce1eee5d893c51995752e8afc2ee726539e3"
+pnpm@1.39.1:
+  version "1.39.1"
+  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-1.39.1.tgz#3a6cb79d56f6de9eb7ac9654eeee05ca494447f2"
 
 prelude-ls@~1.1.2:
   version "1.1.2"
@@ -5508,9 +5508,9 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@12.1.9:
-  version "12.1.9"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-12.1.9.tgz#54e2b4f28ca69513f461d5d5f1bedd11599eae83"
+renovate@12.3.0:
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-12.3.0.tgz#41fe8ca14560d2deaf92c47d8e0c50b177db4cbd"
   dependencies:
     "@yarnpkg/lockfile" "1.0.0"
     bunyan "1.8.12"
@@ -5548,7 +5548,7 @@ renovate@12.1.9:
     npm "5.8.0"
     openpgp "2.6.2"
     parse-link-header "1.0.1"
-    pnpm "1.38.3"
+    pnpm "1.39.1"
     registry-auth-token "3.3.2"
     root-require "0.3.1"
     semver "5.5.0"
