@@ -59,7 +59,7 @@
     "react-redux": "5.0.7",
     "redux": "3.7.2",
     "redux-saga": "0.16.0",
-    "renovate": "12.3.4",
+    "renovate": "12.3.5",
     "rimraf": "2.6.2",
     "sinon": "4.5.0",
     "sinon-chai": "3.0.0",
