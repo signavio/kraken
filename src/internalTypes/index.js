@@ -144,24 +144,28 @@ export type CreateFailurePayload = {
   requestId: RequestId,
   entityType: string,
   error: string,
+  status?: number,
 }
 
 export type UpdateFailurePayload = {
   requestId: RequestId,
   entityType: string,
   error: string,
+  status?: number,
 }
 
 export type FetchFailurePayload = {
   requestId: RequestId,
   entityType: string,
   error: string,
+  status?: number,
 }
 
 export type RemoveFailurePayload = {
   requestId: RequestId,
   entityType: string,
   error: string,
+  status?: number,
 }
 
 export type FailurePayload =
