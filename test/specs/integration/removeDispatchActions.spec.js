@@ -62,7 +62,6 @@ describe('Integration - dispatch remove actions', () => {
   })
 
   it('should dispatch a remove success action when the server returns a 204', done => {
-    console.log(`data: ${JSON.stringify(data.post)}`)
     fetchMock.delete(`/posts/${data.post.id}`, {
       status: 204,
     })

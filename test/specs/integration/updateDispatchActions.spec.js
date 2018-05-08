@@ -62,7 +62,6 @@ describe('Integration - dispatch update actions', () => {
   })
 
   it('should dispatch an update success action when the server returns a 200', done => {
-    console.log(`data: ${JSON.stringify(data.post)}`)
     fetchMock.put(`/posts/${data.post.id}`, {
       id: data.post.id,
       title: 'Updated post',
