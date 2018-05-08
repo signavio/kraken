@@ -1,4 +1,4 @@
-import { call, takeEvery, select } from 'redux-saga/effects'
+import { takeEvery, select } from 'redux-saga/effects'
 
 export default function createLogActions(callback) {
   function* logActions(action) {

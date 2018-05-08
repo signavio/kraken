@@ -2,14 +2,13 @@ import { compose, combineReducers, applyMiddleware, createStore } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { Provider } from 'react-redux'
 
-import sinon from 'sinon'
 import React from 'react'
 import { mount } from 'enzyme'
 import fetchMock from 'fetch-mock'
 import expect from '../../expect'
 
 import apiCreator from '../../../src'
-import { apiTypes, types, data } from '../fixtures'
+import { apiTypes, types } from '../fixtures'
 import createLogActions from './createLogActions'
 
 const { reducer, saga, connect } = apiCreator(apiTypes)
@@ -36,12 +35,10 @@ function url(path) {
   return matchingUrl => matchingUrl.indexOf(path) > -1
 }
 
-describe('Integration - dispatch errors', () => {
+describe('Integration - dispatch fetch actions', () => {
   let createApp
   let store
   let actions
-
-  after(fetchMock.restore)
 
   beforeEach(() => {
     createApp = options => {
@@ -63,14 +60,50 @@ describe('Integration - dispatch errors', () => {
     }
   })
 
+  afterEach(() => {
+    fetchMock.restore()
+  })
+
+  it('should dispatch a success if the server responds with a 200', done => {
+    fetchMock.get(url('/comments/123'), {
+      body: { id: '123', body: 'My awesome comment' },
+      status: 200,
+    })
+
+    createApp({ id: '123' })
+
+    setTimeout(() => {
+      expect(actions).to.have.length(3)
+      const failure = actions[2]
+      expect(failure).to.deep.equal({
+        type: 'KRAKEN_FETCH_SUCCESS',
+        payload: {
+          entityType: 'COMMENT',
+          isCachedResponse: false,
+          requestId: 'fetch_["id","123"]',
+          value: '123',
+          entities: {
+            comments: {
+              '123': {
+                id: '123',
+                body: 'My awesome comment',
+              },
+            },
+          },
+        },
+      })
+
+      done()
+    }, 20)
+  })
+
   it('should dispatch an error if the server responds with a 401', done => {
     fetchMock.get(url('/comments/123'), {
       body: { message: 'Unauthorized' },
       status: 401,
-      sendAsJson: true,
     })
 
-    const App = createApp({ id: '123' })
+    createApp({ id: '123' })
 
     setTimeout(() => {
       const request = store.getState().kraken.requests.COMMENT[
