@@ -1,4 +1,5 @@
 import { put, call, takeEvery } from 'redux-saga/effects'
+import { omitBy, isNil } from 'lodash'
 
 import { ApiTypeMap, RemoveDispatchAction } from '../internalTypes'
 
@@ -14,7 +15,7 @@ export function createRemoveDispatch(types: ApiTypeMap) {
     const entityType = action.payload.entityType
 
     const remove = getRemove(types, entityType)
-    const { error } = yield call(
+    const { error, status } = yield call(
       remove,
       action.payload.query,
       action.payload.body
@@ -32,7 +33,7 @@ export function createRemoveDispatch(types: ApiTypeMap) {
         actions.failRemove({
           entityType,
           requestId,
-          error,
+          ...omitBy({ error, status }, isNil),
         })
       )
     }

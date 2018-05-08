@@ -82,7 +82,7 @@ const TestContainer = props => (
   </Provider>
 )
 
-describe.only('connect', () => {
+describe('connect', () => {
   beforeEach(() => {
     renderSpy.resetHistory()
     reducerSpy.resetHistory()

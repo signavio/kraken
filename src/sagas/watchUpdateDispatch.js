@@ -1,4 +1,5 @@
 import { put, call } from 'redux-saga/effects'
+import { omitBy, isNil } from 'lodash'
 
 import { ApiTypeMap, UpdateDispatchAction, Action } from '../internalTypes'
 
@@ -34,17 +35,14 @@ export function createUpdateDispatch(types: ApiTypeMap) {
         actions.failUpdate({
           entityType,
           requestId,
-          error: result.error,
+          ...omitBy({ error: result.error, status: result.status }, isNil),
         })
       )
     }
   }
 }
 
-const mapActionToEntity = ({
-  type,
-  payload = {},
-}: Action) => {
+const mapActionToEntity = ({ type, payload = {} }: Action) => {
   if (type !== actionTypes.UPDATE_DISPATCH) {
     return false
   }

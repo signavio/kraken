@@ -10,4 +10,5 @@ schema.define({
   parent: schema,
 })
 
-export const fetch = ({ id }: { id: string }) => callApi(`/comments/${id}`)
+export const fetch = ({ id }: { id: string }) =>
+  callApi(`/comments/${id}`, schema, { method: 'GET' })
