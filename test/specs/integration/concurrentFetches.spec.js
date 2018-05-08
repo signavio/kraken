@@ -2,33 +2,14 @@ import { compose, combineReducers, applyMiddleware, createStore } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { Provider } from 'react-redux'
 
-import sinon from 'sinon'
+import fetchMock from 'fetch-mock'
 import React from 'react'
 import { mount } from 'enzyme'
 import expect from '../../expect'
 
 import apiCreator from '../../../src'
 import { apiTypes, types, data } from '../fixtures'
-
-const fetchStub = sinon.stub(apiTypes.USER, 'fetch').callsFake(
-  () =>
-    new Promise(resolve => {
-      setTimeout(
-        () =>
-          resolve({
-            response: {
-              result: data.user.id,
-              entities: {
-                users: {
-                  [data.user.id]: data.user,
-                },
-              },
-            },
-          }),
-        1
-      )
-    })
-)
+import pathFilter from './pathFilter'
 
 const { reducer, saga, connect } = apiCreator(apiTypes)
 
@@ -48,6 +29,7 @@ function configureStore(initialState) {
 
 describe('concurrent fetches', () => {
   let store
+  const userPath = pathFilter(`/users/${data.user.id}`)
 
   const UserPure = ({ fetchUser }) => {
     return <div>{fetchUser.value && fetchUser.value.firstName}</div>
@@ -69,21 +51,23 @@ describe('concurrent fetches', () => {
     </Provider>
   )
 
-  expect(fetchStub).to.have.not.been.called
-
   let app
 
   beforeEach(done => {
     store = configureStore()
-    fetchStub.reset()
+    fetchMock.get(userPath, data.user)
     app = mount(<App />)
     setTimeout(() => {
       done()
     }, 30)
   })
 
+  afterEach(() => {
+    fetchMock.restore()
+  })
+
   it('should call the fetch function only once', () => {
-    expect(fetchStub).to.have.been.calledOnce
+    expect(fetchMock.calls(userPath, 'GET')).to.have.length(1)
   })
 
   it('should render the firstName in both components', () => {
@@ -104,10 +88,10 @@ describe('concurrent fetches', () => {
   })
 
   it('should use caches after the first fetch and not call fetch again', done => {
-    expect(fetchStub).to.have.been.calledOnce
+    expect(fetchMock.calls(userPath, 'GET')).to.have.length(1)
     app = mount(<App />)
     setTimeout(() => {
-      expect(fetchStub).to.have.been.calledOnce
+      expect(fetchMock.calls(userPath, 'GET')).to.have.length(1)
       done()
     }, 10)
   })

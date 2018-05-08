@@ -10,6 +10,7 @@ import expect from '../../expect'
 import apiCreator from '../../../src'
 import { apiTypes, types } from '../fixtures'
 import createLogActions from './createLogActions'
+import pathFilter from './pathFilter'
 
 const { reducer, saga, connect } = apiCreator(apiTypes)
 
@@ -30,10 +31,6 @@ function configureStore(initialState, logCallback) {
 }
 
 const App = () => <div />
-
-function url(path) {
-  return matchingUrl => matchingUrl.indexOf(path) > -1
-}
 
 describe('Integration - dispatch fetch actions', () => {
   let createApp
@@ -65,7 +62,7 @@ describe('Integration - dispatch fetch actions', () => {
   })
 
   it('should dispatch a success if the server responds with a 200', done => {
-    fetchMock.get(url('/comments/123'), {
+    fetchMock.get(pathFilter('/comments/123'), {
       body: { id: '123', body: 'My awesome comment' },
       status: 200,
     })
@@ -98,7 +95,7 @@ describe('Integration - dispatch fetch actions', () => {
   })
 
   it('should dispatch an error if the server responds with a 401', done => {
-    fetchMock.get(url('/comments/123'), {
+    fetchMock.get(pathFilter('/comments/123'), {
       body: { message: 'Unauthorized' },
       status: 401,
     })
