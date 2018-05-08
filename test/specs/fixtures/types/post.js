@@ -16,6 +16,12 @@ export const fetch = ({ id }: { id: string }) => callApi(`/posts/${id}`)
 export const create = (_: any, body: JSON) =>
   callApi('/posts/', schema, { method: 'POST', body })
 
+export const update = ({ id }: { id: string }, body: JSON) =>
+  callApi(`/posts/${id}`, schema, { method: 'PUT', body })
+
+export const remove = ({ id }: { id: string }) =>
+  callApi(`/posts/${id}`, schema, { method: 'DELETE' })
+
 export const cachePolicy = {
   updateEntityOnAction: cachePolicies.removeOnRemoveDispatch,
 }

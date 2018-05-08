@@ -8,7 +8,7 @@ import fetchMock from 'fetch-mock'
 import expect from '../../expect'
 
 import apiCreator from '../../../src'
-import { apiTypes, types } from '../fixtures'
+import { apiTypes, types, data } from '../fixtures'
 import createLogActions from './createLogActions'
 
 const { reducer, saga, connect } = apiCreator(apiTypes)
@@ -31,7 +31,7 @@ function configureStore(initialState, logCallback) {
 
 const App = () => <div />
 
-describe('Integration - dispatch create actions', () => {
+describe('Integration - dispatch update actions', () => {
   let createApp
   let store
   let actions
@@ -39,9 +39,9 @@ describe('Integration - dispatch create actions', () => {
   beforeEach(() => {
     createApp = options => {
       const ConnectedApp = connect(() => ({
-        createPost: {
+        updatePost: {
           type: types.POST,
-          method: 'create',
+          method: 'update',
           ...options,
         },
       }))(App)
@@ -61,48 +61,50 @@ describe('Integration - dispatch create actions', () => {
     fetchMock.restore()
   })
 
-  it('should dispatch a create success action when the server returns a 200', done => {
-    fetchMock.post('/posts/', {
-      id: 'post-2',
-      title: 'Very new post',
+  it('should dispatch an update success action when the server returns a 200', done => {
+    console.log(`data: ${JSON.stringify(data.post)}`)
+    fetchMock.put(`/posts/${data.post.id}`, {
+      id: data.post.id,
+      title: 'Updated post',
       description: 'All the infos here',
     })
 
-    const app = createApp()
-    app.props().createPost({
-      title: 'Very new post',
+    const app = createApp({ id: data.post.id })
+    app.props().updatePost({
+      id: data.post.id,
+      title: 'Updated post',
       description: 'All the infos here',
     })
 
     setTimeout(() => {
       expect(actions).to.have.length(2)
 
-      const elementId = actions[0].payload.elementId
-
       expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_CREATE_DISPATCH',
+        type: 'KRAKEN_UPDATE_DISPATCH',
         payload: {
           entityType: 'POST',
-          elementId,
-          query: {},
+          query: {
+            id: data.post.id,
+          },
           body: {
-            title: 'Very new post',
+            id: data.post.id,
+            title: 'Updated post',
             description: 'All the infos here',
           },
         },
       })
       expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_CREATE_SUCCESS',
+        type: 'KRAKEN_UPDATE_SUCCESS',
         payload: {
           entityType: 'POST',
-          requestId: `create__${elementId}`,
-          value: 'post-2',
+          requestId: `update_["id","${data.post.id}"]`,
+          value: data.post.id,
           entities: {
             posts: {
-              'post-2': {
+              [data.post.id]: {
+                id: data.post.id,
+                title: 'Updated post',
                 description: 'All the infos here',
-                id: 'post-2',
-                title: 'Very new post',
               },
             },
           },
@@ -113,82 +115,41 @@ describe('Integration - dispatch create actions', () => {
     }, 20)
   })
 
-  it('should dispatch a create success action when the server returns a 204 and no body', done => {
-    fetchMock.post('/posts/', {
-      status: 204,
-    })
-
-    const app = createApp()
-    app.props().createPost({
-      title: 'Very new post',
-      description: 'All the infos here',
-    })
-
-    setTimeout(() => {
-      expect(actions).to.have.length(2)
-
-      const elementId = actions[0].payload.elementId
-
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_CREATE_DISPATCH',
-        payload: {
-          entityType: 'POST',
-          elementId,
-          query: {},
-          body: {
-            title: 'Very new post',
-            description: 'All the infos here',
-          },
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_CREATE_SUCCESS',
-        payload: {
-          entityType: 'POST',
-          requestId: `create__${elementId}`,
-          value: undefined,
-          entities: {},
-        },
-      })
-
-      done()
-    }, 20)
-  })
-
   it('should dispatch a create failure action when the server returns a 401', done => {
-    fetchMock.post('/posts/', {
+    fetchMock.put(`/posts/${data.post.id}`, {
       body: { message: 'Unauthorized' },
       status: 401,
     })
 
-    const app = createApp()
-    app.props().createPost({
-      title: 'Very new post',
+    const app = createApp({ id: data.post.id })
+    app.props().updatePost({
+      id: data.post.id,
+      title: 'Updated post',
       description: 'All the infos here',
     })
 
     setTimeout(() => {
       expect(actions).to.have.length(2)
 
-      const elementId = actions[0].payload.elementId
-
       expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_CREATE_DISPATCH',
+        type: 'KRAKEN_UPDATE_DISPATCH',
         payload: {
           entityType: 'POST',
-          elementId,
-          query: {},
+          query: {
+            id: data.post.id,
+          },
           body: {
-            title: 'Very new post',
+            id: data.post.id,
+            title: 'Updated post',
             description: 'All the infos here',
           },
         },
       })
       expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_CREATE_FAILURE',
+        type: 'KRAKEN_UPDATE_FAILURE',
         payload: {
           entityType: 'POST',
-          requestId: `create__${elementId}`,
+          requestId: `update_["id","${data.post.id}"]`,
           error: 'Unauthorized',
           status: 401,
         },

@@ -88,9 +88,9 @@ export const fetch = ({ id }) => callApi(`users/${id}`, schema)
 export const create = (_, body) =>
   callApi('users', schema, { method: 'POST', body })
 export const update = ({ id }, body) =>
-  callApi(`users/{id}`, schema, { method: 'PUT', body })
+  callApi(`users/${id}`, schema, { method: 'PUT', body })
 export const remove = ({ id }) =>
-  callApi(`users/{id}`, schema, { method: 'DELETE' })
+  callApi(`users/${id}`, schema, { method: 'DELETE' })
 ```
 
 In the example above we created a `user` type. It defines its collection as
@@ -415,6 +415,7 @@ yarn coverage
 # Check whether you have any linting errors
 yarn lint
 ```
+
 [build-badge]: https://circleci.com/gh/signavio/kraken/tree/master.svg?style=shield&circle-token=:circle-token
 [build]: https://circleci.com/gh/signavio/kraken/tree/master
 [npm-badge]: https://img.shields.io/npm/v/@signavio/kraken.png?style=flat-square
