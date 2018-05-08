@@ -5,11 +5,11 @@ import { Provider } from 'react-redux'
 import fetchMock from 'fetch-mock'
 import React from 'react'
 import { mount } from 'enzyme'
+import { startsWith } from 'lodash/fp'
 import expect from '../../expect'
 
 import apiCreator from '../../../src'
 import { apiTypes, types, data } from '../fixtures'
-import pathFilter from './pathFilter'
 
 const { reducer, saga, connect } = apiCreator(apiTypes)
 
@@ -29,7 +29,7 @@ function configureStore(initialState) {
 
 describe('concurrent fetches', () => {
   let store
-  const userPath = pathFilter(`/users/${data.user.id}`)
+  const userPath = startsWith(`/users/${data.user.id}`)
 
   const UserPure = ({ fetchUser }) => {
     return <div>{fetchUser.value && fetchUser.value.firstName}</div>
