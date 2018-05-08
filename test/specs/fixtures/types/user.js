@@ -13,4 +13,4 @@ export const schema = new schemas.Entity(collection, {
 export const fetch = ({ id }: { id: string }) => callApi(`/users/${id}`, schema)
 
 export const create = (_: any, body: JSON) =>
-  callApi('/users/', schemas.Entity, { method: 'POST', body })
+  callApi('/users/', schema, { method: 'POST', body })
