@@ -1,6 +1,6 @@
 {
   "name": "@signavio/kraken",
-  "version": "5.1.4",
+  "version": "5.1.5",
   "description": "Load API entities",
   "repository": "git@github.com:signavio/kraken.git",
   "main": "lib/index.js",
