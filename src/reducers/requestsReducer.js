@@ -64,6 +64,7 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           fulfilled: false,
           rejected: true,
           reason: payload.error,
+          status: payload.status,
         },
       }
     default:

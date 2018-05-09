@@ -86,7 +86,7 @@ describe('Integration - fetch', () => {
     })
   })
 
-  it('should pass query params to the fetch action', () => {
+  it('should pass query params to the fetch action', done => {
     const query = { foo: 'bar' }
 
     createApp({ query })
@@ -94,6 +94,8 @@ describe('Integration - fetch', () => {
     setTimeout(() => {
       expect(fetch).to.have.been.calledOnce
       expect(fetch).to.have.been.calledWith(query)
+
+      done()
     })
   })
 

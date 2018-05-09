@@ -1,5 +1,5 @@
 import { put, call, takeEvery } from 'redux-saga/effects'
-import { get } from 'lodash'
+import { get, omitBy, isNil } from 'lodash'
 
 import { ApiTypeMap, CreateDispatchAction } from '../internalTypes'
 
@@ -31,7 +31,7 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
         actionCreators.failCreate({
           entityType,
           requestId,
-          error: result.error,
+          ...omitBy({ error: result.error, status: result.status }, isNil),
         })
       )
     }

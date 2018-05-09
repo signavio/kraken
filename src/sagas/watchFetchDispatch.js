@@ -1,5 +1,6 @@
 import { delay } from 'redux-saga'
 import { put, call, takeEvery } from 'redux-saga/effects'
+import { omitBy, isNil } from 'lodash'
 
 import {
   State,
@@ -32,7 +33,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
     yield put(actionCreators.startRequest({ entityType, requestId }))
 
     const fetch = getFetch(types, entityType)
-    const { response, error } = yield call(
+    const { response, error, status } = yield call(
       fetch,
       action.payload.query,
       action.payload.body
@@ -53,7 +54,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
         actionCreators.failFetch({
           entityType,
           requestId,
-          error,
+          ...omitBy({ error, status }, isNil),
         })
       )
     }
