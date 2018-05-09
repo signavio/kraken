@@ -1359,9 +1359,9 @@ byte-size@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/byte-size/-/byte-size-4.0.2.tgz#e8ddbf7161913965c6af5b236a4bed8896bdc83e"
 
-cacache@11.0.1, cacache@^11.0.1:
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/cacache/-/cacache-11.0.1.tgz#63cde88b51aa5f50741e34833c9d0048a138d1dd"
+cacache@11.0.2:
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/cacache/-/cacache-11.0.2.tgz#ff30541a05302200108a759e660e30786f788764"
   dependencies:
     bluebird "^3.5.1"
     chownr "^1.0.1"
@@ -1393,6 +1393,25 @@ cacache@^10.0.0, cacache@^10.0.4:
     promise-inflight "^1.0.1"
     rimraf "^2.6.2"
     ssri "^5.2.4"
+    unique-filename "^1.1.0"
+    y18n "^4.0.0"
+
+cacache@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/cacache/-/cacache-11.0.1.tgz#63cde88b51aa5f50741e34833c9d0048a138d1dd"
+  dependencies:
+    bluebird "^3.5.1"
+    chownr "^1.0.1"
+    figgy-pudding "^3.1.0"
+    glob "^7.1.2"
+    graceful-fs "^4.1.11"
+    lru-cache "^4.1.2"
+    mississippi "^3.0.0"
+    mkdirp "^0.5.1"
+    move-concurrently "^1.0.1"
+    promise-inflight "^1.0.1"
+    rimraf "^2.6.2"
+    ssri "^6.0.0"
     unique-filename "^1.1.0"
     y18n "^4.0.0"
 
@@ -2471,6 +2490,10 @@ extglob@^0.3.1:
 extsprintf@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.0.2.tgz#e1080e0658e300b06294990cc70e1502235fd550"
+
+fast-clone@1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/fast-clone/-/fast-clone-1.5.3.tgz#2faa7a825054e9fc8be5024fb09a266ed2cd9fe7"
 
 fast-deep-equal@^1.0.0:
   version "1.0.0"
@@ -5735,13 +5758,13 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@12.19.1:
-  version "12.19.1"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-12.19.1.tgz#638bdb43f0b31ae7d1e17e1128a24bd0bb99e70d"
+renovate@12.23.4:
+  version "12.23.4"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-12.23.4.tgz#7bc8536597cfdc6202dfb27fd75fde422c730190"
   dependencies:
     "@yarnpkg/lockfile" "1.0.0"
     bunyan "1.8.12"
-    cacache "11.0.1"
+    cacache "11.0.2"
     chalk "2.4.1"
     changelog-filename-regex "1.1.1"
     child-process-promise "2.2.1"
@@ -5754,6 +5777,7 @@ renovate@12.19.1:
     delay "2.0.0"
     detect-indent "5.0.0"
     email-addresses "3.0.1"
+    fast-clone "1.5.3"
     fs-extra "6.0.0"
     get-installed-path "4.0.8"
     gh-got "7.0.0"
