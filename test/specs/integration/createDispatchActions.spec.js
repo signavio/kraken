@@ -11,7 +11,7 @@ import apiCreator from '../../../src'
 import { apiTypes, types } from '../fixtures'
 import createLogActions from './createLogActions'
 
-const { reducer, saga, connect } = apiCreator(apiTypes)
+const { reducer, saga, connect, actions: actionCreator } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
   kraken: reducer,
@@ -79,9 +79,8 @@ describe('Integration - dispatch create actions', () => {
 
       const elementId = actions[0].payload.elementId
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_CREATE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchCreate({
           entityType: 'POST',
           elementId,
           query: {},
@@ -89,11 +88,10 @@ describe('Integration - dispatch create actions', () => {
             title: 'Very new post',
             description: 'All the infos here',
           },
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_CREATE_SUCCESS',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.succeedCreate({
           entityType: 'POST',
           requestId: `create__${elementId}`,
           value: 'post-2',
@@ -106,8 +104,8 @@ describe('Integration - dispatch create actions', () => {
               },
             },
           },
-        },
-      })
+        })
+      )
 
       done()
     }, 20)
@@ -129,9 +127,8 @@ describe('Integration - dispatch create actions', () => {
 
       const elementId = actions[0].payload.elementId
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_CREATE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchCreate({
           entityType: 'POST',
           elementId,
           query: {},
@@ -139,17 +136,16 @@ describe('Integration - dispatch create actions', () => {
             title: 'Very new post',
             description: 'All the infos here',
           },
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_CREATE_SUCCESS',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.succeedCreate({
           entityType: 'POST',
           requestId: `create__${elementId}`,
           value: undefined,
           entities: {},
-        },
-      })
+        })
+      )
 
       done()
     }, 20)
@@ -172,9 +168,8 @@ describe('Integration - dispatch create actions', () => {
 
       const elementId = actions[0].payload.elementId
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_CREATE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchCreate({
           entityType: 'POST',
           elementId,
           query: {},
@@ -182,17 +177,16 @@ describe('Integration - dispatch create actions', () => {
             title: 'Very new post',
             description: 'All the infos here',
           },
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_CREATE_FAILURE',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.failCreate({
           entityType: 'POST',
           requestId: `create__${elementId}`,
           error: 'Unauthorized',
           status: 401,
-        },
-      })
+        })
+      )
 
       done()
     }, 20)

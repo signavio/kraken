@@ -11,7 +11,7 @@ import apiCreator from '../../../src'
 import { apiTypes, types, data } from '../fixtures'
 import createLogActions from './createLogActions'
 
-const { reducer, saga, connect } = apiCreator(apiTypes)
+const { reducer, saga, connect, actions: actionCreator } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
   kraken: reducer,
@@ -78,9 +78,8 @@ describe('Integration - dispatch update actions', () => {
     setTimeout(() => {
       expect(actions).to.have.length(2)
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_UPDATE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchUpdate({
           entityType: 'POST',
           query: {
             id: data.post.id,
@@ -90,11 +89,10 @@ describe('Integration - dispatch update actions', () => {
             title: 'Updated post',
             description: 'All the infos here',
           },
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_UPDATE_SUCCESS',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.succeedUpdate({
           entityType: 'POST',
           requestId: `update_["id","${data.post.id}"]`,
           value: data.post.id,
@@ -107,8 +105,8 @@ describe('Integration - dispatch update actions', () => {
               },
             },
           },
-        },
-      })
+        })
+      )
 
       done()
     }, 20)
@@ -130,9 +128,8 @@ describe('Integration - dispatch update actions', () => {
     setTimeout(() => {
       expect(actions).to.have.length(2)
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_UPDATE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchUpdate({
           entityType: 'POST',
           query: {
             id: data.post.id,
@@ -142,17 +139,16 @@ describe('Integration - dispatch update actions', () => {
             title: 'Updated post',
             description: 'All the infos here',
           },
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_UPDATE_FAILURE',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.failUpdate({
           entityType: 'POST',
           requestId: `update_["id","${data.post.id}"]`,
           error: 'Unauthorized',
           status: 401,
-        },
-      })
+        })
+      )
 
       done()
     }, 20)

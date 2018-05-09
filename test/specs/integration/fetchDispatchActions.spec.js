@@ -12,7 +12,7 @@ import apiCreator from '../../../src'
 import { apiTypes, types } from '../fixtures'
 import createLogActions from './createLogActions'
 
-const { reducer, saga, connect } = apiCreator(apiTypes)
+const { reducer, saga, connect, actions: actionCreator } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
   kraken: reducer,
@@ -72,9 +72,8 @@ describe('Integration - dispatch fetch actions', () => {
     setTimeout(() => {
       expect(actions).to.have.length(3)
       const failure = actions[2]
-      expect(failure).to.deep.equal({
-        type: 'KRAKEN_FETCH_SUCCESS',
-        payload: {
+      expect(failure).to.deep.equal(
+        actionCreator.succeedFetch({
           entityType: 'COMMENT',
           isCachedResponse: false,
           requestId: 'fetch_["id","123"]',
@@ -87,8 +86,8 @@ describe('Integration - dispatch fetch actions', () => {
               },
             },
           },
-        },
-      })
+        })
+      )
 
       done()
     }, 20)
@@ -113,15 +112,14 @@ describe('Integration - dispatch fetch actions', () => {
 
       expect(actions).to.have.length(3)
       const failure = actions[2]
-      expect(failure).to.deep.equal({
-        type: 'KRAKEN_FETCH_FAILURE',
-        payload: {
+      expect(failure).to.deep.equal(
+        actionCreator.failFetch({
           entityType: 'COMMENT',
           requestId: 'fetch_["id","123"]',
           error: 'Unauthorized',
           status: 401,
-        },
-      })
+        })
+      )
 
       done()
     }, 20)

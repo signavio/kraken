@@ -11,7 +11,7 @@ import apiCreator from '../../../src'
 import { apiTypes, types, data } from '../fixtures'
 import createLogActions from './createLogActions'
 
-const { reducer, saga, connect } = apiCreator(apiTypes)
+const { reducer, saga, connect, actions: actionCreator } = apiCreator(apiTypes)
 
 const rootReducer = combineReducers({
   kraken: reducer,
@@ -72,23 +72,21 @@ describe('Integration - dispatch remove actions', () => {
     setTimeout(() => {
       expect(actions).to.have.length(2)
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_REMOVE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchRemove({
           entityType: 'POST',
           query: {
             id: data.post.id,
           },
           body: undefined,
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_REMOVE_SUCCESS',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.succeedRemove({
           entityType: 'POST',
           requestId: `remove_["id","${data.post.id}"]`,
-        },
-      })
+        })
+      )
 
       done()
     }, 20)
@@ -106,25 +104,23 @@ describe('Integration - dispatch remove actions', () => {
     setTimeout(() => {
       expect(actions).to.have.length(2)
 
-      expect(actions[0]).to.deep.equal({
-        type: 'KRAKEN_REMOVE_DISPATCH',
-        payload: {
+      expect(actions[0]).to.deep.equal(
+        actionCreator.dispatchRemove({
           entityType: 'POST',
           query: {
             id: data.post.id,
           },
           body: undefined,
-        },
-      })
-      expect(actions[1]).to.deep.equal({
-        type: 'KRAKEN_REMOVE_FAILURE',
-        payload: {
+        })
+      )
+      expect(actions[1]).to.deep.equal(
+        actionCreator.failRemove({
           entityType: 'POST',
           requestId: `remove_["id","${data.post.id}"]`,
           error: 'Unauthorized',
           status: 401,
-        },
-      })
+        })
+      )
 
       done()
     }, 20)
