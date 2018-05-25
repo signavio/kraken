@@ -32,7 +32,7 @@ references:
     run:
       name: Upload coverage report
       command: yarn codecov-upload
-      working_directory: *workspace_rootUpload coverage report
+      working_directory: *workspace_root
 
 jobs:
   build:
