@@ -28,6 +28,12 @@ references:
       path: xunit.xml
       prefix: tests
 
+  store_coverage_results: &store_coverage_results
+    run:
+      name: Upload coverage report
+      command: yarn codecov-upload
+      working_directory: *workspace_rootUpload coverage report
+
 jobs:
   build:
     <<: *container_config
@@ -65,6 +71,7 @@ jobs:
 
       - *publish_test_results
       - *store_test_results
+      - *store_coverage_results
 
   lint:
     <<: *container_config
