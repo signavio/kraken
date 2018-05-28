@@ -14,10 +14,12 @@
     "prebuild": "yarn run clean",
     "lint": "eslint src test",
     "test": "mocha",
-    "coverage": "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
+    "coverage":
+      "istanbul cover _mocha --report cobertura --include-all-sources --x \"**/lib/**\"",
     "prepublishOnly": "yarn build",
     "renovate": "renovate",
-    "flow": "flow check"
+    "flow": "flow check",
+    "codecov-upload": "codecov"
   },
   "author": "Jan-Felix Schwarz",
   "license": "UNLICENSED",
@@ -40,6 +42,7 @@
     "chai": "4.1.2",
     "chai-enzyme": "1.0.0-beta.0",
     "cheerio": "0.22.0",
+    "codecov": "^3.0.2",
     "enzyme": "3.3.0",
     "enzyme-adapter-react-16": "1.1.1",
     "eslint": "4.19.1",
