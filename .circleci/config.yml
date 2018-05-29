@@ -6,7 +6,7 @@ references:
 
   container_config: &container_config
     docker:
-      - image: circleci/node:latest@sha256:fdaad498eafda333e3fd9d859311d1cd35e0cf64ab4cf20e412cc54cc4d4d1a4
+      - image: circleci/node:latest@sha256:f48222d8ccfac3d22a3e95c0380a6d1baa93cff8c5645490d7842310e948f3eb
 
   dep_cache_key: &dep_cache_key
     deps-{{ checksum "yarn.lock" }}
