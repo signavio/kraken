@@ -1,6 +1,7 @@
 # kraken
 
 [![CircleCI][build-badge]][build]
+[![codecov][codecov-badge]][codecov]
 [![npm package][npm-badge]][npm]
 
 The problem is always the same. You create an application and need to connect it
@@ -420,3 +421,5 @@ yarn lint
 [build]: https://circleci.com/gh/signavio/kraken/tree/master
 [npm-badge]: https://img.shields.io/npm/v/@signavio/kraken.png?style=flat-square
 [npm]: https://www.npmjs.org/package/@signavio/kraken
+[codecov-badge]: https://codecov.io/gh/signavio/kraken/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/signavio/kraken
