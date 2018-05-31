@@ -46,4 +46,23 @@ describe('removeReferencesToDeletedEntities', () => {
 
     expect(result.value).to.be.undefined
   })
+
+  it('should not reset the value if the entity is still present.', () => {
+    const request = {
+      value: 'u1',
+    }
+
+    const collection = {
+      u1: {},
+    }
+
+    const result = cachePolicies.removeReferencesToDeletedEntities.updateRequestOnCollectionChange(
+      apiTypes,
+      request,
+      collection,
+      entityTypeConstant
+    )
+
+    expect(result.value).to.equal('u1')
+  })
 })
