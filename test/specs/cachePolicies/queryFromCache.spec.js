@@ -1,7 +1,13 @@
 import { expect } from 'chai'
+
 import { cachePolicies } from '../../../src'
 
+import { apiTypes } from '../fixtures'
+
 describe('query from cache', () => {
+  const entityTypeConstant = 'USER'
+  const arrayTypeConstant = 'USERS'
+
   it('should extend request with cached values', () => {
     const request = {
       value: [],
@@ -12,8 +18,10 @@ describe('query from cache', () => {
     }
 
     const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+      apiTypes,
       request,
-      collection
+      collection,
+      arrayTypeConstant
     )
 
     expect(result.value).to.include('c1')
@@ -28,8 +36,10 @@ describe('query from cache', () => {
     }
 
     const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+      apiTypes,
       request,
-      collection
+      collection,
+      arrayTypeConstant
     )
 
     expect(result.value).to.include('c1')
@@ -54,8 +64,10 @@ describe('query from cache', () => {
     }
 
     const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+      apiTypes,
       request,
-      collection
+      collection,
+      arrayTypeConstant
     )
 
     expect(result.value).to.include('c2')
@@ -83,8 +95,10 @@ describe('query from cache', () => {
     }
 
     const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+      apiTypes,
       request,
-      collection
+      collection,
+      arrayTypeConstant
     )
 
     expect(result.value).to.include('c2')
@@ -110,8 +124,10 @@ describe('query from cache', () => {
     }
 
     const result = cachePolicies.queryFromCache.updateRequestOnCollectionChange(
+      apiTypes,
       request,
-      collection
+      collection,
+      entityTypeConstant
     )
 
     expect(result.value).to.equal(user.id)
