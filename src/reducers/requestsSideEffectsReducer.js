@@ -1,18 +1,26 @@
 import { mapValues } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
-import { ApiTypeMap, RequestsState, Action } from '../internalTypes'
+import {
+  ApiTypeMap,
+  RequestsState,
+  Action,
+  EntityType,
+  EntitiesState,
+} from '../internalTypes'
 
 import { getCollectionName, getCachePolicy } from '../types'
 
 const requestsSideEffectsReducer = (
   state: RequestsState,
+  apiTypes: ApiTypeMap,
   action: Action,
-  collection,
+  collection: EntitiesState,
+  entityType: EntityType,
   updateRequestOnCollectionChange
 ) => {
   const newState = mapValues(state, request =>
-    updateRequestOnCollectionChange(request, collection)
+    updateRequestOnCollectionChange(apiTypes, request, collection, entityType)
   )
 
   return shallowEqual(state, newState) ? state : newState
@@ -20,19 +28,19 @@ const requestsSideEffectsReducer = (
 
 const createRequestsSideEffectsReducer = (
   apiTypes: ApiTypeMap,
-  typeConstant,
+  entityType: EntityType,
   fullState,
   previousFullState
 ) => {
-  const collectionName = getCollectionName(apiTypes, typeConstant)
-  const collection = fullState.entities[collectionName]
+  const collectionName = getCollectionName(apiTypes, entityType)
+  const collection: EntitiesState = fullState.entities[collectionName]
   const previousCollection =
     previousFullState &&
     previousFullState.entities &&
     previousFullState.entities[collectionName]
   const { updateRequestOnCollectionChange } = getCachePolicy(
     apiTypes,
-    typeConstant
+    entityType
   )
 
   return (state: State = {}, action: Action) => {
@@ -48,8 +56,10 @@ const createRequestsSideEffectsReducer = (
 
     return requestsSideEffectsReducer(
       state,
+      apiTypes,
       action,
       collection,
+      entityType,
       updateRequestOnCollectionChange
     )
   }
