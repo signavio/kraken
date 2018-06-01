@@ -370,8 +370,10 @@ There are two possiblities to influence the cache. You can either change the req
 ```es6
 export type CachePolicyT = {
   updateRequestOnCollectionChange?: (
+    apiTypes: ApiTypeMap,
     request: Request,
-    collection: EntityCollectionT
+    collection: EntityCollectionT,
+    entityType: EntityType
   ) => Request,
   updateEntitiesOnAction?: (
     apiTypes: ApiTypeMap,
