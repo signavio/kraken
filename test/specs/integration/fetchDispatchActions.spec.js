@@ -37,28 +37,84 @@ describe('Integration - dispatch fetch actions', () => {
   let store
   let actions
 
+  let ConnectedApp
+
   beforeEach(() => {
-    createApp = options => {
-      const ConnectedApp = connect(() => ({
+    createApp = initialProps => {
+      ConnectedApp = connect(({ type, query, requestParams }) => ({
         fetchComment: {
-          type: types.COMMENT,
-          ...options,
+          type,
+          query,
+          requestParams,
         },
       }))(App)
 
       actions = []
       store = configureStore({}, action => actions.push(action))
 
-      return mount(
+      const Component = props => (
         <Provider store={store}>
-          <ConnectedApp />
+          <ConnectedApp {...props} />
         </Provider>
-      ).find(App)
+      )
+
+      return mount(<Component {...initialProps} />)
     }
   })
 
   afterEach(() => {
     fetchMock.restore()
+  })
+
+  it('should partition results based on request params.', done => {
+    const firstComment = { id: 'c1', body: 'My first comment' }
+    const secondComment = { id: 'c2', body: 'My second comment' }
+
+    fetchMock.get(startsWith('/comments'), {
+      body: [{ id: 'c1', body: 'My first comment' }],
+      status: 200,
+    })
+
+    const component = createApp({
+      requestParams: {
+        offset: 0,
+        pageSize: 1,
+      },
+      type: types.COMMENTS,
+    })
+
+    setTimeout(() => {
+      component.update()
+
+      expect(component.find(App)).to.have.prop('fetchComment')
+      expect(component.find(App).prop('fetchComment').value).to.eql([
+        firstComment,
+      ])
+
+      fetchMock.restore()
+
+      fetchMock.get(startsWith('/comments'), {
+        body: [secondComment],
+        status: 200,
+      })
+
+      component.setProps({
+        requestParams: {
+          offset: 1,
+          pageSize: 1,
+        },
+      })
+
+      setTimeout(() => {
+        component.update()
+
+        expect(component.find(App).prop('fetchComment').value).to.eql([
+          secondComment,
+        ])
+
+        done()
+      }, 20)
+    }, 20)
   })
 
   it('should dispatch a success if the server responds with a 200', done => {
@@ -67,12 +123,13 @@ describe('Integration - dispatch fetch actions', () => {
       status: 200,
     })
 
-    createApp({ id: '123' })
+    createApp({ type: types.COMMENT, query: { id: '123' } })
 
     setTimeout(() => {
       expect(actions).to.have.length(3)
-      const failure = actions[2]
-      expect(failure).to.deep.equal(
+
+      const success = actions[2]
+      expect(success).to.deep.equal(
         actionCreator.succeedFetch({
           entityType: 'COMMENT',
           isCachedResponse: false,
@@ -99,7 +156,7 @@ describe('Integration - dispatch fetch actions', () => {
       status: 401,
     })
 
-    createApp({ id: '123' })
+    createApp({ type: types.COMMENT, query: { id: '123' } })
 
     setTimeout(() => {
       const request = store.getState().kraken.requests.COMMENT[
