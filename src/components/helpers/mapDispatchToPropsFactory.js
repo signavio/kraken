@@ -40,7 +40,7 @@ const mapDispatchToPropsFactory = ({
       type: entityType,
       method,
       query = {},
-      requestParams,
+      requestParams = {},
       refresh,
       requiredFields,
     }) => {
