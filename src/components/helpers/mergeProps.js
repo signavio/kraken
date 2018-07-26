@@ -1,9 +1,13 @@
 import { mapValues } from 'lodash'
 
-const mergeProps = ({ finalMapPropsToPromiseProps }) => (stateProps, dispatchProps, ownProps) => {
+const mergeProps = ({ finalMapPropsToPromiseProps }) => (
+  stateProps,
+  dispatchProps,
+  ownProps
+) => {
   const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
-  const joinPromiseValue = (propName) => {
+  const joinPromiseValue = propName => {
     const promise = stateProps[`${propName}_request`]
     const entity = stateProps[`${propName}_entity`]
 
@@ -28,17 +32,19 @@ const mergeProps = ({ finalMapPropsToPromiseProps }) => (stateProps, dispatchPro
   }
 
   const mergePromiseStateToActionCreator = (propName, promiseState) => {
-    return Object.assign((...args) => dispatchProps[propName](...args), promiseState)
+    return Object.assign(
+      (...args) => dispatchProps[propName](...args),
+      promiseState
+    )
   }
 
   // now it's time to join the `${propName}_entity` with the `${propName}_request` props
   return {
     ...ownProps,
     ...dispatchProps,
-    ...mapValues(promiseProps, (value, propName) => mergePromiseStateToActionCreator(
-      propName,
-      joinPromiseValue(propName)
-    )),
+    ...mapValues(promiseProps, (value, propName) =>
+      mergePromiseStateToActionCreator(propName, joinPromiseValue(propName))
+    ),
   }
 }
 

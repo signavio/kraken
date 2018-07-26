@@ -24,6 +24,7 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           ...request,
           outstanding: true,
           query: payload.query,
+          requestParams: payload.requestParams,
           pending: true,
           refresh:
             payload.refresh !== undefined ? payload.refresh : request.refresh,

@@ -96,7 +96,7 @@ describe('Integration - fetch', () => {
       expect(fetch).to.have.been.calledWith(query)
 
       done()
-    })
+    }, 2)
   })
 
   it('should pass the body to the fetch action', done => {

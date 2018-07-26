@@ -14,6 +14,11 @@ const query = {
   someId: 'abcd123',
 }
 
+const requestParams = {
+  offset: 0,
+  pageSize: 25,
+}
+
 describe('helper - mapDispatchToPropsFactory', () => {
   let dispatch
 
@@ -29,6 +34,7 @@ describe('helper - mapDispatchToPropsFactory', () => {
         type: entityType,
         method: 'remove',
         query,
+        requestParams,
       },
     })
 
@@ -86,6 +92,21 @@ describe('helper - mapDispatchToPropsFactory', () => {
 
       expect(type).to.equal(actionTypes.REMOVE_DISPATCH)
       expect(payload).to.have.property('body', body)
+    })
+
+    it('should pass the request params to the action creator.', () => {
+      const { removeType } = promiseProps
+
+      expect(dispatch).to.not.have.been.called
+
+      removeType()
+
+      expect(dispatch).to.have.been.calledOnce
+
+      const { type, payload } = dispatch.getCall(0).args[0]
+
+      expect(type).to.eq(actionTypes.REMOVE_DISPATCH)
+      expect(payload).to.have.property('requestParams', requestParams)
     })
   })
 })

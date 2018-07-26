@@ -79,6 +79,7 @@ describe('Integration - dispatch remove actions', () => {
             id: data.post.id,
           },
           body: undefined,
+          requestParams: {},
         })
       )
       expect(actions[1]).to.deep.equal(
@@ -111,6 +112,7 @@ describe('Integration - dispatch remove actions', () => {
             id: data.post.id,
           },
           body: undefined,
+          requestParams: {},
         })
       )
       expect(actions[1]).to.deep.equal(
