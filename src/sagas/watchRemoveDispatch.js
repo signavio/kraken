@@ -18,7 +18,8 @@ export function createRemoveDispatch(types: ApiTypeMap) {
     const { error, status } = yield call(
       remove,
       action.payload.query,
-      action.payload.body
+      action.payload.body,
+      action.payload.requestParams
     )
 
     if (!error) {

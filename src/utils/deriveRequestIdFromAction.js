@@ -36,7 +36,10 @@ const getMethodName = (action: Action) => {
 }
 
 const deriveRequestId = (action: DispatchAction): string => {
-  const stringifiedQuery = stringifyQuery(action.payload.query)
+  const stringifiedQuery = stringifyQuery({
+    ...action.payload.query,
+    ...action.payload.requestParams,
+  })
   const methodName = getMethodName(action)
   return action.type === actionTypes.CREATE_DISPATCH
     ? `${methodName}_${stringifiedQuery}_${action.payload.elementId}`

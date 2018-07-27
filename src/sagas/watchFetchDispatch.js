@@ -36,7 +36,8 @@ export const createFetchSaga = (types: ApiTypeMap) => {
     const { response, error, status } = yield call(
       fetch,
       action.payload.query,
-      action.payload.body
+      action.payload.body,
+      action.payload.requestParams
     )
 
     if (!error) {

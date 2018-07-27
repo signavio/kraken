@@ -19,7 +19,12 @@ export function createUpdateDispatch(types: ApiTypeMap) {
     const entityType = action.payload.entityType
 
     const update = getUpdate(types, entityType)
-    const result = yield call(update, action.payload.query, action.payload.body)
+    const result = yield call(
+      update,
+      action.payload.query,
+      action.payload.body,
+      action.payload.requestParams
+    )
 
     if (result.response) {
       yield put(

@@ -40,6 +40,7 @@ const mapDispatchToPropsFactory = ({
       type: entityType,
       method,
       query = {},
+      requestParams = {},
       refresh,
       requiredFields,
     }) => {
@@ -55,14 +56,23 @@ const mapDispatchToPropsFactory = ({
       switch (method) {
         case 'fetch':
           return (body: Body) =>
-            actionCreator({ entityType, query, refresh, requiredFields, body })
+            actionCreator({
+              entityType,
+              query,
+              requestParams,
+              refresh,
+              requiredFields,
+              body,
+            })
         case 'create':
           return (body: Body) =>
-            actionCreator({ entityType, elementId, query, body })
+            actionCreator({ entityType, elementId, query, requestParams, body })
         case 'update':
-          return (body: Body) => actionCreator({ entityType, query, body })
+          return (body: Body) =>
+            actionCreator({ entityType, query, requestParams, body })
         case 'remove':
-          return (body: Body) => actionCreator({ entityType, query, body })
+          return (body: Body) =>
+            actionCreator({ entityType, query, requestParams, body })
         default:
           throw new Error(`Unkown dispatch method ${method}`)
       }

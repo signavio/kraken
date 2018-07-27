@@ -44,15 +44,15 @@ Each type must export a certain set of attributes. These contain descriptions
 about the structure of each type and also methods to read, create or modify an
 instance of that type.
 
-| Attribute           | Required | Description                                                                                                                                                                                 |
-| ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| schema              | `true`   | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data.                                                                                |
-| collection          | `true`   | Identifier where all retrieved instances for that type will be stored.                                                                                                                      |
-| fetch(query, body)  | `false`  | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
-| create(query, body) | `false`  | Function that describes how an instance is created.                                                                                                                                         |
-| update(query, body) | `false`  | Function that describes how an instance is updaetd.                                                                                                                                         |
-| remove(query, body) | `false`  | Function that describes how an instance is removed.                                                                                                                                         |
-| cachePolicy         | `false`  | The cache policy that should be used for that type. See [cache policies](TODO) for the possible options.                                                                                    |
+| Attribute                          | Required | Description                                                                                                                                                                                 |
+| ---------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| schema                             | `true`   | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data.                                                                                |
+| collection                         | `true`   | Identifier where all retrieved instances for that type will be stored.                                                                                                                      |
+| fetch(query, body, requestParams)  | `false`  | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
+| create(query, body, requestParams) | `false`  | Function that describes how an instance is created.                                                                                                                                         |
+| update(query, body, requestParams) | `false`  | Function that describes how an instance is updaetd.                                                                                                                                         |
+| remove(query, body, requestParams) | `false`  | Function that describes how an instance is removed.                                                                                                                                         |
+| cachePolicy                        | `false`  | The cache policy that should be used for that type. See [cache policies](TODO) for the possible options.                                                                                    |
 
 ### `callApi(fullUrl, schema[, options])`
 
@@ -234,14 +234,15 @@ and created a new prop `userFetch` that represents the API request. You include
 certain configuration options to get more power over when and how requests go
 out.
 
-| Option      | Default     | Required | Description                                                                                                                                         |
-| ----------- | ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type        | `undefined` | `true`   | The API type which is concered.                                                                                                                     |
-| query       | `undefined` | `false`  | An object of query parameters.                                                                                                                      |
-| id          | `undefined` | `false`  | Shortcut to provide an ID query parameter, `id: 1` is equivalent to `query: { id: 1 }`                                                              |
-| method      | `fetch`     | `false`  | Either one of `fetch`, `create`, `update`, or `remove`.                                                                                             |
-| lazy        | `false`     | `false`  | Only useful in combination with `method: 'fetch'`. Per default, the resource is fetched on component mount. Set `lazy: true` to not fetch on mount. |
-| denormalize | `false`     | `false`  | Inline all referenced data into the injected prop.                                                                                                  |
+| Option        | Default     | Required | Description                                                                                                                                         |
+| ------------- | ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| type          | `undefined` | `true`   | The API type which is concered.                                                                                                                     |
+| query         | `undefined` | `false`  | An object of query parameters.                                                                                                                      |
+| requestParams | `undefined` |  `false` | An object of extra parameters to tell different requests apart.                                                                                     |
+| id            | `undefined` | `false`  | Shortcut to provide an ID query parameter, `id: 1` is equivalent to `query: { id: 1 }`                                                              |
+| method        | `fetch`     | `false`  | Either one of `fetch`, `create`, `update`, or `remove`.                                                                                             |
+| lazy          | `false`     | `false`  | Only useful in combination with `method: 'fetch'`. Per default, the resource is fetched on component mount. Set `lazy: true` to not fetch on mount. |
+| denormalize   | `false`     | `false`  | Inline all referenced data into the injected prop.                                                                                                  |
 
 #### Notes on using `denormalize: true`
 

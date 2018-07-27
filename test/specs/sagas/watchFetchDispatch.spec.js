@@ -60,7 +60,7 @@ describe('Saga - fetchSaga', () => {
 
   it('should call the `fetch` function of the entity type passing in the query object', () => {
     expect(generator.next().value).to.deep.equal(
-      call(getFetch(apiTypes, types.USER), query, undefined)
+      call(getFetch(apiTypes, types.USER), query, undefined, undefined)
     )
   })
 

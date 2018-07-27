@@ -88,6 +88,7 @@ describe('Integration - dispatch create actions', () => {
             title: 'Very new post',
             description: 'All the infos here',
           },
+          requestParams: {},
         })
       )
       expect(actions[1]).to.deep.equal(
@@ -136,6 +137,7 @@ describe('Integration - dispatch create actions', () => {
             title: 'Very new post',
             description: 'All the infos here',
           },
+          requestParams: {},
         })
       )
       expect(actions[1]).to.deep.equal(
@@ -177,6 +179,7 @@ describe('Integration - dispatch create actions', () => {
             title: 'Very new post',
             description: 'All the infos here',
           },
+          requestParams: {},
         })
       )
       expect(actions[1]).to.deep.equal(

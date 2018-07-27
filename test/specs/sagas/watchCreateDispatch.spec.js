@@ -44,7 +44,7 @@ describe('Saga - createEntity', () => {
 
   it('should call the `create` function of the entity type passing in the query object', () => {
     expect(generator.next().value).to.deep.equal(
-      call(typeUtils.getCreate(apiTypes, types.USER), {}, body)
+      call(typeUtils.getCreate(apiTypes, types.USER), {}, body, undefined)
     )
   })
 

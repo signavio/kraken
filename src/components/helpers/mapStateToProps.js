@@ -21,28 +21,35 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
     // function can figure out whether s.th. has changed
     const stateProps = {
       ...mapKeys(
-        mapValues(promiseProps, ({ query, type, method }, propName) =>
-          getRequestState(types, state, {
-            type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
-            payload: {
-              entityType: type,
-              query,
-              elementId,
-              propName,
-            },
-          })
+        mapValues(
+          promiseProps,
+          ({ query, requestParams, type, method }, propName) =>
+            getRequestState(types, state, {
+              type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
+              payload: {
+                entityType: type,
+                query,
+                requestParams,
+                elementId,
+                propName,
+              },
+            })
         ),
         (val, propName) => `${propName}_request`
       ),
       ...mapKeys(
         mapValues(
           promiseProps,
-          ({ query, refresh, type, method, denormalize }, propName) => {
+          (
+            { query, requestParams, refresh, type, method, denormalize },
+            propName
+          ) => {
             const entityState = getEntityState(types, state, {
               type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
               payload: {
                 entityType: type,
                 query,
+                requestParams,
                 refresh,
                 elementId,
                 denormalizeValue: denormalize,

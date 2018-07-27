@@ -25,6 +25,31 @@ describe('requestReducer', () => {
   const requestsReducerForEntity = createRequestsReducer(apiTypes, types.USER)
 
   describe('FETCH_DISPATCH', () => {
+    it('should include request parameters in the request.', () => {
+      const requestParams = {
+        offset: 0,
+        pageSize: 25,
+      }
+
+      const newState = requestsReducerForEntity(
+        {},
+        actions.dispatchFetch({ entityType: types.USER, requestParams })
+      )
+
+      const newRequestId = deriveRequestIdFromAction({
+        type: actionTypes.FETCH_DISPATCH,
+        payload: {
+          requestParams,
+        },
+      })
+
+      expect(newState).to.have.property(newRequestId)
+      expect(newState[newRequestId]).to.have.property(
+        'requestParams',
+        requestParams
+      )
+    })
+
     it('should set pending and outstanding flags', () => {
       const newState = requestsReducerForEntity(
         {},
