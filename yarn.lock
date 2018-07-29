@@ -2654,9 +2654,9 @@ fbjs@^0.8.16:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
-fetch-mock@6.4.4:
-  version "6.4.4"
-  resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-6.4.4.tgz#c8cf5f21b11ee499ac5a073dafcb36edaa7ec366"
+fetch-mock@6.5.2:
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/fetch-mock/-/fetch-mock-6.5.2.tgz#b3842b305c13ea0f81c85919cfaa7de387adfa3e"
   dependencies:
     babel-polyfill "^6.26.0"
     glob-to-regexp "^0.4.0"
