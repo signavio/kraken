@@ -21,7 +21,7 @@ const requestId = deriveRequestIdFromAction({
 })
 // const entityReducerForEntity = entityReducer(entity)
 
-describe('requestReducer', () => {
+describe.only('requestReducer', () => {
   const requestsReducerForEntity = createRequestsReducer(apiTypes, types.USER)
 
   describe('FETCH_DISPATCH', () => {
@@ -172,7 +172,7 @@ describe('requestReducer', () => {
     })
 
     it('should set the responseHeaders', () => {
-      const responseHeaders = new Headers()
+      const responseHeaders = new Headers({ 'Content-Type': 'text/xml' })
       const newState = requestsReducerForEntity(
         { [requestId]: {} },
         actions.succeedFetch({
@@ -187,6 +187,9 @@ describe('requestReducer', () => {
       expect(newState[requestId]).to.have.property(
         'responseHeaders',
         responseHeaders
+      )
+      expect(newState[requestId].responseHeaders.get('Content-Type')).to.equal(
+        'text/xml'
       )
     })
 
