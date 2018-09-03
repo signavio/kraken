@@ -38,8 +38,9 @@ export default function callApi(fullUrl, schema, options) {
       if (!response.ok) {
         return Promise.reject({ json, response })
       }
-
-      return json ? normalize(json, schema) : null
+      return json
+        ? { ...normalize(json, schema), responseHeaders: response.headers }
+        : null
     })
     .then(
       response => ({ response }),

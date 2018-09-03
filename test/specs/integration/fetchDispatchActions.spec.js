@@ -134,6 +134,7 @@ describe('Integration - dispatch fetch actions', () => {
           entityType: 'COMMENT',
           isCachedResponse: false,
           requestId: 'fetch_["id","123"]',
+          responseHeaders: success.payload.responseHeaders,
           value: '123',
           entities: {
             comments: {

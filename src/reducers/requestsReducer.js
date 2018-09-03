@@ -50,6 +50,7 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           pending: false,
           fulfilled: true,
           rejected: false,
+          responseHeaders: payload.responseHeaders,
           value: payload.value,
         },
       }

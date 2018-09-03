@@ -68,14 +68,22 @@ describe('Saga - fetchSaga', () => {
     generator.next()
 
     const { result, entities } = normalize(data.user, apiTypes.USER.schema)
+    const responseHeaders = new Headers()
 
     expect(
-      generator.next({ response: { result, entities } }).value
+      generator.next({
+        response: {
+          result,
+          entities,
+          responseHeaders,
+        },
+      }).value
     ).to.deep.equal(
       put(
         actions.succeedFetch({
           entityType: types.USER,
           requestId,
+          responseHeaders,
           value: result,
           entities,
           isCachedResponse: false,
@@ -102,6 +110,7 @@ describe('Saga - fetchSaga', () => {
         actions.succeedFetch({
           entityType: types.USER,
           requestId,
+          responseHeaders: undefined,
           value: undefined,
           entities: undefined,
           isCachedResponse: false,
