@@ -24,9 +24,13 @@ describe('callApi', () => {
 
     const { response } = await callApi('/comments', {}, {})
 
-    expect(response).to.have.property('result')
-    expect(response).to.have.property('responseHeaders')
-    expect(response).to.have.property('entities')
+    expect(response.result).to.deep.eq({
+      '0': { id: '1', body: 'My first comment' },
+    })
+    expect(response.responseHeaders.get('Content-Type')).to.eql(
+      'application/json'
+    )
+    expect(response.entities).to.eql({})
   })
 
   it('should provide message property in response result when content type text', async () => {
