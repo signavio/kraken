@@ -28,4 +28,19 @@ describe('callApi', () => {
     expect(response).to.have.property('responseHeaders')
     expect(response).to.have.property('entities')
   })
+
+  it('should provide message property in response result when content type text', async () => {
+    fetchMock.get(startsWith('/comments'), {
+      body: 'message text',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    })
+
+    const { response } = await callApi('/comments', {}, {})
+
+    expect(response.result).to.eql({
+      message: 'message text',
+    })
+  })
 })
