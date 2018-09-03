@@ -171,6 +171,25 @@ describe('requestReducer', () => {
         .to.equal(result)
     })
 
+    it('should set the responseHeaders', () => {
+      const responseHeaders = new Headers()
+      const newState = requestsReducerForEntity(
+        { [requestId]: {} },
+        actions.succeedFetch({
+          requestId,
+          responseHeaders,
+          entityType: types.USER,
+          query,
+          value: result,
+        })
+      )
+
+      expect(newState[requestId]).to.have.property(
+        'responseHeaders',
+        responseHeaders
+      )
+    })
+
     it('should set the promise status to fulfilled when not cached', () => {
       const newState = requestsReducerForEntity(
         { [requestId]: {} },
