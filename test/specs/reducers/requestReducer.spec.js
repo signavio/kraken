@@ -21,7 +21,7 @@ const requestId = deriveRequestIdFromAction({
 })
 // const entityReducerForEntity = entityReducer(entity)
 
-describe.only('requestReducer', () => {
+describe('requestReducer', () => {
   const requestsReducerForEntity = createRequestsReducer(apiTypes, types.USER)
 
   describe('FETCH_DISPATCH', () => {
