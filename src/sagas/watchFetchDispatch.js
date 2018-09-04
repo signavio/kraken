@@ -45,6 +45,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
         actionCreators.succeedFetch({
           entityType,
           requestId,
+          responseHeaders: response && response.responseHeaders,
           value: response && response.result,
           entities: response && response.entities,
           isCachedResponse: false,
