@@ -285,13 +285,14 @@ states.
 When connect creates such a promise-like prop it adds certain lifecycle
 information that can be used to render a resource.
 
-| Name       | Type      | Description                                                                                           |
-| ---------- | --------- | ----------------------------------------------------------------------------------------------------- |
-| value      | `any`     | The response value. It will only be set if `fullfilled === true`.                                     |
-| pending    | `boolean` | `true` when the request is sent out but has not returned yet. `false` otherwise.                      |
-| fullfilled | `boolean` | `true` when the last request returned without error. `false` otherwise.                               |
-| rejected   | `boolean` | `true` when the last request returned with errors. `false` otherwise.                                 |
-| reason     | `string`  | When `rejected` is true, we try to include the error message we got from the server in this property. |
+| Name            | Type      | Description                                                                                                                                   |
+| --------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| value           | `any`     | The response value. It will only be set if `fullfilled === true`.                                                                             |
+| pending         | `boolean` | `true` when the request is sent out but has not returned yet. `false` otherwise.                                                              |
+| fullfilled      | `boolean` | `true` when the last request returned without error. `false` otherwise.                                                                       |
+| rejected        | `boolean` | `true` when the last request returned with errors. `false` otherwise.                                                                         |
+| reason          | `string`  | When `rejected` is true, we try to include the error message we got from the server in this property.                                         |
+| responseHeaders | `Headers` | The Fetch API's response [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers) object, only returned when fullfilled is `true`. |
 
 ## Cache Policies
 
