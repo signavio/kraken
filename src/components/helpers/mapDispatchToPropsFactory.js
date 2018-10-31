@@ -66,7 +66,7 @@ const mapDispatchToPropsFactory = ({
             })
         case 'create':
           return (body: Body) =>
-            actionCreator({ entityType, elementId, query, requestParams, body })
+            actionCreator({ entityType, elementId, query, requestParams, refresh, body })
         case 'update':
           return (body: Body) =>
             actionCreator({ entityType, query, requestParams, body })
