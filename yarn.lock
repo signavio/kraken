@@ -6488,9 +6488,9 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@13.109.9:
-  version "13.109.9"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-13.109.9.tgz#06ec5db5f78b2a40f4890738d5a1b756082530b4"
+renovate@13.115.0:
+  version "13.115.0"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-13.115.0.tgz#ecea3e93a7039401cffd2095a8c0296edf4c6bb7"
   dependencies:
     "@renovate/pep440" "0.4.0"
     "@sindresorhus/is" "0.12.0"
