@@ -49,7 +49,7 @@ const mapDispatchToPropsFactory = ({
         !!actionCreator,
         `Unknown method '${method}' specified ` +
           `(supported values: ${validMethods
-            .map((validMathod: string) => `'${validMathod}'`)
+            .map((validMethod: string) => `'${validMethod}'`)
             .join(', ')})`
       )
 
@@ -74,7 +74,7 @@ const mapDispatchToPropsFactory = ({
           return (body: Body) =>
             actionCreator({ entityType, query, requestParams, body })
         default:
-          throw new Error(`Unkown dispatch method ${method}`)
+          throw new Error(`Unknown dispatch method ${method}`)
       }
     }
 
