@@ -14,6 +14,10 @@ const query = {
   someId: 'abcd123',
 }
 
+const refresh = {
+  id: 'unique',
+}
+
 const requestParams = {
   offset: 0,
   pageSize: 25,
@@ -107,6 +111,56 @@ describe('helper - mapDispatchToPropsFactory', () => {
 
       expect(type).to.eq(actionTypes.REMOVE_DISPATCH)
       expect(payload).to.have.property('requestParams', requestParams)
+    })
+  })
+
+  describe('create', () => {
+    let promiseProps
+
+    const finalMapPropsToPromiseProps = () => ({
+      createType: {
+        type: entityType,
+        method: 'create',
+        query,
+        refresh,
+      },
+    })
+
+    beforeEach(() => {
+      promiseProps = mapDispatchToPropsFactory({
+        types,
+        finalMapPropsToPromiseProps,
+      })()(dispatch, {})
+    })
+
+    it('should include the query in the action creator ', () => {
+      const { createType } = promiseProps
+
+      expect(dispatch).to.not.have.been.called
+
+      createType()
+
+      expect(dispatch).to.have.been.calledOnce
+
+      const { type, payload } = dispatch.getCall(0).args[0]
+
+      expect(type).to.eq(actionTypes.CREATE_DISPATCH)
+      expect(payload).to.have.property('query', query)
+    })
+
+    it('should include the refresh in the action creator', () => {
+      const { createType } = promiseProps
+
+      expect(dispatch).to.not.have.been.called
+
+      createType()
+
+      expect(dispatch).to.have.been.calledOnce
+
+      const { type, payload } = dispatch.getCall(0).args[0]
+
+      expect(type).to.eq(actionTypes.CREATE_DISPATCH)
+      expect(payload).to.have.property('refresh', refresh)
     })
   })
 })
