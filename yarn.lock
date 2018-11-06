@@ -107,9 +107,9 @@
   dependencies:
     xregexp "^4.1.1"
 
-"@sindresorhus/is@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.12.0.tgz#55c37409c809e802efea25911a579731adfc6e07"
+"@sindresorhus/is@0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.13.0.tgz#a85d06c13658d0cc9584537df4a99423461f114b"
   dependencies:
     symbol-observable "^1.2.0"
 
@@ -4624,9 +4624,9 @@ lru-cache@^4.1.3:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-luxon@1.4.5:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.4.5.tgz#88f6d4901f61bcff26cfbb66b54f464c9f759b82"
+luxon@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.5.0.tgz#bbb20bc4d3a97f44798e2f0fe13bf5fc2b8784ab"
 
 make-dir@^1.0.0:
   version "1.2.0"
@@ -5883,9 +5883,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-pnpm@2.17.3:
-  version "2.17.3"
-  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-2.17.3.tgz#d097ef8f062f435b15d845ac03d77046482e14b9"
+pnpm@2.17.7:
+  version "2.17.7"
+  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-2.17.7.tgz#f153c2455740867f9490a0313c44a68737de1f63"
 
 precond@0.2:
   version "0.2.3"
@@ -6469,12 +6469,12 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@13.115.6:
-  version "13.115.6"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-13.115.6.tgz#68fdae8816dd6125fc87402dffa19f049363c833"
+renovate@13.122.0:
+  version "13.122.0"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-13.122.0.tgz#01e39611e25211b18a98c96ada8f678c0f2d9bdb"
   dependencies:
     "@renovate/pep440" "0.4.0"
-    "@sindresorhus/is" "0.12.0"
+    "@sindresorhus/is" "0.13.0"
     "@yarnpkg/lockfile" "1.1.0"
     bunyan "1.8.12"
     cacache "11.2.0"
@@ -6508,7 +6508,7 @@ renovate@13.115.6:
     later "1.2.0"
     linkify-markdown "1.0.0"
     lodash "4.17.11"
-    luxon "1.4.5"
+    luxon "1.5.0"
     markdown-it "8.4.2"
     minimatch "3.0.4"
     moment "2.22.2"
@@ -6518,7 +6518,7 @@ renovate@13.115.6:
     p-all "1.0.0"
     parse-diff "0.5.1"
     parse-link-header "1.0.1"
-    pnpm "2.17.3"
+    pnpm "2.17.7"
     registry-auth-token "3.3.2"
     root-require "0.3.1"
     safe-regex "1.1.0"
