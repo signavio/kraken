@@ -25,6 +25,15 @@ const entityReducerForComment = createEntitiesReducer(apiTypes, types.COMMENT)
 const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 describe('entityReducer', () => {
+  it('should not fail on actions that are not part of kraken', () => {
+    const newState = entityReducerForUser(
+      {},
+      { type: 'SOME_ACTION_NOT_FROM_KRAKEN' }
+    )
+
+    expect(newState).to.deep.equal({})
+  })
+
   describe('FETCH_SUCCESS', () => {
     it('should add all entities to the current state.', () => {
       const newState = entityReducerForUser(
