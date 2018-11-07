@@ -1,4 +1,4 @@
-import { keys, pickBy, isNil } from 'lodash'
+import { keys, pickBy, isNil, startsWith } from 'lodash'
 
 import { getCollectionName } from '../types'
 import { actionTypes } from '../actions'
@@ -16,6 +16,10 @@ const mergeValues = (obj1, obj2) =>
   )
 
 export default (apiTypes, typeConstant) => (state = {}, action) => {
+  if (!startsWith(action.type, '@@kraken/')) {
+    return state
+  }
+
   const { payload = {} } = action
   const entities =
     payload.entities &&

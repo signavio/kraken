@@ -1,4 +1,4 @@
-import { mapValues } from 'lodash'
+import { mapValues, startsWith } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import {
@@ -44,6 +44,10 @@ const createRequestsSideEffectsReducer = (
   )
 
   return (state: State = {}, action: Action) => {
+    if (!startsWith(action.type, '@@kraken/')) {
+      return state
+    }
+
     if (!updateRequestOnCollectionChange) {
       // type has no requests side effect
       return state

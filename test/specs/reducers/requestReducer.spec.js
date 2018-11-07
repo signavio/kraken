@@ -24,6 +24,15 @@ const requestId = deriveRequestIdFromAction({
 describe('requestReducer', () => {
   const requestsReducerForEntity = createRequestsReducer(apiTypes, types.USER)
 
+  it('should not fail on actions that are not part of kraken', () => {
+    const newState = requestsReducerForEntity(
+      {},
+      { type: 'SOME_ACTION_NOT_FROM_KRAKEN' }
+    )
+
+    expect(newState).to.deep.equal({})
+  })
+
   describe('FETCH_DISPATCH', () => {
     it('should include request parameters in the request.', () => {
       const requestParams = {

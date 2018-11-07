@@ -1,9 +1,15 @@
+import { startsWith } from 'lodash'
+
 import { ApiTypeMap, RequestsState, Action } from '../internalTypes'
 
 import { deriveRequestIdFromAction } from '../utils'
 import { actionTypes } from '../actions'
 
 const requestsReducer = (state: RequestsState, action: Action) => {
+  if (!startsWith(action.type, '@@kraken/')) {
+    return state
+  }
+
   const { payload = {} } = action
   const key = deriveRequestIdFromAction(action)
   const request = state[key] || {}
