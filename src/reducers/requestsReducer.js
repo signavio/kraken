@@ -6,10 +6,6 @@ import { deriveRequestIdFromAction } from '../utils'
 import { actionTypes } from '../actions'
 
 const requestsReducer = (state: RequestsState, action: Action) => {
-  if (!startsWith(action.type, '@@kraken/')) {
-    return state
-  }
-
   const { payload = {} } = action
   const key = deriveRequestIdFromAction(action)
   const request = state[key] || {}
@@ -84,6 +80,10 @@ const createRequestsReducer = (apiTypes: ApiTypeMap, typeConstant) => (
   state: State = {},
   action: Action
 ) => {
+  if (!startsWith(action.type, '@@kraken/')) {
+    return state
+  }
+
   const { payload = {} } = action
   if (payload.entityType !== typeConstant) {
     return state
