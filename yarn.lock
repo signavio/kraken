@@ -5832,9 +5832,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-pnpm@2.18.2:
-  version "2.18.2"
-  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-2.18.2.tgz#b90b0f240c8f38645bd74ae1d4b50b938fb204b8"
+pnpm@2.19.2:
+  version "2.19.2"
+  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-2.19.2.tgz#80ac179df327bb0308659e1ace9edbdbcbb42fab"
 
 precond@0.2:
   version "0.2.3"
@@ -6418,9 +6418,9 @@ remove-trailing-separator@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.0.1.tgz#615ebb96af559552d4bf4057c8436d486ab63cc4"
 
-renovate@13.132.1:
-  version "13.132.1"
-  resolved "https://registry.yarnpkg.com/renovate/-/renovate-13.132.1.tgz#66bcdd31496219d9fe0070c4165c2379d9960456"
+renovate@13.135.0:
+  version "13.135.0"
+  resolved "https://registry.yarnpkg.com/renovate/-/renovate-13.135.0.tgz#49a99d2a5a7fc40b3a40a270e9ce2fda0690a096"
   dependencies:
     "@renovate/pep440" "0.4.0"
     "@sindresorhus/is" "0.13.0"
@@ -6467,7 +6467,7 @@ renovate@13.132.1:
     p-all "1.0.0"
     parse-diff "0.5.1"
     parse-link-header "1.0.1"
-    pnpm "2.18.2"
+    pnpm "2.19.2"
     registry-auth-token "3.3.2"
     root-require "0.3.1"
     safe-regex "2.0.1"
