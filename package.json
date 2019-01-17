@@ -49,7 +49,7 @@
     "eslint-plugin-flowtype": "3.2.0",
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-jsx-a11y": "5.1.1",
-    "eslint-plugin-react": "7.11.1",
+    "eslint-plugin-react": "7.12.4",
     "fetch-mock": "7.2.5",
     "flow-bin": "0.86.0",
     "install": "0.12.2",
