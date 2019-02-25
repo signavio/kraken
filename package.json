@@ -55,7 +55,7 @@
     "install": "0.12.2",
     "istanbul": "1.1.0-alpha.1",
     "jsdom": "13.0.0",
-    "mocha": "5.2.0",
+    "mocha": "6.0.2",
     "normalizr": "3.3.0",
     "react": "16.6.1",
     "react-dom": "16.6.1",
