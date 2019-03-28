@@ -31,6 +31,8 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           refresh:
             payload.refresh !== undefined ? payload.refresh : request.refresh,
           value: needsRefresh ? undefined : request.value,
+          reason: null,
+          status: null,
         },
       }
     case actionTypes.REQUEST_START:
@@ -52,8 +54,10 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           pending: false,
           fulfilled: true,
           rejected: false,
-          responseHeaders: payload.responseHeaders,
           value: payload.value,
+          responseHeaders: payload.responseHeaders,
+          reason: null,
+          status: payload.status,
         },
       }
     case actionTypes.FETCH_FAILURE:
