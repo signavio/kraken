@@ -57,6 +57,8 @@ describe('requestReducer', () => {
         'requestParams',
         requestParams
       )
+      expect(newState[newRequestId]).to.have.property('reason', null)
+      expect(newState[newRequestId]).to.have.property('status', null)
     })
 
     it('should set pending and outstanding flags', () => {
@@ -152,6 +154,7 @@ describe('requestReducer', () => {
           requestId,
           entityType: types.USER,
           query,
+          status: 200,
           value: result,
         })
       )
@@ -161,6 +164,8 @@ describe('requestReducer', () => {
       expect(newState[requestId]).to.have.property('pending', false)
       expect(newState[requestId]).to.have.property('fulfilled', true)
       expect(newState[requestId]).to.have.property('rejected', false)
+      expect(newState[requestId]).to.have.property('reason', null)
+      expect(newState[requestId]).to.have.property('status', 200)
     })
 
     it('should set the value', () => {
@@ -258,11 +263,13 @@ describe('requestReducer', () => {
           entityType: types.USER,
           requestId,
           error,
+          status: 502,
         })
       )
 
       expect(newState).to.have.property(requestId)
       expect(newState[requestId]).to.have.property('reason', error)
+      expect(newState[requestId]).to.have.property('status', 502)
     })
   })
 })
