@@ -105,7 +105,7 @@ jobs:
 
       - *restore_deps
 
-      - run: yarn flow
+      - run: yarn flow --max-workers 1
 
 workflows:
   version: 2
