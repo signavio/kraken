@@ -1,5 +1,5 @@
 import hoistStatics from 'hoist-non-react-statics'
-import React, { createRef, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { promisePropsEqual } from '../../utils'
 import { ELEMENT_ID_PROP_NAME } from './constants'
@@ -8,11 +8,11 @@ import getDisplayName from './getDisplayName'
 const wrapWithApiConnect = ({
   finalMapPropsToPromiseProps,
 }) => WrappedComponent => {
-  const promisePropsRef = createRef()
-
   function ApiConnect({ [ELEMENT_ID_PROP_NAME]: elementId, innerRef, ...rest }) {
+    const promisePropsRef = useRef({})
+
     const promiseProps = finalMapPropsToPromiseProps(rest)
-    const prevPromiseProps = promisePropsRef.current || {}
+    const prevPromiseProps = promisePropsRef.current
     promisePropsRef.current = promiseProps
 
     const fetchProps = Object.keys(promiseProps).reduce((props, propName) => {
@@ -48,8 +48,6 @@ const wrapWithApiConnect = ({
           fetchProp()
         }
       })
-
-      return () => promisePropsRef.current = null
     })
 
     return <WrappedComponent {...rest} ref={innerRef} />
