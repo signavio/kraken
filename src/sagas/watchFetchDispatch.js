@@ -1,15 +1,13 @@
-import { delay } from 'redux-saga'
-import { put, call, takeEvery } from 'redux-saga/effects'
-import { omitBy, isNil } from 'lodash'
-
-import {
-  State,
-  ApiTypeMap,
-  FetchDispatchAction,
-  StateGetter,
-} from '../internalTypes'
+import { isNil, omitBy } from 'lodash'
+import { call, delay, put, takeEvery } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
+import {
+  ApiTypeMap,
+  FetchDispatchAction,
+  State,
+  StateGetter,
+} from '../internalTypes'
 import { getFetch } from '../types'
 import { deriveRequestIdFromAction, getRequestState } from '../utils'
 
@@ -20,7 +18,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
     action: FetchDispatchAction,
     getState: StateGetter
   ) {
-    yield call(delay, 1) // throttle to avoid duplicate requests
+    yield delay(1) // throttle to avoid duplicate requests
 
     const requestId = deriveRequestIdFromAction(action)
     const request = getRequestState(types, getState(), action)
