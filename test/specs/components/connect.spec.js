@@ -196,12 +196,6 @@ describe('connect', () => {
     expect(reducerSpy).to.have.not.been.called
   })
 
-  it('should dispatch FETCH_DISPATCH action if `fetchOnMount` is true', () => {
-    mount(<TestContainer id="user-jane" fetchOnMount />)
-
-    expect(reducerSpy).to.have.been.calledOnce
-  })
-
   it('should not dispatch FETCH_DISPATCH action if `fetchOnMount` is false and the value is in cache', () => {
     mount(<TestContainer id="user-jane" fetchOnMount={false} />)
 
