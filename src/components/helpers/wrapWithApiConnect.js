@@ -13,7 +13,6 @@ const wrapWithApiConnect = ({
 
     const promiseProps = finalMapPropsToPromiseProps(rest)
     const prevPromiseProps = promisePropsRef.current
-    promisePropsRef.current = promiseProps
 
     const fetchProps = Object.keys(promiseProps).reduce((props, propName) => {
       const promiseProp = promiseProps[propName]
@@ -48,6 +47,8 @@ const wrapWithApiConnect = ({
           fetchProp()
         }
       })
+
+      promisePropsRef.current = promiseProps
     })
 
     return <WrappedComponent {...rest} ref={innerRef} />
