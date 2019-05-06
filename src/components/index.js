@@ -1,14 +1,14 @@
+import { flowRight, isFunction, mapValues, pickBy } from 'lodash/fp'
 import { connect as reduxConnect } from 'react-redux'
-import { isFunction, mapValues, flowRight, pickBy } from 'lodash/fp'
 
 import {
   injectElementIdProp,
-  wrapWithApiConnect,
-  mapStateToProps,
   mapDispatchToPropsFactory,
+  mapIdToQuery,
+  mapStateToProps,
   mergeProps,
   validatePromiseProps,
-  mapIdToQuery,
+  wrapWithApiConnect,
 } from './helpers'
 
 const makeFetchTheDefaultMethod = mapValues((props) => (
@@ -23,7 +23,7 @@ const objectShorthandToFunction = (mapPropsToPromiseProps) => (
 
 export default (types) =>
   (mapPropsToPromiseProps = () => ({}), options = {}) => {
-    const { withRef = false } = options
+
 
     // filter out empty promise prop mappings and
     // transform shortcut id query syntax into regular queries
@@ -36,13 +36,13 @@ export default (types) =>
     )
 
     return flowRight(
-      injectElementIdProp({ withRef }),
+      injectElementIdProp,
       reduxConnect(
         mapStateToProps({ types, finalMapPropsToPromiseProps }),
         mapDispatchToPropsFactory({ types, finalMapPropsToPromiseProps }),
         mergeProps({ finalMapPropsToPromiseProps }),
         options
       ),
-      wrapWithApiConnect({ finalMapPropsToPromiseProps, withRef }),
+      wrapWithApiConnect({ finalMapPropsToPromiseProps }),
     )
   }

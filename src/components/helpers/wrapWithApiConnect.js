@@ -1,41 +1,22 @@
-import { Component, createElement } from 'react'
-
-import invariant from 'invariant'
 import hoistStatics from 'hoist-non-react-statics'
-import { forEach } from 'lodash'
+import React, { createRef, forwardRef, useEffect } from 'react'
 
 import { promisePropsEqual } from '../../utils'
-import getDisplayName from './getDisplayName'
 import { ELEMENT_ID_PROP_NAME } from './constants'
+import getDisplayName from './getDisplayName'
 
 const wrapWithApiConnect = ({
   finalMapPropsToPromiseProps,
-  withRef,
 }) => WrappedComponent => {
-  class ApiConnect extends Component {
-    componentWillMount() {
-      this.loadEntities(this.props)
-    }
+  function ApiConnect({ [ELEMENT_ID_PROP_NAME]: elementId, innerRef, ...rest }, ref) {
+    const promisePropsRef = createRef()
 
-    componentWillUpdate(nextProps) {
-      this.loadEntities(nextProps, this.props)
-    }
+    useEffect(() => {
+      const promiseProps = finalMapPropsToPromiseProps(rest)
+      const prevPromiseProps = promisePropsRef.current || {}
 
-    render() {
-      const { [ELEMENT_ID_PROP_NAME]: elementId, ...rest } = this.props
-      return createElement(WrappedComponent, {
-        ...rest,
-        ...(withRef ? { ref: 'wrappedInstance' } : {}),
-      })
-    }
-
-    loadEntities(props, prevProps) {
-      const promiseProps = finalMapPropsToPromiseProps(props)
-      const prevPromiseProps = prevProps
-        ? finalMapPropsToPromiseProps(prevProps)
-        : {}
-
-      forEach(promiseProps, (promiseProp, propName) => {
+      Object.keys(promiseProps, (propName) => {
+        const promiseProp = promiseProps[propName]
         const { method } = promiseProp
 
         if (method !== 'fetch') {
@@ -49,34 +30,28 @@ const wrapWithApiConnect = ({
           !promisePropsEqual(promiseProp, prevPromiseProps[propName])
 
         const { fetchOnMount } = promiseProps[propName]
-        const hasJustMounted = prevProps === undefined
+        const hasJustMounted = promisePropsRef.current === undefined
         const shallForceFetch = fetchOnMount && hasJustMounted
-        const isInCache = !!props[propName].value
+        const isInCache = !!rest[propName].value
         const hasNewRefreshToken =
           promiseProp.refresh !== undefined &&
-          promiseProp.refresh !== props[propName].refresh
+          promiseProp.refresh !== rest[propName].refresh
         const needsFetch = shallForceFetch || !isInCache || hasNewRefreshToken
 
         if (promisePropUpdated && needsFetch && !promiseProp.lazy) {
-          props[propName]()
+          rest[propName]()
         }
       })
-    }
 
-    getWrappedInstance() {
-      invariant(
-        withRef,
-        'To access the wrapped instance, you need to specify ' +
-          '{ withRef: true } as the second argument of the connect() call.'
-      )
+      promisePropsRef.current = promiseProps
+    })
 
-      return this.refs.wrappedInstance
-    }
+    return <WrappedComponent {...rest} ref={innerRef} />
   }
 
   ApiConnect.displayName = `ApiConnect(${getDisplayName(WrappedComponent)})`
   ApiConnect.WrappedComponent = WrappedComponent
-  return hoistStatics(ApiConnect, WrappedComponent)
+  return hoistStatics(forwardRef(ApiConnect), WrappedComponent)
 }
 
 export default wrapWithApiConnect

@@ -1,17 +1,15 @@
-import React, { Component } from 'react'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
-import sinon from 'sinon'
 import { normalize } from 'normalizr'
+import React, { forwardRef } from 'react'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import sinon from 'sinon'
 
-import createConnect from '../../../src/components'
 import createActionCreators, { actionTypes } from '../../../src/actions'
+import createConnect from '../../../src/components'
 import { deriveRequestIdFromAction } from '../../../src/utils'
-
 import expect from '../../expect'
-
-import { types, apiTypes, data } from '../fixtures'
+import { apiTypes, data, types } from '../fixtures'
 
 const connect = createConnect(apiTypes)
 
@@ -303,34 +301,32 @@ describe('connect', () => {
   })
 
   describe('#getWrappedInstance', () => {
-    class CompWithRefs extends Component {
-      render() {
-        return <div ref="myRef">Text</div>
-      }
+    function Component(props, ref) {
+      return <div ref={ref}>Text</div>
     }
-    const ConnectedCompWithRefs = connect(
+
+
+    const CompWithRefs = forwardRef(Component)
+
+    const ConnectedComponent = connect(
       ({ id }) => ({
         traceFetch: {
           type: types.USER,
           id,
         },
       }),
-      { withRef: true }
     )(CompWithRefs)
 
-    it('should return the wrapped instance', () => {
-      const wrapper = mount(
+    it('should return the wrapped instance', (done) => {
+      mount(
         <Provider store={testStore}>
-          <ConnectedCompWithRefs id={data.user.id} />
+          <ConnectedComponent id={data.user.id} ref={(ref) => {
+            expect(ref).to.exist
+
+            done()
+          }} />
         </Provider>
       )
-
-      expect(
-        wrapper
-          .find(ConnectedCompWithRefs)
-          .instance(0)
-          .getWrappedInstance().refs.myRef
-      ).to.exist
     })
   })
 })
