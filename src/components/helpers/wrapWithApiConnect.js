@@ -8,7 +8,7 @@ import getDisplayName from './getDisplayName'
 const wrapWithApiConnect = ({
   finalMapPropsToPromiseProps,
 }) => WrappedComponent => {
-  function ApiConnect({ [ELEMENT_ID_PROP_NAME]: elementId, innerRef, ...rest }) {
+  function ApiConnect({ [ELEMENT_ID_PROP_NAME]: _, innerRef, ...rest }) {
     const promisePropsRef = useRef({})
 
     const promiseProps = finalMapPropsToPromiseProps(rest)
@@ -23,12 +23,12 @@ const wrapWithApiConnect = ({
 
       return {
         ...props,
-        [propName]: rest[propName]
+        [propName]: rest[propName],
       }
     }, {})
 
     useEffect(() => {
-      Object.keys(fetchProps).forEach((propName) => {
+      Object.keys(fetchProps).forEach(propName => {
         const fetchProp = fetchProps[propName]
         const promiseProp = promiseProps[propName]
         // always refresh on any change of the query or if the refresh token is set
