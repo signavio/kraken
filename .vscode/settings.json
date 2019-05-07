@@ -7,8 +7,5 @@
         "**/node_modules": true,
         "**/lib": true,
         "target": true
-    },
-    "prettier.semi": false,
-    "prettier.singleQuote": true,
-    "prettier.trailingComma": "es5"
+    }
 }
