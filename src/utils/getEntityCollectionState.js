@@ -1,11 +1,10 @@
-import { ApiTypeMap, State, EntityType } from '../flowTypes'
-
+import { ApiTypeMap, EntityType, State } from '../flowTypes'
 import { getCollectionName } from '../types'
 
 export default function getEntityCollectionState(
   types: ApiTypeMap,
-  state: State,
+  krakenState: State,
   entityType: EntityType
 ) {
-  return state.kraken.entities[getCollectionName(types, entityType)]
+  return krakenState.entities[getCollectionName(types, entityType)]
 }

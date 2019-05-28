@@ -1,11 +1,9 @@
-import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import invariant from 'invariant'
+import { isArray, mapKeys, mapValues } from 'lodash'
+import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
-import { mapValues, mapKeys, isArray } from 'lodash'
-
-import { getRequestState, getEntityState } from '../../utils'
 import { actionTypes } from '../../actions'
-
+import { getEntityState, getRequestState } from '../../utils'
 import { ELEMENT_ID_PROP_NAME } from './constants'
 
 const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
@@ -24,7 +22,7 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
         mapValues(
           promiseProps,
           ({ query, requestParams, type, method }, propName) =>
-            getRequestState(types, state, {
+            getRequestState(types, state.kraken.requests, {
               type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
               payload: {
                 entityType: type,
