@@ -1,5 +1,87 @@
 // @flow
-import { type Query } from './requestState'
+import { schema } from 'normalizr'
+
+export type EntityId = string
+export type RequestId = string
+
+export type Entity = any
+export type EntityType = string
+
+export type Request = {
+  pending: boolean,
+  fulfilled: boolean,
+  rejected: boolean,
+  outstanding: boolean,
+  reason: string,
+
+  value: EntityId | Array<EntityId> | null,
+
+  validUntil: number,
+  refresh: any,
+}
+
+export type RequestCollectionT = {
+  [requestId: string]: Request,
+}
+
+export type RequestsState = {
+  [entityType: string]: RequestCollectionT,
+}
+
+export type EntityCollectionT = {
+  [entityId: string]: Entity,
+}
+
+export type EntitiesState = {
+  [collection: string]: EntityCollectionT,
+}
+
+export type PromiseProp<T> = {
+  pending: boolean,
+  fulfilled: boolean,
+  rejected: boolean,
+
+  reason?: string,
+
+  value: ?T,
+}
+
+export type State = {
+  requests: RequestsState,
+  entities: EntitiesState,
+}
+
+export type normalizrResult =
+  | { response: { result: any, entities: any } }
+  | { error: any }
+
+export type Query = {
+  [key: string]: void | string | number | boolean,
+}
+
+type ApiRequest = (
+  query?: Query,
+  body?: any,
+  requestParams?: Query
+) => Promise<normalizrResult>
+
+export type ApiType = {
+  collection: string,
+  schema: schema.Entity | schema.Array,
+
+  fetch?: ApiRequest,
+  create?: ApiRequest,
+  remove?: ApiRequest,
+  update?: ApiRequest,
+}
+
+export type ApiTypeMap = {
+  [name: string]: ApiType,
+}
+
+export type MethodName = 'create' | 'fetch' | 'remove' | 'update'
+
+export type StateGetter = () => State
 
 ///////////////////
 // Payload Types //

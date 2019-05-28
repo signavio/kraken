@@ -16,14 +16,14 @@ type MaybeEntity = Entity | typeof undefined
 
 const getEntityState = (
   types: ApiTypeMap,
-  state: State,
+  krakenState: State,
   action: DispatchAction
 ): MaybeEntity => {
-  const value = getCachedValue(types, state, action)
+  const value = getCachedValue(types, krakenState, action)
 
   const entityCollection = getEntityCollectionState(
     types,
-    state,
+    krakenState,
     action.payload.entityType
   )
 
@@ -40,7 +40,7 @@ const getEntityState = (
     if (denormalizeValue) {
       const { schema } = types[entityType]
 
-      return denormalize(value, schema, state.kraken.entities)
+      return denormalize(value, schema, krakenState.entities)
     }
 
     return finalValue
