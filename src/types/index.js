@@ -1,9 +1,9 @@
 import createMethodFunctionGetter from './createMethodFunctionGetter'
 
-export getCollectionName from './getCollectionName'
-export hasEntitySchema from './hasEntitySchema'
-export getIdAttribute from './getIdAttribute'
-export getTypeNames from './getTypeNames'
+export { default as getCollectionName } from './getCollectionName'
+export { default as hasEntitySchema } from './hasEntitySchema'
+export { default as getIdAttribute } from './getIdAttribute'
+export { default as getTypeNames } from './getTypeNames'
 
 export const getFetch = createMethodFunctionGetter('fetch')
 export const getCreate = createMethodFunctionGetter('create')

@@ -2,7 +2,6 @@
 import { schema as schemas } from 'normalizr'
 
 import { callApi } from '../../../../src'
-
 import { schema as baseSchema } from './user'
 
 export { collection } from './user'

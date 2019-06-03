@@ -1,15 +1,12 @@
+import createActions, { actionTypes } from './actions'
+import { cachePolicies } from './cachePolicies'
+import callApi from './callApi'
+import createConnect from './components'
+import type { ApiTypeMap } from './internalTypes'
 import createReducer from './reducers'
 import createSaga from './sagas'
-import createConnect from './components'
-import createActions, { actionTypes } from './actions'
-import * as cachePolicies from './cachePolicies'
-
-import * as promise from './utils/promise'
 import * as typeUtils from './types'
-
-import type { ApiTypeMap } from './internalTypes'
-
-import callApi from './callApi'
+import * as promise from './utils/promise'
 
 const apiCreator = (types: ApiTypeMap) => {
   const preparedTypes = Object.keys(types).reduce(

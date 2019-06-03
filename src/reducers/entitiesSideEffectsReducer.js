@@ -1,8 +1,7 @@
 import { startsWith } from 'lodash'
 
-import { getCachePolicy } from '../types'
-
-import type { ApiTypeMap, Action, State } from '../internalTypes'
+import { getCachePolicy } from '../cachePolicies'
+import type { Action, ApiTypeMap, State } from '../internalTypes'
 
 const createEntitiesSideEffectsReducer = (
   apiTypes: ApiTypeMap,
