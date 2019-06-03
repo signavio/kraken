@@ -2,7 +2,6 @@ import createMethodFunctionGetter from './createMethodFunctionGetter'
 
 export getCollectionName from './getCollectionName'
 export hasEntitySchema from './hasEntitySchema'
-export getCachePolicy from './getCachePolicy'
 export getIdAttribute from './getIdAttribute'
 export getTypeNames from './getTypeNames'
 

@@ -1,12 +1,8 @@
 // @flow
-import {
-  optimisticRemove,
-  removeReferencesToDeletedEntities,
-} from '../cachePolicies'
-
 import { ApiTypeMap, EntityType } from '../internalTypes'
-
-import hasEntitySchema from './hasEntitySchema'
+import { hasEntitySchema } from '../types'
+import optimisticRemove from './optimisticRemove'
+import removeReferencesToDeletedEntities from './removeReferencesToDeletedEntities'
 
 const defaultEntityCachePolicy = optimisticRemove
 const defaultArrayCachePolicy = removeReferencesToDeletedEntities
