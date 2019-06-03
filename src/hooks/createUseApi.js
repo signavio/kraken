@@ -1,10 +1,11 @@
 // @flow
 import invariant from 'invariant'
-import { capitalize, shallowEqual, uniqueId } from 'lodash'
+import { capitalize, uniqueId } from 'lodash'
 import { useCallback, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
-import createActionCreators, { actionTypes } from '../actions'
+import createActionCreators from '../actions'
 import { type ApiTypeMap, type MethodName, type Query } from '../internalTypes'
 import { getIdAttribute } from '../types'
 import { getEntityState, getRequestState } from '../utils'
