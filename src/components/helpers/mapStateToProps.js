@@ -42,7 +42,7 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
             { query, requestParams, refresh, type, method, denormalize },
             propName
           ) => {
-            const entityState = getEntityState(types, state, {
+            const entityState = getEntityState(types, state.kraken, {
               type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
               payload: {
                 entityType: type,
