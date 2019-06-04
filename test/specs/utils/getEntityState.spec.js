@@ -1,9 +1,9 @@
 import { normalize } from 'normalizr'
 
-import expect from '../../expect'
 import { actionTypes } from '../../../src/actions'
 import { deriveRequestIdFromAction, getEntityState } from '../../../src/utils'
-import { apiTypes, types, data } from '../fixtures'
+import expect from '../../expect'
+import { apiTypes, data, types } from '../fixtures'
 
 describe('Utils - getEntityState', () => {
   it('should find the cached entity based on provided action.', () => {
@@ -25,7 +25,7 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state, action)
+    const result = getEntityState(apiTypes, state.kraken, action)
 
     expect(result.id).to.equal(data.post.id)
   })
@@ -49,7 +49,7 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state, action)
+    const result = getEntityState(apiTypes, state.kraken, action)
 
     expect(result).to.have.length(1)
 
@@ -77,7 +77,7 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state, action)
+    const result = getEntityState(apiTypes, state.kraken, action)
 
     expect(result.comments).to.deep.equal(
       data.post.comments.map(({ id }) => id)
@@ -93,7 +93,7 @@ describe('Utils - getEntityState', () => {
 
     const denormalizedResult = getEntityState(
       apiTypes,
-      state,
+      state.kraken,
       denormalizeAction
     )
 
@@ -140,7 +140,7 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state, action)
+    const result = getEntityState(apiTypes, state.kraken, action)
 
     result.forEach((post, index) => {
       expect(post.comments).to.deep.equal(
@@ -158,7 +158,7 @@ describe('Utils - getEntityState', () => {
 
     const denormalizedResult = getEntityState(
       apiTypes,
-      state,
+      state.kraken,
       denormalizeAction
     )
 

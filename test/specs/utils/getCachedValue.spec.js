@@ -1,9 +1,7 @@
-import { getCachedValue, deriveRequestIdFromAction } from '../../../src/utils'
 import { actionTypes } from '../../../src/actions'
-
+import { deriveRequestIdFromAction, getCachedValue } from '../../../src/utils'
 import expect from '../../expect'
-
-import { apiTypes, types, data } from '../fixtures'
+import { apiTypes, data, types } from '../fixtures'
 
 const fetchAction = {
   type: actionTypes.FETCH_DISPATCH,
@@ -19,7 +17,7 @@ describe('Utils - getCachedValue', () => {
       },
     }
 
-    const result = getCachedValue(apiTypes, state, fetchAction)
+    const result = getCachedValue(apiTypes, state.kraken, fetchAction)
 
     expect(result).to.be.undefined
   })
@@ -36,7 +34,7 @@ describe('Utils - getCachedValue', () => {
       },
     }
 
-    const result = getCachedValue(apiTypes, state, fetchAction)
+    const result = getCachedValue(apiTypes, state.kraken, fetchAction)
 
     expect(result).to.not.be.undefined
     expect(result).to.equal(data.user.id)
@@ -56,7 +54,7 @@ describe('Utils - getCachedValue', () => {
       },
     }
 
-    const result = getCachedValue(apiTypes, state, fetchAction)
+    const result = getCachedValue(apiTypes, state.kraken, fetchAction)
 
     expect(result).to.not.be.undefined
     expect(result).to.equal(data.user.id)

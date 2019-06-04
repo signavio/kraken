@@ -21,7 +21,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
     yield delay(1) // throttle to avoid duplicate requests
 
     const requestId = deriveRequestIdFromAction(action)
-    const request = getRequestState(types, getState(), action)
+    const request = getRequestState(types, getState().kraken.requests, action)
     const entityType = action.payload.entityType
 
     if (request && !request.outstanding) {
