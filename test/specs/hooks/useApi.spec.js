@@ -193,7 +193,7 @@ describe('useApi', () => {
     expect(component.find(Posts).prop('value')).to.eql(posts)
   })
 
-  it.only('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
+  it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
     const component = mount(<TestContainer id="user-jane" />)
 
     expect(reducerSpy).to.have.not.been.called // it's already cached
