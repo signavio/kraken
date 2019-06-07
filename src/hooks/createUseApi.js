@@ -8,7 +8,7 @@ import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import createActionCreators from '../actions'
 import { type ApiTypeMap, type MethodName, type Query } from '../internalTypes'
 import { getIdAttribute } from '../types'
-import { getEntityState, getRequestState } from '../utils'
+import { getEntityState, getRequestState, stringifyQuery } from '../utils'
 
 type BaseOptions = {|
   method?: MethodName,
@@ -51,7 +51,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const resolvedType = apiTypes[entityType]
 
     invariant(
-      resolvedType[method],
+      typeof resolvedType[method] === 'function',
       `Invalid method '${method}' specified for api type "${entityType}"`
     )
 
@@ -71,59 +71,24 @@ function createUseApi(apiTypes: ApiTypeMap) {
       }
     }
 
+    console.log(options)
+
     const [elementId] = useState(uniqueId())
     const krakenState = useSelector(({ kraken }) => kraken)
     const dispatch = useDispatch()
-    const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
+    const actionCreator = getActionCreator(actionCreators, method, {
+      entityType,
+      query,
+      requestParams,
+      refresh,
+      elementId,
+      denormalize,
+    })
 
-    const promiseProp = useCallback(
-      body => {
-        switch (method) {
-          case 'fetch':
-            dispatch(
-              actionCreator({ entityType, query, requestParams, refresh, body })
-            )
-
-            break
-          case 'create':
-            dispatch(
-              actionCreator({
-                entityType,
-                elementId,
-                query,
-                requestParams,
-                body,
-              })
-            )
-
-            break
-          case 'update':
-          case 'remove':
-            dispatch(
-              actionCreator({
-                entityType,
-                query,
-                requestParams,
-                body,
-              })
-            )
-
-            break
-          default:
-            invariant(false, `Unkown dispatch method ${method}`)
-        }
-      },
-      [
-        actionCreator,
-        dispatch,
-        elementId,
-        entityType,
-        method,
-        query,
-        refresh,
-        requestParams,
-      ]
-    )
+    const promiseProp = useCallback(body => dispatch(actionCreator(body)), [
+      actionCreator,
+      dispatch,
+    ])
 
     invariant(
       krakenState,
@@ -133,7 +98,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const requestState = getRequestState(
       apiTypes,
       krakenState.requests,
-      actionCreator({ entityType, query, requestParams, elementId })
+      actionCreator()
     )
 
     const lastEntityState = useRef(null)
@@ -141,14 +106,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const currentEntityState = getEntityState(
       apiTypes,
       krakenState,
-      actionCreator({
-        entityType,
-        query,
-        requestParams,
-        refresh,
-        elementId,
-        denormalizeValue: denormalize,
-      })
+      actionCreator()
     )
 
     const useMemoized =
@@ -162,7 +120,30 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     lastEntityState.current = currentEntityState
 
-    const initialPromise =
+    const initialRun = useRef(true)
+    const queryRef = useRef(stringifyQuery({ ...query, ...requestParams }))
+    const refreshRef = useRef(refresh)
+
+    console.log('HALLOO')
+    console.log(refreshRef.current, refresh)
+
+    if (method === 'fetch' && !lazy) {
+      if (initialRun.current && !entityState) {
+        initialRun.current = false
+
+        promiseProp()
+      } else if (
+        queryRef.current !== stringifyQuery({ ...query, ...requestParams }) ||
+        refreshRef.current !== refresh
+      ) {
+        queryRef.current = stringifyQuery({ ...query, ...requestParams })
+        refreshRef.current = refresh
+
+        promiseProp()
+      }
+    }
+
+    const initialRequestState =
       method === 'fetch'
         ? {
             pending: !entityState && !lazy,
@@ -174,11 +155,55 @@ function createUseApi(apiTypes: ApiTypeMap) {
           }
 
     const promiseState = {
-      ...(requestState || initialPromise),
+      ...(requestState || initialRequestState),
       value: entityState,
     }
 
     return Object.assign(promiseProp, promiseState)
+  }
+}
+
+const getActionCreator = (
+  actionCreators,
+  method,
+  { entityType, query, requestParams, refresh, elementId, denormalize }
+) => {
+  const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
+
+  switch (method) {
+    case 'fetch':
+      return body =>
+        actionCreator({
+          entityType,
+          query,
+          requestParams,
+          refresh,
+          body,
+          denormalizeValue: denormalize,
+        })
+
+    case 'create':
+      return body =>
+        actionCreator({
+          entityType,
+          elementId,
+          query,
+          requestParams,
+          body,
+        })
+
+    case 'update':
+    case 'remove':
+      return body =>
+        actionCreator({
+          entityType,
+          query,
+          requestParams,
+          body,
+        })
+
+    default:
+      invariant(false, `Unkown method ${method}`)
   }
 }
 
