@@ -1,7 +1,7 @@
 // @flow
 import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
@@ -16,6 +16,8 @@ type BaseOptions = {|
   refresh?: any,
   denormalize?: boolean,
   lazy?: boolean,
+  onSuccess?: () => void,
+  onFailure?: () => void,
 |}
 
 type QueryOptions = {|
@@ -28,18 +30,36 @@ type IdOptions = {|
   id: string,
 |}
 
+type ResolvedOptions = {|
+  method: MethodName,
+  query: Query,
+  requestParams: Query,
+  lazy: boolean,
+  denormalize: boolean,
+
+  refresh?: any,
+
+  onSuccess?: () => void,
+  onFailure?: () => void,
+|}
+
 type Options = BaseOptions | QueryOptions | IdOptions
 
 function createUseApi(apiTypes: ApiTypeMap) {
   const actionCreators = createActionCreators(apiTypes)
 
   return (entityType: $Keys<ApiTypeMap>, options?: Options) => {
-    let query = {}
-    let requestParams = {}
-    let method = 'fetch'
-    let refresh
-    let denormalize = false
-    let lazy = false
+    const {
+      query,
+      method,
+      requestParams,
+      refresh,
+      denormalize,
+      lazy,
+
+      onSuccess,
+      onFailure,
+    } = resolveOptions(apiTypes, entityType, options)
 
     invariant(
       apiTypes[entityType],
@@ -52,24 +72,8 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     invariant(
       typeof resolvedType[method] === 'function',
-      `Invalid method '${method}' specified for api type "${entityType}"`
+      `Invalid method "${method}" specified for api type "${entityType}"`
     )
-
-    if (options) {
-      method = options.method || method
-      requestParams = options.requestParams || requestParams
-      refresh = options.refresh
-      denormalize = options.denormalize || denormalize
-      lazy = options.lazy || lazy
-
-      if (options.id) {
-        query = {
-          [getIdAttribute(apiTypes, entityType)]: options.id,
-        }
-      } else if (options.query) {
-        query = options.query
-      }
-    }
 
     const [elementId] = useState(uniqueId())
     const krakenState = useSelector(({ kraken }) => kraken)
@@ -149,6 +153,11 @@ function createUseApi(apiTypes: ApiTypeMap) {
             fulfilled: false,
           }
 
+    useRequestHandlers(requestState || initialRequestState, {
+      onSuccess,
+      onFailure,
+    })
+
     const promiseState = {
       ...(requestState || initialRequestState),
       value: entityState,
@@ -158,9 +167,103 @@ function createUseApi(apiTypes: ApiTypeMap) {
   }
 }
 
+const useRequestHandlers = (requestState, { onSuccess, onFailure }) => {
+  useCallbackOnSuccess(requestState, onSuccess)
+  useCallbackOnFailure(requestState, onFailure)
+}
+
+const useCallbackOnFailure = (requestState, onFailure) => {
+  const pendingRef = useRef(null)
+
+  const { pending, rejected } = requestState
+
+  useEffect(() => {
+    if (!onFailure) {
+      return
+    }
+
+    if (pendingRef.current === null && rejected) {
+      onFailure()
+    }
+
+    if (pendingRef.current && !pending && rejected) {
+      onFailure()
+    }
+
+    pendingRef.current = pending
+  }, [pending, rejected, onFailure])
+}
+
+const useCallbackOnSuccess = (requestState, onSuccess) => {
+  const pendingRef = useRef(null)
+
+  const { pending, fulfilled } = requestState
+
+  useEffect(() => {
+    if (!onSuccess) {
+      return
+    }
+
+    if (pendingRef.current === null && fulfilled) {
+      onSuccess()
+    }
+
+    if (pendingRef.current && !pending && fulfilled) {
+      onSuccess()
+    }
+
+    pendingRef.current = pending
+  }, [pending, fulfilled, onSuccess])
+}
+
+const resolveOptions = (
+  apiTypes,
+  entityType,
+  options: ?Options
+): ResolvedOptions => {
+  const defaultOptions = {
+    query: {},
+    requestParams: {},
+    method: 'fetch',
+    denormalize: false,
+    lazy: false,
+  }
+
+  if (options) {
+    if (options.id) {
+      const { id, ...rest } = options
+
+      return {
+        ...defaultOptions,
+        ...rest,
+
+        query: {
+          [getIdAttribute(apiTypes, entityType)]: id,
+        },
+      }
+    }
+
+    if (options.query) {
+      return {
+        ...defaultOptions,
+        ...options,
+      }
+    }
+
+    return {
+      ...defaultOptions,
+      ...options,
+    }
+  }
+
+  return {
+    ...defaultOptions,
+  }
+}
+
 const getActionCreator = (
   actionCreators,
-  method,
+  method: MethodName,
   { entityType, query, requestParams, refresh, elementId, denormalize }
 ) => {
   const actionCreator = actionCreators[`dispatch${capitalize(method)}`]

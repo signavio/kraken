@@ -3,18 +3,22 @@ import { normalize } from 'normalizr'
 import React, { Fragment } from 'react'
 import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { combineReducers, createStore } from 'redux'
 import sinon from 'sinon'
 
 import createActionCreators, { actionTypes } from '../../../src/actions'
 import createUseApi from '../../../src/hooks'
+import createReducer from '../../../src/reducers'
 import { deriveRequestIdFromAction } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
 const useApi = createUseApi(apiTypes)
+const reudcer = createReducer(apiTypes)
 
-const { dispatchFetch } = createActionCreators(apiTypes)
+const { dispatchFetch, succeedFetch, failFetch } = createActionCreators(
+  apiTypes
+)
 
 const renderSpy = sinon.spy()
 
@@ -48,7 +52,7 @@ const TestComponent = props => {
 
 const fetchUserJaneAction = dispatchFetch({
   entityType: types.USER,
-  id: 'user-jane',
+  query: { id: 'user-jane' },
 })
 
 const posts = [
@@ -69,30 +73,41 @@ const jane = {
   posts,
 }
 
-const reducerSpy = sinon.spy((state = {}) => state)
-const testStore = createStore(reducerSpy, {
+const { entities } = normalize(jane, apiTypes.USER.schema, {})
+
+const initialState = {
   kraken: {
     requests: {
       [types.USER]: {
         [deriveRequestIdFromAction(fetchUserJaneAction)]: {
-          value: 'user-jane',
+          value: jane.id,
           fulfilled: true,
           refresh: 2,
         },
       },
     },
-    ...normalize(jane, apiTypes.USER.schema, {}),
+    entities,
   },
-})
+}
 
-const TestContainer = props => (
-  <Provider store={testStore}>
-    <TestComponent {...props} />
-  </Provider>
-)
+const reducerSpy = sinon.spy((state, action) => reudcer(state, action))
 
 describe('useApi', () => {
+  let testStore
+  let TestContainer
+
   beforeEach(() => {
+    testStore = createStore(
+      combineReducers({ kraken: reducerSpy }),
+      initialState
+    )
+
+    TestContainer = props => (
+      <Provider store={testStore}>
+        <TestComponent {...props} />
+      </Provider>
+    )
+
     renderSpy.resetHistory()
     reducerSpy.resetHistory()
   })
@@ -178,12 +193,8 @@ describe('useApi', () => {
     expect(component.find(Posts).prop('value')).to.eql(posts)
   })
 
-  it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
-    let component
-
-    act(() => {
-      component = mount(<TestContainer id="user-jane" />)
-    })
+  it.only('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
+    const component = mount(<TestContainer id="user-jane" />)
 
     expect(reducerSpy).to.have.not.been.called // it's already cached
 
@@ -217,10 +228,14 @@ describe('useApi', () => {
   it('should validate the promise props and throw on invalid values', () => {
     const InvalidType = () => {
       useApi(undefined)
+
+      return null
     }
 
     const InvalidMethod = () => {
       useApi(types.USER, { method: 'prost' })
+
+      return null
     }
 
     const invalidType = () => {
@@ -240,7 +255,9 @@ describe('useApi', () => {
     }
 
     expect(invalidType).to.throw(/^Invalid type value/)
-    expect(invalidMethod).to.throw(/^Unkown method prost/)
+    expect(invalidMethod).to.throw(
+      /^Invalid method "prost" specified for api type "USER"/
+    )
   })
 
   it('should provide a pre-configured action creator when using a `create` method ', () => {
@@ -275,5 +292,77 @@ describe('useApi', () => {
         },
       }
     )
+  })
+
+  it('should be possible to pass a callback for when the request succeeds.', () => {
+    const onSuccess = sinon.spy()
+
+    const Component = () => {
+      useApi(types.USER, { id: 'some-user', onSuccess })
+
+      return null
+    }
+
+    mount(
+      <Provider store={testStore}>
+        <Component />
+      </Provider>
+    )
+
+    expect(onSuccess).not.to.have.been.called
+
+    act(() => {
+      testStore.dispatch(
+        succeedFetch({
+          entityType: types.USER,
+          requestId: deriveRequestIdFromAction({
+            type: actionTypes.FETCH_DISPATCH,
+            payload: {
+              entityType: types.USER,
+              query: {
+                id: 'some-user',
+              },
+            },
+          }),
+        })
+      )
+    })
+
+    expect(onSuccess).to.have.been.calledOnce
+  })
+
+  it('should be possible to pass a callback for when a request fails.', () => {
+    const onFailure = sinon.spy()
+
+    const Component = () => {
+      useApi(types.USER, { id: 'some-user' })
+
+      return null
+    }
+
+    mount(
+      <Provider store={testStore}>
+        <Component />
+      </Provider>
+    )
+
+    expect(onFailure).not.to.have.been.called
+
+    testStore.dispatch(
+      failFetch({
+        entityType: types.USER,
+        requestId: deriveRequestIdFromAction({
+          type: actionTypes.FETCH_DISPATCH,
+          payload: {
+            entityType: types.USER,
+            query: {
+              id: 'some-user',
+            },
+          },
+        }),
+      })
+    )
+
+    expect(onFailure).not.to.have.been.calledOnce
   })
 })
