@@ -1,15 +1,15 @@
 import { mapValues, startsWith } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
+import { getCachePolicy } from '../cachePolicies'
 import {
-  ApiTypeMap,
-  RequestsState,
   Action,
-  EntityType,
+  ApiTypeMap,
   EntitiesState,
+  EntityType,
+  RequestsState,
 } from '../internalTypes'
-
-import { getCollectionName, getCachePolicy } from '../types'
+import { getCollectionName } from '../types'
 
 const requestsSideEffectsReducer = (
   state: RequestsState,

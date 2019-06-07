@@ -1,5 +1,13 @@
-export compose from './compose'
+import optimisticRemove from './optimisticRemove'
+import queryFromCache from './queryFromCache'
+import removeReferencesToDeletedEntities from './removeReferencesToDeletedEntities'
 
-export optimisticRemove from './optimisticRemove'
-export queryFromCache from './queryFromCache'
-export removeReferencesToDeletedEntities from './removeReferencesToDeletedEntities'
+export { default as compose } from './compose'
+
+export { default as getCachePolicy } from './getCachePolicy'
+
+export const cachePolicies = {
+  optimisticRemove,
+  queryFromCache,
+  removeReferencesToDeletedEntities,
+}
