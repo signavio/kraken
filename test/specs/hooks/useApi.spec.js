@@ -22,7 +22,6 @@ const Posts = () => null
 const User = () => null
 
 const TestComponent = props => {
-  console.log(props)
   const { id, refresh, lazy, denormalize } = props
 
   const fetchUser = useApi(types.USER, { id, refresh, lazy, denormalize })
