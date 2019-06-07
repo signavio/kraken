@@ -71,8 +71,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
       }
     }
 
-    console.log(options)
-
     const [elementId] = useState(uniqueId())
     const krakenState = useSelector(({ kraken }) => kraken)
     const dispatch = useDispatch()
@@ -123,9 +121,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const initialRun = useRef(true)
     const queryRef = useRef(stringifyQuery({ ...query, ...requestParams }))
     const refreshRef = useRef(refresh)
-
-    console.log('HALLOO')
-    console.log(refreshRef.current, refresh)
 
     if (method === 'fetch' && !lazy) {
       if (initialRun.current && !entityState) {
