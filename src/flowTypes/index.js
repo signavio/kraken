@@ -1,9 +1,15 @@
 // @flow
 
-import { type EntitiesState, type RequestsState } from './founddation'
+import { type EntitiesState } from './entityState'
+import { type RequestsState } from './requestState'
 
 export * from './promiseProps'
-export * from './founddation'
+export * from './api'
+export * from './entityState'
+export * from './requestState'
+export * from './types'
+export * from './actions'
+export * from './cachePolicies'
 
 export type EntityId = string
 export type RequestId = string
