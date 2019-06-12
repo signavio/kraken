@@ -1,16 +1,19 @@
 // @flow
 import type {
+  CachePolicyT,
+  EntitiesState,
   EntityCachePolicyT,
   RequestCachePolicyT,
-  CachePolicyT,
-  Request,
-  EntitiesState,
+  RequestsState,
 } from '../internalTypes'
 
 type PolicyT = EntityCachePolicyT | RequestCachePolicyT
 
 const composeSideEffects = (first?: PolicyT, second?: PolicyT) => {
-  return (stateToReceiveSideEffects: Request | EntitiesState, ...args) => {
+  return (
+    stateToReceiveSideEffects: RequestsState | EntitiesState,
+    ...args
+  ) => {
     if (!first && second) {
       return second(stateToReceiveSideEffects, ...args)
     }

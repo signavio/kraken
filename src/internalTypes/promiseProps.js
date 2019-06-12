@@ -1,32 +1,31 @@
 // @flow
-// @flow
 
-type FulfilledPromiseT<BodyT, TypedValueT> = {|
-  (body?: BodyT): void,
+type FulfilledPromise<Body, Value> = {|
+  (body?: Body): void,
 
   status: number,
 
-  value: TypedValueT,
+  value: Value,
 
   fulfilled: true,
   pending: false,
   rejected: false,
 |}
 
-type PendingPromiseT<BodyT, TypedValueT> = {|
-  (body?: BodyT): void,
+type PendingPromise<Body, Value> = {|
+  (body?: Body): void,
 
   status: number,
 
-  value: ?TypedValueT,
+  value: ?Value,
 
   pending: true,
   fulfilled: false,
   rejected: false,
 |}
 
-type RejectedPromiseT<BodyT> = {|
-  (body?: BodyT): void,
+type RejectedPromise<Body> = {|
+  (body?: Body): void,
 
   status: number,
 
@@ -39,7 +38,7 @@ type RejectedPromiseT<BodyT> = {|
   pending: false,
 |}
 
-export type PromiseT<BodyT, TypedValueT = BodyT> =
-  | PendingPromiseT<BodyT, TypedValueT>
-  | RejectedPromiseT<BodyT>
-  | FulfilledPromiseT<BodyT, TypedValueT>
+export type PromiseProp<Body, Value = Body> =
+  | PendingPromise<Body, Value>
+  | RejectedPromise<Body>
+  | FulfilledPromise<Body, Value>

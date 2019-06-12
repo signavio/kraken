@@ -1,8 +1,11 @@
 // @flow
+import { type Query } from './api'
+
 type RequestBase = {|
   outstanding: boolean,
 
   refresh: any,
+  query: Query,
 |}
 
 type PendingRequest = {|
@@ -39,10 +42,10 @@ type RejectedRequest = {|
 
 export type Request = PendingRequest | FulfilledRequest | RejectedRequest
 
-export type RequestCollection = {
+export type RequestCollection = {|
   [requestId: string]: Request,
-}
+|}
 
-export type RequestsState = {
+export type RequestsState = {|
   [entityType: string]: RequestCollection,
-}
+|}

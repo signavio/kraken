@@ -9,49 +9,61 @@ export type Body = {
   [key: string]: any,
 }
 
+type PayloadBase = {|
+  query: Query,
+
+  entityType: string,
+|}
+
 ////////////////////////////
 // Dispatch Payload Types //
 ////////////////////////////
 
-export type DispatchPayload = {
-  query: Query,
+export type DispatchPayload = {|
+  ...PayloadBase,
+
   body: Body,
   elementId: string,
-  entityType: string,
-}
+  denormalizeValue: boolean,
+|}
 
 ///////////////////////////
 // Success Payload Types //
 ///////////////////////////
 
-export type CreateSuccessPayload = {
+type AfterDispatchBasePayload = {|
+  ...PayloadBase,
+
   requestId: string,
-  entityType: string,
+|}
+
+export type CreateSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+
   result: string | Array<string>,
   entities: Array<any>,
-}
+|}
 
-export type UpdateSuccessPayload = {
-  requestId: string,
-  entityType: string,
+export type UpdateSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+
   result: string | Array<string>,
   entities: Array<any>,
-}
+|}
 
-export type FetchSuccessPayload = {
-  requestId: string,
-  entityType: string,
+export type FetchSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+
   result: string | Array<string>,
   entities: Array<any>,
   isCachedResponse: boolean,
-}
+|}
 
-export type RemoveSuccessPayload = {
-  requestId: string,
-  entityType: string,
+export type RemoveSuccessPayload = {|
+  ...AfterDispatchBasePayload,
   result: string | Array<string>,
   entities: Array<any>,
-}
+|}
 
 export type SuccessPayload =
   | CreateSuccessPayload
@@ -63,33 +75,33 @@ export type SuccessPayload =
 // Failure Payload Types //
 ///////////////////////////
 
-export type CreateFailurePayload = {
-  requestId: string,
-  entityType: string,
-  error: string,
-  status?: number,
-}
+export type CreateFailurePayload = {|
+  ...AfterDispatchBasePayload,
 
-export type UpdateFailurePayload = {
-  requestId: string,
-  entityType: string,
   error: string,
   status?: number,
-}
+|}
 
-export type FetchFailurePayload = {
-  requestId: string,
-  entityType: string,
-  error: string,
-  status?: number,
-}
+export type UpdateFailurePayload = {|
+  ...AfterDispatchBasePayload,
 
-export type RemoveFailurePayload = {
-  requestId: string,
-  entityType: string,
   error: string,
   status?: number,
-}
+|}
+
+export type FetchFailurePayload = {|
+  ...AfterDispatchBasePayload,
+
+  error: string,
+  status?: number,
+|}
+
+export type RemoveFailurePayload = {|
+  ...AfterDispatchBasePayload,
+
+  error: string,
+  status?: number,
+|}
 
 export type FailurePayload =
   | CreateFailurePayload
@@ -97,10 +109,9 @@ export type FailurePayload =
   | FetchFailurePayload
   | RemoveFailurePayload
 
-export type RequestStartPayload = {
-  entityType: string,
-  requestId: string,
-}
+export type RequestStartPayload = {|
+  ...AfterDispatchBasePayload,
+|}
 
 export type Payload =
   | DispatchPayload

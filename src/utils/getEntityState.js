@@ -2,17 +2,21 @@
 import { isArray } from 'lodash'
 import { denormalize } from 'normalizr'
 
+import {
+  type ApiTypeMap,
+  type DispatchAction,
+  type Entity,
+  type KrakenState,
+} from '../internalTypes'
 import { hasEntitySchema } from '../types'
-import { ApiTypeMap, State, DispatchAction, Entity } from '../internalTypes'
-
-import getEntityCollectionState from './getEntityCollectionState'
 import getCachedValue from './getCachedValue'
+import getEntityCollectionState from './getEntityCollectionState'
 
 type MaybeEntity = Entity | typeof undefined
 
 const getEntityState = (
   types: ApiTypeMap,
-  state: State,
+  state: KrakenState,
   action: DispatchAction
 ): MaybeEntity => {
   const value = getCachedValue(types, state, action)

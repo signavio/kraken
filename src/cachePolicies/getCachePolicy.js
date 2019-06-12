@@ -1,5 +1,5 @@
 // @flow
-import { ApiTypeMap, EntityType } from '../internalTypes'
+import { type ApiTypeMap, type EntityType } from '../internalTypes'
 import { hasEntitySchema } from '../types'
 import optimisticRemove from './optimisticRemove'
 import removeReferencesToDeletedEntities from './removeReferencesToDeletedEntities'

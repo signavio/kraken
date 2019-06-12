@@ -1,8 +1,8 @@
 // @flow
-export type EntityCollectionT = {
+export type EntityCollectionT = {|
   [entityId: string]: any,
-}
+|}
 
-export type EntitiesState = {
+export type EntitiesState = {|
   [collection: string]: EntityCollectionT,
-}
+|}

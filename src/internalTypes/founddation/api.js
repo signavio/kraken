@@ -17,7 +17,7 @@ type ApiRequest = (
   requestParams?: Query
 ) => Promise<normalizrResult>
 
-export type ApiType = {
+export type ApiType = {|
   collection: string,
   schema: schema.Entity | schema.Array,
 
@@ -25,7 +25,7 @@ export type ApiType = {
   create?: ApiRequest,
   remove?: ApiRequest,
   update?: ApiRequest,
-}
+|}
 
 export type ApiTypeMap = {
   [name: string]: ApiType,
