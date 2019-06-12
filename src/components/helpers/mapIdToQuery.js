@@ -1,6 +1,6 @@
 import { mapValues } from 'lodash/fp'
 
-import { ApiTypeMap } from '../../internalTypes'
+import { ApiTypeMap } from '../../flowTypes'
 
 import { getIdAttribute } from '../../types'
 

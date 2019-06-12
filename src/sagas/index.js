@@ -1,6 +1,6 @@
 import { spawn } from 'redux-saga/effects'
 
-import { ApiTypeMap, StateGetter } from '../internalTypes'
+import { ApiTypeMap, StateGetter } from '../flowTypes'
 
 import createWatchCreateDispatch from './watchCreateDispatch'
 import createWatchUpdateDispatch from './watchUpdateDispatch'

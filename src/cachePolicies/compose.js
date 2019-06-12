@@ -8,7 +8,7 @@ import type {
   EntityCollectionT,
   Request,
   RequestCachePolicyT,
-} from '../internalTypes'
+} from '../flowTypes'
 
 function composeRequestSideEffects(
   first?: RequestCachePolicyT,

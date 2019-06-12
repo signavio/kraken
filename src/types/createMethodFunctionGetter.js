@@ -5,7 +5,7 @@ import {
   type ApiTypeMap,
   type EntityType,
   type MethodName,
-} from '../internalTypes'
+} from '../flowTypes'
 
 const createMethodFunctionGetter = (methodName: MethodName) => (
   types: ApiTypeMap,

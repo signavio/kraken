@@ -10,7 +10,7 @@ import type {
   ApiTypeMap,
   EntitiesState,
   Entity,
-} from '../internalTypes'
+} from '../flowTypes'
 
 const removeReferencesFromAllInCollection = (
   collection: Entity,

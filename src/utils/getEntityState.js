@@ -7,7 +7,7 @@ import {
   type DispatchAction,
   type Entity,
   type State,
-} from '../internalTypes'
+} from '../flowTypes'
 import { hasEntitySchema } from '../types'
 import getCachedValue from './getCachedValue'
 import getEntityCollectionState from './getEntityCollectionState'

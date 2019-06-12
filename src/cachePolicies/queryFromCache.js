@@ -6,7 +6,7 @@ import type {
   EntityCollectionT,
   EntityType,
   Request,
-} from '../internalTypes'
+} from '../flowTypes'
 import { hasEntitySchema } from '../types'
 import { isMatch } from '../utils'
 

@@ -1,4 +1,4 @@
-import { ApiTypeMap, State, EntityType } from '../internalTypes'
+import { ApiTypeMap, State, EntityType } from '../flowTypes'
 
 import { getCollectionName } from '../types'
 

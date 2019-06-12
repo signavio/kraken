@@ -7,7 +7,7 @@ import type {
   EntityCollectionT,
   EntityType,
   Request,
-} from '../internalTypes'
+} from '../flowTypes'
 import { hasEntitySchema } from '../types'
 
 // clean result values from ids that are no longer existent in the cache

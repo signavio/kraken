@@ -2,7 +2,7 @@ import { findKey } from 'lodash'
 
 import { hasEntitySchema } from '../types'
 import { actionTypes } from '../actions'
-import { State, ApiTypeMap, DispatchAction, EntityId } from '../internalTypes'
+import { State, ApiTypeMap, DispatchAction, EntityId } from '../flowTypes'
 
 import getRequestState from './getRequestState'
 import getEntityCollectionState from './getEntityCollectionState'

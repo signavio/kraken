@@ -7,7 +7,7 @@ import {
   FetchDispatchAction,
   State,
   StateGetter,
-} from '../internalTypes'
+} from '../flowTypes'
 import { getFetch } from '../types'
 import { deriveRequestIdFromAction, getRequestState } from '../utils'
 

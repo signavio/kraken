@@ -8,7 +8,7 @@ import {
   EntitiesState,
   EntityType,
   RequestsState,
-} from '../internalTypes'
+} from '../flowTypes'
 import { getCollectionName } from '../types'
 
 const requestsSideEffectsReducer = (

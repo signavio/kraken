@@ -1,7 +1,7 @@
 // @flow
 import { isString } from 'lodash'
 
-import { type ApiTypeMap, type EntityType } from '../internalTypes'
+import { type ApiTypeMap, type EntityType } from '../flowTypes'
 
 const getCollectionName = (types: ApiTypeMap, entityType: EntityType) => {
   const collection = types[entityType].collection
