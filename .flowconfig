@@ -2,6 +2,7 @@
 .*/node_modules/npm.*
 .*/node_modules/json-dup-key-validator.*
 .*/node_modules/config-chain/test
+.*/node_modules/graphviz/.*
 
 [include]
 
