@@ -250,6 +250,7 @@ const resolveOptions = (
       }
     }
 
+    // $FlowFixMe
     return {
       ...defaultOptions,
       ...options,
