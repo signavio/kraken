@@ -6,7 +6,7 @@ import {
   type ApiTypeMap,
   type DispatchAction,
   type Entity,
-  type State,
+  type KrakenState,
 } from '../flowTypes'
 import { hasEntitySchema } from '../types'
 import getCachedValue from './getCachedValue'
@@ -16,7 +16,7 @@ type MaybeEntity = Entity | typeof undefined
 
 const getEntityState = (
   types: ApiTypeMap,
-  krakenState: State,
+  krakenState: KrakenState,
   action: DispatchAction
 ): MaybeEntity => {
   const value = getCachedValue(types, krakenState, action)

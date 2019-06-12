@@ -22,10 +22,6 @@ export type KrakenState = {
   entities: EntitiesState,
 }
 
-export type State = {
-  kraken: KrakenState,
-}
-
 export type MethodName = 'create' | 'fetch' | 'remove' | 'update'
 
-export type StateGetter = () => State
+export type StateGetter = () => KrakenState

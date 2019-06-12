@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import createActionCreators from '../actions'
-import { type ApiTypeMap, type MethodName, type Query } from '../internalTypes'
+import { type ApiTypeMap, type MethodName, type Query } from '../flowTypes'
 import { getIdAttribute } from '../types'
 import { getEntityState, getRequestState, stringifyQuery } from '../utils'
 
