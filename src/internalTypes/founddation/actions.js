@@ -1,5 +1,5 @@
 // @flow
-import { type Query } from './founddation'
+import { type Query } from './api'
 
 ///////////////////
 // Payload Types //

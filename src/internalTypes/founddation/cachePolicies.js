@@ -1,14 +1,14 @@
 // @flow
 import { type Action } from './actions'
-import {
-  type ApiTypeMap,
-  type EntitiesState,
-  type EntityCollectionT,
-} from './founddation'
+import { type EntitiesState, type EntityCollectionT } from './entityState'
+import { type Request } from './requestState'
+import { type ApiTypeMap } from './types'
 
 export type RequestCachePolicyT = (
+  apiTypes: ApiTypeMap,
   request: Request,
-  collection: EntityCollectionT
+  collection: EntityCollectionT,
+  entityType: string
 ) => Request
 
 export type EntityCachePolicyT = (

@@ -1,15 +1,14 @@
 // @flow
-import { keys } from 'lodash'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import type {
-  Request,
-  EntityCollectionT,
   ApiTypeMap,
+  EntityCollectionT,
   EntityType,
+  Request,
 } from '../internalTypes'
-import { isMatch } from '../utils'
 import { hasEntitySchema } from '../types'
+import { isMatch } from '../utils'
 
 // match cached entities' properties with query params and keep the result up-to-date with cache
 const selectMatchingItemsAsValue = (
@@ -19,11 +18,12 @@ const selectMatchingItemsAsValue = (
   entityType: EntityType
 ): Request => {
   if (hasEntitySchema(apiTypes, entityType)) {
-    const matchingId = keys(collection).find((id: string) =>
+    const matchingId: ?string = Object.keys(collection).find((id: string) =>
       isMatch(collection[id], request.query)
     )
 
     if (!request.value) {
+      // $FlowFixMe
       return {
         ...request,
         value: matchingId,
@@ -32,13 +32,15 @@ const selectMatchingItemsAsValue = (
 
     return request.value === matchingId
       ? request
-      : { ...request, value: matchingId }
+      : // $FlowFixMe
+        { ...request, value: matchingId }
   } else {
-    const matchingIds = keys(collection).filter((id: string) =>
+    const matchingIds = Object.keys(collection).filter((id: string) =>
       isMatch(collection[id], request.query)
     )
 
     if (!request.value) {
+      // $FlowFixMe
       return {
         ...request,
         value: matchingIds,
@@ -47,7 +49,8 @@ const selectMatchingItemsAsValue = (
 
     return shallowEqual(matchingIds, request.value || [])
       ? request
-      : {
+      : // $FlowFixMe
+        {
           ...request,
           value: matchingIds,
         }

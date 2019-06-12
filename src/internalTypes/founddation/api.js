@@ -1,6 +1,7 @@
 // @flow
 import { schema } from 'normalizr'
 
+import { type CachePolicyT } from './cachePolicies'
 import { type EntitiesState } from './entityState'
 
 export type Query = {
@@ -21,12 +22,10 @@ export type ApiType = {|
   collection: string,
   schema: schema.Entity | schema.Array,
 
+  cachePolicy?: CachePolicyT,
+
   fetch?: ApiRequest,
   create?: ApiRequest,
   remove?: ApiRequest,
   update?: ApiRequest,
 |}
-
-export type ApiTypeMap = {
-  [name: string]: ApiType,
-}

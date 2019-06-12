@@ -1,43 +1,79 @@
 // @flow
 import type {
+  Action,
+  ApiTypeMap,
   CachePolicyT,
   EntitiesState,
   EntityCachePolicyT,
+  EntityCollectionT,
+  Request,
   RequestCachePolicyT,
-  RequestsState,
 } from '../internalTypes'
 
-type PolicyT = EntityCachePolicyT | RequestCachePolicyT
-
-const composeSideEffects = (first?: PolicyT, second?: PolicyT) => {
+function composeRequestSideEffects(
+  first?: RequestCachePolicyT,
+  second?: RequestCachePolicyT
+): RequestCachePolicyT {
   return (
-    stateToReceiveSideEffects: RequestsState | EntitiesState,
-    ...args
-  ) => {
+    apiTypes: ApiTypeMap,
+    request: Request,
+    collection: EntityCollectionT,
+    entityType: string
+  ): Request => {
     if (!first && second) {
-      return second(stateToReceiveSideEffects, ...args)
+      return second(apiTypes, request, collection, entityType)
     }
 
     if (first && !second) {
-      return first(stateToReceiveSideEffects, ...args)
+      return first(apiTypes, request, collection, entityType)
     }
 
     if (first && second) {
-      return first(second(stateToReceiveSideEffects, ...args), ...args)
+      return first(
+        apiTypes,
+        second(apiTypes, request, collection, entityType),
+        collection,
+        entityType
+      )
     }
 
-    return stateToReceiveSideEffects
+    return request
+  }
+}
+
+function composeEntitySideEffects(
+  first?: EntityCachePolicyT,
+  second?: EntityCachePolicyT
+): EntityCachePolicyT {
+  return (
+    apiTypes: ApiTypeMap,
+    entities: EntitiesState,
+    action: Action
+  ): EntitiesState => {
+    if (!first && second) {
+      return second(apiTypes, entities, action)
+    }
+
+    if (first && !second) {
+      return first(apiTypes, entities, action)
+    }
+
+    if (first && second) {
+      return first(apiTypes, second(apiTypes, entities, action), action)
+    }
+
+    return entities
   }
 }
 
 const compose = (...cachePolicies: Array<CachePolicyT>) =>
   cachePolicies.reduce(
     (combinedPolicy: CachePolicyT, policy: CachePolicyT) => ({
-      updateRequestOnCollectionChange: composeSideEffects(
+      updateRequestOnCollectionChange: composeRequestSideEffects(
         combinedPolicy.updateRequestOnCollectionChange,
         policy.updateRequestOnCollectionChange
       ),
-      updateEntitiesOnAction: composeSideEffects(
+      updateEntitiesOnAction: composeEntitySideEffects(
         combinedPolicy.updateEntitiesOnAction,
         policy.updateEntitiesOnAction
       ),
