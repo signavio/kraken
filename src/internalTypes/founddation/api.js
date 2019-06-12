@@ -1,12 +1,9 @@
 // @flow
 import { schema } from 'normalizr'
 
-import { type CachePolicyT } from './cachePolicies'
-import { type EntitiesState } from './entityState'
-
-export type Query = {
-  [key: string]: void | string | number | boolean,
-}
+import { type Action } from './actions'
+import { type EntitiesState, type EntityCollectionT } from './entityState'
+import { type Query } from './requestState'
 
 export type normalizrResult =
   | { response: { result: string | Array<string>, entities: EntitiesState } }
@@ -22,7 +19,19 @@ export type ApiType = {|
   collection: string,
   schema: schema.Entity | schema.Array,
 
-  cachePolicy?: CachePolicyT,
+  cachePolicy?: {
+    updateRequestOnCollectionChange?: (
+      apiTypes: { [string]: ApiType },
+      request: Request,
+      collection: EntityCollectionT,
+      entityType: string
+    ) => Request,
+    updateEntitiesOnAction?: (
+      apiTypes: { [string]: ApiType },
+      entities: EntitiesState,
+      action: Action
+    ) => EntitiesState,
+  },
 
   fetch?: ApiRequest,
   create?: ApiRequest,

@@ -1,5 +1,7 @@
 // @flow
-import { type Query } from './api'
+export type Query = {
+  [key: string]: void | string | number | boolean,
+}
 
 type RequestBase = {|
   outstanding: boolean,

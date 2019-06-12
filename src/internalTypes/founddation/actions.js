@@ -1,5 +1,5 @@
 // @flow
-import { type Query } from './api'
+import { type Query } from './requestState'
 
 ///////////////////
 // Payload Types //
