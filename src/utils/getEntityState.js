@@ -6,7 +6,7 @@ import {
   type ApiTypeMap,
   type DispatchAction,
   type Entity,
-  type KrakenState,
+  type State,
 } from '../internalTypes'
 import { hasEntitySchema } from '../types'
 import getCachedValue from './getCachedValue'
@@ -16,7 +16,7 @@ type MaybeEntity = Entity | typeof undefined
 
 const getEntityState = (
   types: ApiTypeMap,
-  state: KrakenState,
+  state: State,
   action: DispatchAction
 ): MaybeEntity => {
   const value = getCachedValue(types, state, action)
