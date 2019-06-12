@@ -83,6 +83,18 @@ jobs:
 
       - run: yarn lint
 
+  find_circular_dependencies:
+    <<: *container_config
+
+    working_directory: *workspace_root
+
+    steps:
+      - checkout
+
+      - *restore_deps
+
+      - run: yarn find-circular-dependencies
+
   renovate:
     <<: *container_config
 
@@ -113,6 +125,10 @@ workflows:
   build_and_test:
     jobs:
       - build
+
+      - find_circular_dependencies:
+          requires:
+            - build
 
       - test:
           requires:

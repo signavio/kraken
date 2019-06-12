@@ -18,6 +18,7 @@
     "prepublishOnly": "yarn build",
     "renovate": "renovate",
     "flow": "flow check",
+    "find-circular-dependencies": "madge --circular --warning --no-spinner src",
     "codecov-upload": "codecov"
   },
   "author": "Jan-Felix Schwarz",
@@ -63,6 +64,7 @@
     "install": "0.12.2",
     "istanbul": "1.1.0-alpha.1",
     "jsdom": "13.0.0",
+    "madge": "^3.4.4",
     "mocha": "5.2.0",
     "normalizr": "3.3.0",
     "prettier": "^1.17.0",
