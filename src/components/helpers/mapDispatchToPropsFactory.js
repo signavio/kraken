@@ -10,7 +10,7 @@ import type {
   DispatchPayload,
   DispatchT,
   Body,
-} from '../../internalTypes'
+} from '../../flowTypes'
 
 import { ELEMENT_ID_PROP_NAME, validMethods } from './constants'
 

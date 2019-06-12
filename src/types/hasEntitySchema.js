@@ -1,7 +1,7 @@
 // @flow
 import { schema } from 'normalizr'
 
-import { ApiTypeMap, EntityType } from '../internalTypes'
+import { type ApiTypeMap, type EntityType } from '../flowTypes'
 
 const hasEntitySchema = (types: ApiTypeMap, entityType: EntityType): boolean =>
   types[entityType].schema instanceof schema.Entity

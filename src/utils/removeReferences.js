@@ -2,7 +2,7 @@
 import { schema as normalizrSchema } from 'normalizr'
 import { uniq, keys, difference } from 'lodash'
 
-import type { Entity } from '../internalTypes'
+import type { Entity } from '../flowTypes'
 
 import isArraySchemaOf from './isArraySchemaOf'
 

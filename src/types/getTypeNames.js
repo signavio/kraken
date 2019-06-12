@@ -1,7 +1,7 @@
 // @flow
 import { mapValues } from 'lodash'
 
-import { ApiType, ApiTypeMap } from '../internalTypes'
+import { type ApiType, type ApiTypeMap } from '../flowTypes'
 
 const getTypeNames = (types: ApiTypeMap) =>
   mapValues(types, (value: ApiType, name: string) => name)

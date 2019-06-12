@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 import { mapValues, groupBy } from 'lodash'
 import reduceReducers from 'reduce-reducers'
 
-import { ApiTypeMap } from '../internalTypes'
+import { ApiTypeMap } from '../flowTypes'
 
 import { getTypeNames, getCollectionName } from '../types'
 

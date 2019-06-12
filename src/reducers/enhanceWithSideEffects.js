@@ -6,7 +6,7 @@ import { getTypeNames } from '../types'
 import createEntitiesSideEffectsReducer from './entitiesSideEffectsReducer'
 import createRequestsSideEffectsReducer from './requestsSideEffectsReducer'
 
-import type { ApiTypeMap } from '../internalTypes'
+import type { ApiTypeMap } from '../flowTypes'
 
 const createEnhanceWithSideEffects = (apiTypes: ApiTypeMap) => {
   const constants = getTypeNames(apiTypes)

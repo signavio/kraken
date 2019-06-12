@@ -1,13 +1,13 @@
 // @flow
-import { keys, intersection } from 'lodash'
+import invariant from 'invariant'
+import { intersection } from 'lodash'
 
 import type {
-  Request,
-  EntityCollectionT,
   ApiTypeMap,
+  EntityCollectionT,
   EntityType,
-} from '../internalTypes'
-
+  Request,
+} from '../flowTypes'
 import { hasEntitySchema } from '../types'
 
 // clean result values from ids that are no longer existent in the cache
@@ -17,23 +17,36 @@ const removeDeleted = (
   collection: EntityCollectionT,
   entityType: EntityType
 ) => {
-  if (!request.value) {
+  const { value } = request
+
+  if (!value) {
     return request
   }
 
   if (hasEntitySchema(apiTypes, entityType)) {
-    const isInCollection = !!collection[request.value]
+    invariant(
+      typeof value === 'string',
+      `Expected a string value but got "${typeof value}".`
+    )
+
+    const isInCollection = !!collection[value]
 
     return isInCollection ? request : { ...request, value: undefined }
-  } else {
-    const existingIds = intersection(request.value, keys(collection))
-    return existingIds.length === request.value.length
-      ? request
-      : {
-          ...request,
-          value: existingIds,
-        }
   }
+
+  invariant(
+    Array.isArray(value),
+    `Expected a list value but got "${typeof value}".`
+  )
+
+  const existingIds = intersection(request.value, Object.keys(collection))
+
+  return existingIds.length === value.length
+    ? request
+    : {
+        ...request,
+        value: existingIds,
+      }
 }
 
 export default {

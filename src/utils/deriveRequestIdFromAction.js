@@ -1,5 +1,5 @@
 import { actionTypes } from '../actions'
-import { Action, DispatchAction } from '../internalTypes'
+import { Action, DispatchAction } from '../flowTypes'
 import stringifyQuery from './stringifyQuery'
 
 const isDispatchAction = (action: Action /* : action is DispatchAction */) => {

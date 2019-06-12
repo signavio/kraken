@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects'
 import { omitBy, isNil } from 'lodash'
 
-import { ApiTypeMap, UpdateDispatchAction, Action } from '../internalTypes'
+import { ApiTypeMap, UpdateDispatchAction, Action } from '../flowTypes'
 
 import createActionCreators, { actionTypes } from '../actions'
 import { getUpdate } from '../types'

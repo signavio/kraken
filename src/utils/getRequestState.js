@@ -1,4 +1,4 @@
-import { ApiTypeMap, State, DispatchAction } from '../internalTypes'
+import { ApiTypeMap, State, DispatchAction } from '../flowTypes'
 
 import deriveRequestIdFromAction from './deriveRequestIdFromAction'
 

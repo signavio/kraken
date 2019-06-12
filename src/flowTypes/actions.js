@@ -1,134 +1,69 @@
-import { schema } from 'normalizr'
-
-export type EntityId = string
-export type RequestId = string
-
-export type Entity = any
-export type EntityType = string
-
-export type Request = {
-  pending: boolean,
-  fulfilled: boolean,
-  rejected: boolean,
-  outstanding: boolean,
-  reason: string,
-
-  result: EntityId | Array<EntityId> | null,
-
-  validUntil: number,
-  refresh: any,
-}
-
-export type RequestCollectionT = {
-  [requestId: string]: Request,
-}
-
-export type RequestsState = {
-  [entityType: string]: RequestCollectionT,
-}
-
-export type EntityCollectionT = {
-  [entityId: string]: Entity,
-}
-
-export type EntitiesState = {
-  [collection: string]: EntityCollectionT,
-}
-
-export type PromiseProp<T> = {
-  pending: boolean,
-  fulfilled: boolean,
-  rejected: boolean,
-
-  reason?: string,
-
-  value: ?T,
-}
-
-export type State = {
-  kraken: {
-    requests: RequestsState,
-    entities: EntitiesState,
-  },
-}
-
-export type normalizrResult =
-  | { response: { result: any, entities: any } }
-  | { error: any }
-
-export type ApiType = {
-  collection: string,
-  schema: schema.Entity,
-
-  fetch?: any => normalizrResult,
-  create?: any => normalizrResult,
-  remove?: any => normalizrResult,
-  update?: any => normalizrResult,
-}
-
-export type ApiTypeMap = {
-  [name: string]: ApiType,
-}
-
-export type MethodName = 'create' | 'fetch' | 'remove' | 'update'
-
-export type StateGetter = () => State
+// @flow
+import { type Query } from './requestState'
 
 ///////////////////
 // Payload Types //
 ///////////////////
 
-export type Query = {
-  [key: string]: any,
-}
-
 export type Body = {
   [key: string]: any,
 }
+
+type PayloadBase = {|
+  query: Query,
+
+  entityType: string,
+|}
 
 ////////////////////////////
 // Dispatch Payload Types //
 ////////////////////////////
 
-export type DispatchPayload = {
-  query: Query,
+export type DispatchPayload = {|
+  ...PayloadBase,
+
   body: Body,
   elementId: string,
-  entityType: string,
-}
+  denormalizeValue: boolean,
+|}
 
 ///////////////////////////
 // Success Payload Types //
 ///////////////////////////
 
-export type CreateSuccessPayload = {
-  requestId: RequestId,
-  entityType: string,
-  result: EntityId | Array<EntityId>,
-  entities: Array<Entity>,
-}
+type AfterDispatchBasePayload = {|
+  ...PayloadBase,
 
-export type UpdateSuccessPayload = {
-  requestId: RequestId,
-  entityType: string,
-  result: EntityId | Array<EntityId>,
-  entities: Array<Entity>,
-}
+  requestId: string,
+|}
 
-export type FetchSuccessPayload = {
-  requestId: RequestId,
-  entityType: string,
-  result: EntityId | Array<EntityId>,
-  entities: Array<Entity>,
+export type CreateSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+
+  result: string | Array<string>,
+  entities: Array<any>,
+|}
+
+export type UpdateSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+
+  result: string | Array<string>,
+  entities: Array<any>,
+|}
+
+export type FetchSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+
+  result: string | Array<string>,
+  entities: Array<any>,
   isCachedResponse: boolean,
-}
+|}
 
-export type RemoveSuccessPayload = {
-  requestId: RequestId,
-  entityType: string,
-  result: EntityId | Array<EntityId>,
-  entities: Array<Entity>,
-}
+export type RemoveSuccessPayload = {|
+  ...AfterDispatchBasePayload,
+  result: string | Array<string>,
+  entities: Array<any>,
+|}
 
 export type SuccessPayload =
   | CreateSuccessPayload
@@ -140,33 +75,33 @@ export type SuccessPayload =
 // Failure Payload Types //
 ///////////////////////////
 
-export type CreateFailurePayload = {
-  requestId: RequestId,
-  entityType: string,
-  error: string,
-  status?: number,
-}
+export type CreateFailurePayload = {|
+  ...AfterDispatchBasePayload,
 
-export type UpdateFailurePayload = {
-  requestId: RequestId,
-  entityType: string,
   error: string,
   status?: number,
-}
+|}
 
-export type FetchFailurePayload = {
-  requestId: RequestId,
-  entityType: string,
-  error: string,
-  status?: number,
-}
+export type UpdateFailurePayload = {|
+  ...AfterDispatchBasePayload,
 
-export type RemoveFailurePayload = {
-  requestId: RequestId,
-  entityType: string,
   error: string,
   status?: number,
-}
+|}
+
+export type FetchFailurePayload = {|
+  ...AfterDispatchBasePayload,
+
+  error: string,
+  status?: number,
+|}
+
+export type RemoveFailurePayload = {|
+  ...AfterDispatchBasePayload,
+
+  error: string,
+  status?: number,
+|}
 
 export type FailurePayload =
   | CreateFailurePayload
@@ -174,10 +109,9 @@ export type FailurePayload =
   | FetchFailurePayload
   | RemoveFailurePayload
 
-export type RequestStartPayload = {
-  entityType: string,
-  requestId: RequestId,
-}
+export type RequestStartPayload = {|
+  ...AfterDispatchBasePayload,
+|}
 
 export type Payload =
   | DispatchPayload
@@ -295,19 +229,3 @@ export type Action =
   | SuccessAction
   | FailureAction
   | RequestStartAction
-
-export type RequestCachePolicyT = (
-  request: Request,
-  collection: EntityCollectionT
-) => Request
-
-export type EntityCachePolicyT = (
-  apiTypes: ApiTypeMap,
-  entities: EntitiesState,
-  action: Action
-) => EntitiesState
-
-export type CachePolicyT = {
-  updateRequestOnCollectionChange?: RequestCachePolicyT,
-  updateEntitiesOnAction?: EntityCachePolicyT,
-}

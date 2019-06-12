@@ -28,7 +28,7 @@ import {
   RemoveFailureAction,
   RequestStartAction,
   RequestStartPayload,
-} from '../internalTypes'
+} from '../flowTypes'
 
 type ActionCreator = (payload: Payload) => Action
 type ActionCreatorMap = {

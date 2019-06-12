@@ -1,6 +1,6 @@
 import { startsWith } from 'lodash'
 
-import { ApiTypeMap, RequestsState, Action } from '../internalTypes'
+import { ApiTypeMap, RequestsState, Action } from '../flowTypes'
 
 import { deriveRequestIdFromAction } from '../utils'
 import { actionTypes } from '../actions'

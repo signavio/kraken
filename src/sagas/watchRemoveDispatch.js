@@ -1,7 +1,7 @@
 import { put, call, takeEvery } from 'redux-saga/effects'
 import { omitBy, isNil } from 'lodash'
 
-import { ApiTypeMap, RemoveDispatchAction } from '../internalTypes'
+import { ApiTypeMap, RemoveDispatchAction } from '../flowTypes'
 
 import createActionCreators, { actionTypes } from '../actions'
 import { getRemove } from '../types'
