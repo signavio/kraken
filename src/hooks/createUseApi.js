@@ -6,7 +6,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import createActionCreators from '../actions'
-import { type ApiTypeMap, type MethodName, type Query } from '../flowTypes'
+import {
+  type ApiTypeMap,
+  type MethodName,
+  type PromiseProp,
+  type Query,
+} from '../flowTypes'
 import { getIdAttribute } from '../types'
 import { getEntityState, getRequestState, stringifyQuery } from '../utils'
 
@@ -48,7 +53,10 @@ type Options = BaseOptions | QueryOptions | IdOptions
 function createUseApi(apiTypes: ApiTypeMap) {
   const actionCreators = createActionCreators(apiTypes)
 
-  return (entityType: $Keys<ApiTypeMap>, options?: Options) => {
+  return function useApi<Value, Body>(
+    entityType: $Keys<ApiTypeMap>,
+    options?: Options
+  ): PromiseProp<Value, Body> {
     const {
       query,
       method,
