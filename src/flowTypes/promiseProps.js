@@ -1,6 +1,6 @@
 // @flow
 
-type FulfilledPromise<Body, Value> = {|
+type FulfilledPromise<Value, Body> = {|
   (body?: Body): void,
 
   status: number,
@@ -12,7 +12,7 @@ type FulfilledPromise<Body, Value> = {|
   rejected: false,
 |}
 
-type PendingPromise<Body, Value> = {|
+type PendingPromise<Value, Body> = {|
   (body?: Body): void,
 
   status: number,
@@ -38,7 +38,7 @@ type RejectedPromise<Body> = {|
   pending: false,
 |}
 
-export type PromiseProp<Body, Value = Body> =
-  | PendingPromise<Body, Value>
+export type PromiseProp<Value, Body = Value> =
+  | PendingPromise<Value, Body>
   | RejectedPromise<Body>
-  | FulfilledPromise<Body, Value>
+  | FulfilledPromise<Value, Body>
