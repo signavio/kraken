@@ -52,7 +52,7 @@ instance of that type.
 | create(query, body, requestParams) | `false`  | Function that describes how an instance is created.                                                                                                                                         |
 | update(query, body, requestParams) | `false`  | Function that describes how an instance is updaetd.                                                                                                                                         |
 | remove(query, body, requestParams) | `false`  | Function that describes how an instance is removed.                                                                                                                                         |
-| cachePolicy                        | `false`  | The cache policy that should be used for that type. See [cache policies](TODO) for the possible options.                                                                                    |
+| cachePolicy                        | `false`  | The cache policy that should be used for that type. See [cache policies](#cache-policies) for the possible options.                                                                         |
 
 ### `callApi(fullUrl, schema[, options])`
 
@@ -238,7 +238,7 @@ out.
 | ------------- | ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | type          | `undefined` | `true`   | The API type which is concered.                                                                                                                     |
 | query         | `undefined` | `false`  | An object of query parameters.                                                                                                                      |
-| requestParams | `undefined` |  `false` | An object of extra parameters to tell different requests apart.                                                                                     |
+| requestParams | `undefined` | `false`  | An object of extra parameters to tell different requests apart.                                                                                     |
 | id            | `undefined` | `false`  | Shortcut to provide an ID query parameter, `id: 1` is equivalent to `query: { id: 1 }`                                                              |
 | method        | `fetch`     | `false`  | Either one of `fetch`, `create`, `update`, or `remove`.                                                                                             |
 | lazy          | `false`     | `false`  | Only useful in combination with `method: 'fetch'`. Per default, the resource is fetched on component mount. Set `lazy: true` to not fetch on mount. |
