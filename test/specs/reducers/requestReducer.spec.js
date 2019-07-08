@@ -220,7 +220,6 @@ describe('requestReducer', () => {
         actions.succeedCreate({
           requestId,
           entityType: types.USER,
-          body,
         })
       )
 
