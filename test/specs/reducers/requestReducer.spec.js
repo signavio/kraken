@@ -146,6 +146,81 @@ describe('requestReducer', () => {
     })
   })
 
+  describe('CREATE_DISPATCH', () => {
+    it('should include request body in a create user request.', () => {
+      const body = {
+        emailAddress: 'new-user@signavio.com',
+      }
+
+      const newState = requestsReducerForEntity(
+        {},
+        actions.dispatchCreate({
+          entityType: types.USER,
+          body,
+        })
+      )
+
+      const newRequestId = deriveRequestIdFromAction({
+        type: actionTypes.CREATE_DISPATCH,
+        payload: {
+          body,
+        },
+      })
+
+      expect(newState).to.have.property(newRequestId)
+      expect(newState[newRequestId]).to.have.property('body', body)
+    })
+
+    it('should have undefined body if the request does not include a body.', () => {
+      const body = undefined
+
+      const newState = requestsReducerForEntity(
+        {},
+        actions.dispatchCreate({
+          entityType: types.USER,
+          body,
+        })
+      )
+
+      const newRequestId = deriveRequestIdFromAction({
+        type: actionTypes.CREATE_DISPATCH,
+        payload: {
+          body,
+        },
+      })
+
+      expect(newState).to.have.property(newRequestId)
+      expect(newState[newRequestId]).to.have.property('body', undefined)
+    })
+  })
+
+  describe('CREATE_SUCCESS', () => {
+    it('should include body in a succeeded create user request.', () => {
+      const body = {
+        emailAddress: 'new-user@signavio.com',
+      }
+
+      const requestId = deriveRequestIdFromAction({
+        type: actionTypes.CREATE_SUCCESS,
+        payload: {
+          body,
+        },
+      })
+
+      const newState = requestsReducerForEntity(
+        { [requestId]: {} },
+        actions.succeedCreate({
+          requestId,
+          entityType: types.USER,
+          body,
+        })
+      )
+
+      expect(newState).to.have.property(requestId)
+      expect(newState[requestId]).to.have.property('body', body)
+    })
+  })
+
   describe('FETCH_SUCCESS', () => {
     it('should set the promise state to fulfilled when cached', () => {
       const newState = requestsReducerForEntity(

@@ -26,6 +26,7 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           ...request,
           outstanding: true,
           query: payload.query,
+          body: payload.body,
           requestParams: payload.requestParams,
           pending: true,
           refresh:
