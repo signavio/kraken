@@ -195,20 +195,28 @@ describe('requestReducer', () => {
   })
 
   describe('CREATE_SUCCESS', () => {
-    it('should include body in a succeeded create user request.', () => {
+    it('should include body in a succeeded create user request from initial create dispatch request.', () => {
       const body = {
         emailAddress: 'new-user@signavio.com',
       }
 
+      const initialState = requestsReducerForEntity(
+        {},
+        actions.dispatchCreate({
+          entityType: types.USER,
+          body,
+        })
+      )
+
       const requestId = deriveRequestIdFromAction({
-        type: actionTypes.CREATE_SUCCESS,
+        type: actionTypes.CREATE_DISPATCH,
         payload: {
           body,
         },
       })
 
       const newState = requestsReducerForEntity(
-        { [requestId]: {} },
+        initialState,
         actions.succeedCreate({
           requestId,
           entityType: types.USER,
