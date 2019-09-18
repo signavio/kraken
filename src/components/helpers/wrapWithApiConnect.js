@@ -41,9 +41,11 @@ const wrapWithApiConnect = ({
         const hasNewRefreshToken =
           promiseProp.refresh !== undefined &&
           promiseProp.refresh !== fetchProp.refresh
-        const needsFetch = !isInCache || hasNewRefreshToken
 
-        if (promisePropUpdated && needsFetch && !promiseProp.lazy) {
+        if (
+          ((promisePropUpdated && !isInCache) || hasNewRefreshToken) &&
+          !promiseProp.lazy
+        ) {
           fetchProp()
         }
       })
