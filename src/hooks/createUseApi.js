@@ -53,7 +53,7 @@ type Options = BaseOptions | QueryOptions | IdOptions
 function createUseApi(apiTypes: ApiTypeMap) {
   const actionCreators = createActionCreators(apiTypes)
 
-  return function useApi<Value, Body>(
+  return function useApi<Body, Value>(
     entityType: $Keys<ApiTypeMap>,
     options?: Options
   ): PromiseProp<Value, Body> {
