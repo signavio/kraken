@@ -1,7 +1,6 @@
 import { findKey } from 'lodash'
 
 import { hasEntitySchema } from '../types'
-import { actionTypes } from '../actions'
 import { State, ApiTypeMap, DispatchAction, EntityId } from '../flowTypes'
 
 import getRequestState from './getRequestState'
@@ -16,12 +15,6 @@ const getCachedValue = (
 
   if (requestState === undefined) {
     requestState = {}
-  }
-
-  if (action.type === actionTypes.FETCH_DISPATCH) {
-    if (action.payload.refresh !== undefined && action.payload.refresh !== requestState.refresh) {
-      return undefined
-    }
   }
 
   const entityType = action.payload.entityType
