@@ -92,18 +92,6 @@ jobs:
 
       - run: yarn find-circular-dependencies
 
-  renovate:
-    <<: *container_config
-
-    working_directory: *workspace_root
-
-    steps:
-      - checkout
-
-      - *restore_deps
-
-      - run: yarn renovate --token $GITHUB_ACCESS_TOKEN
-
   flow:
     <<: *container_config
 
@@ -136,20 +124,5 @@ workflows:
             - build
 
       - flow:
-          requires:
-            - build
-
-  renovate:
-    triggers:
-      - schedule:
-          cron: '0 2 * * *'
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - build
-
-      - renovate:
           requires:
             - build
