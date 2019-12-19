@@ -51,7 +51,7 @@
     "cheerio": "0.22.0",
     "codecov": "3.2.0",
     "enzyme": "3.9.0",
-    "enzyme-adapter-react-16": "1.12.1",
+    "enzyme-adapter-react-16": "1.15.2",
     "eslint": "5.14.1",
     "eslint-config-react-app": "4.0.0",
     "eslint-plugin-flowtype": "3.7.0",
