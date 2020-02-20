@@ -9,8 +9,9 @@ import createActionCreators from '../actions'
 import {
   type ApiTypeMap,
   type MethodName,
-  type PromiseProp,
   type Query,
+  type RequestAction,
+  type RequestStatus,
 } from '../flowTypes'
 import { getIdAttribute } from '../types'
 import { getEntityState, getRequestState, stringifyQuery } from '../utils'
@@ -56,7 +57,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
   return function useApi<Body, Value>(
     entityType: $Keys<ApiTypeMap>,
     options?: Options
-  ): PromiseProp<Value, Body> {
+  ): [RequestStatus<Value>, RequestAction<Body>] {
     const {
       query,
       method,
@@ -150,7 +151,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
       }
     }
 
-    const initialRequestState =
+    const [initialRequestState] = useState(
       method === 'fetch'
         ? {
             pending: !entityState && !lazy,
@@ -160,18 +161,27 @@ function createUseApi(apiTypes: ApiTypeMap) {
             pending: false,
             fulfilled: false,
           }
+    )
 
     useRequestHandlers(requestState || initialRequestState, {
       onSuccess,
       onFailure,
     })
 
-    const promiseState = {
+    const [promiseState, setPromiseState] = useState({
       ...(requestState || initialRequestState),
       value: entityState,
-    }
+    })
 
-    return Object.assign(promiseProp, promiseState)
+    useEffect(() => {
+      setPromiseState(currentPromiseState => ({
+        ...currentPromiseState,
+        ...requestState,
+        value: entityState,
+      }))
+    }, [entityState, requestState])
+
+    return [promiseState, promiseProp]
   }
 }
 
@@ -310,7 +320,7 @@ const getActionCreator = (
         })
 
     default:
-      invariant(false, `Unkown method ${method}`)
+      invariant(false, `Unknown method ${method}`)
   }
 }
 
