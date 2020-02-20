@@ -130,7 +130,7 @@ describe('useApi', () => {
     )
   })
 
-  it.only('should set `pending` flag on the injected prop if a request is dispatched', () => {
+  it('should set `pending` flag on the injected prop if a request is dispatched', () => {
     let component
 
     act(() => {
