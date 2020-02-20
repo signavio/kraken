@@ -28,7 +28,7 @@ const User = () => null
 const TestComponent = props => {
   const { id, refresh, lazy, denormalize } = props
 
-  const fetchUser = useApi(types.USER, { id, refresh, lazy, denormalize })
+  const [fetchUser] = useApi(types.USER, { id, refresh, lazy, denormalize })
 
   if (fetchUser.pending) {
     return 'Pending'
@@ -130,7 +130,7 @@ describe('useApi', () => {
     )
   })
 
-  it('should set `pending` flag on the injected prop if a request is dispatched', () => {
+  it.only('should set `pending` flag on the injected prop if a request is dispatched', () => {
     let component
 
     act(() => {
