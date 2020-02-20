@@ -59,7 +59,7 @@
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.18.3",
     "eslint-plugin-react-hooks": "1.6.0",
-    "fetch-mock": "7.3.1",
+    "fetch-mock": "8.3.2",
     "flow-bin": "0.118.0",
     "install": "0.13.0",
     "istanbul": "1.1.0-alpha.1",
