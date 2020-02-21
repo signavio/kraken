@@ -1,52 +1,49 @@
 // @flow
-import { isArray } from 'lodash'
-import { denormalize } from 'normalizr'
+import invariant from 'invariant'
+import { denormalize as denormalizeValue } from 'normalizr'
 
-import {
-  type ApiTypeMap,
-  type DispatchAction,
-  type Entity,
-  type KrakenState,
-} from '../flowTypes'
+import { type ApiTypeMap, type KrakenState } from '../flowTypes'
 import { hasEntitySchema } from '../types'
 import getCachedValue from './getCachedValue'
 import getEntityCollectionState from './getEntityCollectionState'
 
-type MaybeEntity = Entity | typeof undefined
-
-const getEntityState = (
+function getEntityState<EntityType>(
   types: ApiTypeMap,
   krakenState: KrakenState,
-  action: DispatchAction
-): MaybeEntity => {
-  const value = getCachedValue(types, krakenState, action)
+  entityType: string,
+  requestId: string,
+  denormalize: ?boolean
+): void | EntityType {
+  const cachedValue = getCachedValue(types, krakenState, entityType, requestId)
 
-  const entityCollection = getEntityCollectionState(
+  const entityCollection = getEntityCollectionState<EntityType>(
     types,
     krakenState,
-    action.payload.entityType
+    entityType
   )
 
-  const { denormalizeValue, entityType } = action.payload
-  let finalValue
+  const { schema } = types[entityType]
 
-  if (isArray(value)) {
-    finalValue = value.map((id: string) => entityCollection[id])
-  } else if (hasEntitySchema(types, action.payload.entityType)) {
-    finalValue = entityCollection[value]
+  if (!cachedValue) {
+    return undefined
   }
 
-  if (finalValue) {
-    if (denormalizeValue) {
-      const { schema } = types[entityType]
-
-      return denormalize(value, schema, krakenState.entities)
-    }
-
-    return finalValue
+  if (denormalize) {
+    return denormalizeValue(cachedValue, schema, krakenState.entities)
   }
 
-  return undefined
+  if (Array.isArray(cachedValue)) {
+    return ((cachedValue.map(
+      (id: string) => entityCollection[id]
+    ): any): EntityType)
+  }
+
+  invariant(
+    hasEntitySchema(types, entityType),
+    `Cached value for entity type "${entityType}" for request "${requestId}" hinted at "Entity" schema but it was something different. `
+  )
+
+  return ((entityCollection[cachedValue]: any): EntityType)
 }
 
 export default getEntityState

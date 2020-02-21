@@ -9,7 +9,7 @@ import {
   StateGetter,
 } from '../flowTypes'
 import { getFetch } from '../types'
-import { deriveRequestIdFromAction, getRequestState } from '../utils'
+import { getMethodName, getRequestId, getRequestState } from '../utils'
 
 export const createFetchSaga = (types: ApiTypeMap) => {
   const actionCreators = createActionCreators(types)
@@ -20,9 +20,14 @@ export const createFetchSaga = (types: ApiTypeMap) => {
   ) {
     yield delay(1) // throttle to avoid duplicate requests
 
-    const requestId = deriveRequestIdFromAction(action)
-    const request = getRequestState(types, getState().kraken.requests, action)
+    const requestId = getRequestId(
+      getMethodName(action),
+      action.payload.query,
+      action.payload.requestParams,
+      action.payload.elementId
+    )
     const entityType = action.payload.entityType
+    const request = getRequestState(getState().kraken, entityType, requestId)
 
     if (request && !request.outstanding) {
       return

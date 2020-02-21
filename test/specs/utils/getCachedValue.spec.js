@@ -1,5 +1,5 @@
 import { actionTypes } from '../../../src/actions'
-import { deriveRequestIdFromAction, getCachedValue } from '../../../src/utils'
+import { getCachedValue, getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
@@ -45,7 +45,7 @@ describe('Utils - getCachedValue', () => {
       kraken: {
         requests: {
           [types.USER]: {
-            [deriveRequestIdFromAction(fetchAction)]: {
+            [getRequestId('fetch', { id: data.user.id }, {})]: {
               value: data.user.id,
             },
           },

@@ -1,13 +1,20 @@
 // @flow
+export type RequestMethod = 'fetch' | 'create' | 'update' | 'remove'
+
 export type Query = {
   [key: string]: void | string | number | boolean,
 }
+
+export type RequestParams = {|
+  [key: string]: void | boolean | number | string,
+|}
 
 type RequestBase = {|
   outstanding: boolean,
 
   refresh: any,
   query: Query,
+  requestParams: RequestParams,
 |}
 
 type PendingRequest = {|
@@ -27,6 +34,8 @@ type FulfilledRequest = {|
   fulfilled: true,
   rejected: false,
 
+  status: number,
+
   value: string | Array<string>,
 |}
 
@@ -38,6 +47,8 @@ type RejectedRequest = {|
   rejected: true,
 
   reason: string,
+
+  status: number,
 
   value: null,
 |}

@@ -1,13 +1,12 @@
-import { ApiTypeMap, DispatchAction, State } from '../flowTypes'
-import deriveRequestIdFromAction from './deriveRequestIdFromAction'
+// @flow
+import { type KrakenState } from '../flowTypes'
 
 const getRequestState = (
-  types: ApiTypeMap,
-  requestState: State,
-  action: DispatchAction
+  krakenState: KrakenState,
+  entityType: string,
+  requestId: string
 ) => {
-  const requestId = deriveRequestIdFromAction(action)
-  const entityTypeRequests = requestState[action.payload.entityType]
+  const entityTypeRequests = krakenState.requests[entityType]
 
   if (entityTypeRequests === undefined) {
     return undefined

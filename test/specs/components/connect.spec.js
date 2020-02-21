@@ -5,15 +5,13 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import sinon from 'sinon'
 
-import createActionCreators, { actionTypes } from '../../../src/actions'
+import { actionTypes } from '../../../src/actions'
 import createConnect from '../../../src/components'
-import { deriveRequestIdFromAction } from '../../../src/utils'
+import { getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
 const connect = createConnect(apiTypes)
-
-const { dispatchFetch } = createActionCreators(apiTypes)
 
 const renderSpy = sinon.spy()
 
@@ -22,17 +20,12 @@ const MyComp = props => {
   return <div />
 }
 
-const fetchUserJaneAction = dispatchFetch({
-  entityType: types.USER,
-  id: 'user-jane',
-})
-
 const reducerSpy = sinon.spy((state = {}) => state)
 const testStore = createStore(reducerSpy, {
   kraken: {
     requests: {
       [types.USER]: {
-        [deriveRequestIdFromAction(fetchUserJaneAction)]: {
+        [getRequestId('fetch', {}, {})]: {
           value: 'user-jane',
           fulfilled: true,
           refresh: 2,

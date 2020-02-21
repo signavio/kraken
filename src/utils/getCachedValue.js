@@ -1,22 +1,23 @@
+// @flow
 import { findKey } from 'lodash'
 
-import { ApiTypeMap, DispatchAction, EntityId, State } from '../flowTypes'
+import { type ApiTypeMap, type KrakenState, type Query } from '../flowTypes'
 import { hasEntitySchema } from '../types'
 import getEntityCollectionState from './getEntityCollectionState'
 import getRequestState from './getRequestState'
 
 const getCachedValue = (
   types: ApiTypeMap,
-  krakenState: State,
-  action: DispatchAction
-): EntityId | EntityId[] | undefined => {
-  let requestState = getRequestState(types, krakenState.requests, action)
+  krakenState: KrakenState,
+  entityType: string,
+  requestId: string
+): null | string | Array<string> => {
+  let requestState = getRequestState(krakenState, entityType, requestId)
 
   if (requestState === undefined) {
     requestState = {}
   }
 
-  const entityType = action.payload.entityType
   if (hasEntitySchema(types, entityType)) {
     const entityCollection = getEntityCollectionState(
       types,
@@ -24,7 +25,13 @@ const getCachedValue = (
       entityType
     )
 
-    return requestState.value || findKey(entityCollection, action.payload.query)
+    const [, queryString] = requestId.split('_')
+
+    // return requestState.value || findKey(entityCollection, action.payload.query)
+
+    return (
+      requestState.value || findKey(entityCollection, JSON.parse(queryString))
+    )
   }
 
   return requestState.value

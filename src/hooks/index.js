@@ -1,2 +1,2 @@
 // @flow
-export { default } from './createUseApi'
+export { default as createUseFetch } from './createUseFetch'

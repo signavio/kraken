@@ -1,24 +1,17 @@
 import { normalize } from 'normalizr'
 
-import expect from '../../expect'
-
-import createActionCreators, { actionTypes } from '../../../src/actions'
-
-import { deriveRequestIdFromAction } from '../../../src/utils'
-
+import createActionCreators from '../../../src/actions'
 import { createRequestsReducer } from '../../../src/reducers'
-
-import { apiTypes, types, data } from '../fixtures'
+import { getRequestId } from '../../../src/utils'
+import expect from '../../expect'
+import { apiTypes, data, types } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
 const { result, entities } = normalize(data.user, apiTypes.USER.schema)
 
 const id = 'my-id'
 const query = { id }
-const requestId = deriveRequestIdFromAction({
-  type: actionTypes.FETCH_DISPATCH,
-  payload: { query: { id } },
-})
+const requestId = getRequestId('fetch', { id })
 // const entityReducerForEntity = entityReducer(entity)
 
 describe('requestReducer', () => {
@@ -45,12 +38,7 @@ describe('requestReducer', () => {
         actions.dispatchFetch({ entityType: types.USER, requestParams })
       )
 
-      const newRequestId = deriveRequestIdFromAction({
-        type: actionTypes.FETCH_DISPATCH,
-        payload: {
-          requestParams,
-        },
-      })
+      const newRequestId = getRequestId('fetch', {}, requestParams)
 
       expect(newState).to.have.property(newRequestId)
       expect(newState[newRequestId]).to.have.property(
@@ -160,12 +148,7 @@ describe('requestReducer', () => {
         })
       )
 
-      const newRequestId = deriveRequestIdFromAction({
-        type: actionTypes.CREATE_DISPATCH,
-        payload: {
-          body,
-        },
-      })
+      const newRequestId = getRequestId('create', {}, {})
 
       expect(newState).to.have.property(newRequestId)
       expect(newState[newRequestId]).to.have.property('body', body)
@@ -182,12 +165,7 @@ describe('requestReducer', () => {
         })
       )
 
-      const newRequestId = deriveRequestIdFromAction({
-        type: actionTypes.CREATE_DISPATCH,
-        payload: {
-          body,
-        },
-      })
+      const newRequestId = getRequestId('create', {}, {})
 
       expect(newState).to.have.property(newRequestId)
       expect(newState[newRequestId]).to.have.property('body', undefined)
@@ -208,12 +186,7 @@ describe('requestReducer', () => {
         })
       )
 
-      const requestId = deriveRequestIdFromAction({
-        type: actionTypes.CREATE_DISPATCH,
-        payload: {
-          body,
-        },
-      })
+      const requestId = getRequestId('create', {}, {})
 
       const newState = requestsReducerForEntity(
         initialState,

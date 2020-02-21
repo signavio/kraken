@@ -1,12 +1,12 @@
-import { put, call } from 'redux-saga/effects'
-import { omitBy, isNil } from 'lodash'
-
-import { ApiTypeMap, UpdateDispatchAction, Action } from '../flowTypes'
+import { isNil, omitBy } from 'lodash'
+import { call, put } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
+import { Action, ApiTypeMap, UpdateDispatchAction } from '../flowTypes'
 import { getUpdate } from '../types'
 import {
-  deriveRequestIdFromAction,
+  getMethodName,
+  getRequestId,
   stringifyQuery,
   takeLatestOfEvery,
 } from '../utils'
@@ -15,7 +15,12 @@ export function createUpdateDispatch(types: ApiTypeMap) {
   const actions = createActionCreators(types)
 
   return function* updateEntity(action: UpdateDispatchAction) {
-    const requestId = deriveRequestIdFromAction(action)
+    const requestId = getRequestId(
+      getMethodName(action),
+      action.payload.query,
+      action.payload.requestParams,
+      action.payload.elementId
+    )
     const entityType = action.payload.entityType
 
     const update = getUpdate(types, entityType)

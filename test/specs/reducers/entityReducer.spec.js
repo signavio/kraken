@@ -1,23 +1,16 @@
 import { normalize } from 'normalizr'
 
-import expect from '../../expect'
-
-import createActionCreators, { actionTypes } from '../../../src/actions'
-
 import { typeUtils } from '../../../src'
-import { deriveRequestIdFromAction } from '../../../src/utils'
-
+import createActionCreators from '../../../src/actions'
 import { createEntitiesReducer } from '../../../src/reducers'
-
-import { apiTypes, types, data } from '../fixtures'
+import { getRequestId } from '../../../src/utils'
+import expect from '../../expect'
+import { apiTypes, data, types } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
 
 const id = 'my-id'
-const requestId = deriveRequestIdFromAction({
-  type: actionTypes.FETCH_SUCCESS,
-  payload: { query: { id } },
-})
+const requestId = getRequestId('fetch', { id })
 const collection = typeUtils.getCollectionName(apiTypes, types.USER)
 const entityReducerForUser = createEntitiesReducer(apiTypes, types.USER)
 const entityReducerForComment = createEntitiesReducer(apiTypes, types.COMMENT)

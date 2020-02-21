@@ -1,15 +1,12 @@
-import { put, call } from 'redux-saga/effects'
 import { normalize } from 'normalizr'
-
-import { createFetchSaga } from '../../../src/sagas/watchFetchDispatch'
+import { call, put } from 'redux-saga/effects'
 
 import actionsCreator, { actionTypes } from '../../../src/actions'
-import { deriveRequestIdFromAction } from '../../../src/utils'
+import { createFetchSaga } from '../../../src/sagas/watchFetchDispatch'
 import { getFetch } from '../../../src/types'
-
+import { getRequestId } from '../../../src/utils'
 import expect from '../../expect'
-
-import { apiTypes, types, data } from '../fixtures'
+import { apiTypes, data, types } from '../fixtures'
 
 const fetchSaga = createFetchSaga(apiTypes)
 const actions = actionsCreator(apiTypes)
@@ -20,7 +17,7 @@ const fetchAction = {
   type: actionTypes.FETCH_DISPATCH,
   payload: { entityType: types.USER, query },
 }
-const requestId = deriveRequestIdFromAction(fetchAction)
+const requestId = getRequestId('fetch', query, {})
 
 const state = {
   kraken: {

@@ -1,7 +1,7 @@
 import { normalize } from 'normalizr'
 
 import { actionTypes } from '../../../src/actions'
-import { deriveRequestIdFromAction, getEntityState } from '../../../src/utils'
+import { getEntityState, getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
@@ -12,7 +12,9 @@ describe('Utils - getEntityState', () => {
       payload: { query: { id: 'post-1' }, entityType: types.POST },
     }
 
-    const requestId = deriveRequestIdFromAction(action)
+    const query = { id: 'post-1' }
+
+    const requestId = getRequestId('fetch', query, {})
 
     const state = {
       kraken: {
@@ -36,7 +38,7 @@ describe('Utils - getEntityState', () => {
       payload: { entityType: types.POSTS },
     }
 
-    const requestId = deriveRequestIdFromAction(action)
+    const requestId = getRequestId('fetch', {}, {})
 
     const state = {
       kraken: {
@@ -64,7 +66,7 @@ describe('Utils - getEntityState', () => {
       payload: { entityType: types.POST },
     }
 
-    const requestId = deriveRequestIdFromAction(action)
+    const requestId = getRequestId('fetch', {}, {})
 
     const state = {
       kraken: {
@@ -124,7 +126,7 @@ describe('Utils - getEntityState', () => {
       payload: { entityType: types.POSTS },
     }
 
-    const requestId = deriveRequestIdFromAction(action)
+    const requestId = getRequestId('fetch', {}, {})
 
     const state = {
       kraken: {

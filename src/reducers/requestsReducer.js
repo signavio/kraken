@@ -2,11 +2,16 @@ import { startsWith } from 'lodash'
 
 import { actionTypes } from '../actions'
 import { Action, ApiTypeMap, RequestsState } from '../flowTypes'
-import { deriveRequestIdFromAction } from '../utils'
+import { getMethodName, getRequestId } from '../utils'
 
 const requestsReducer = (state: RequestsState, action: Action) => {
   const { payload = {} } = action
-  const key = deriveRequestIdFromAction(action)
+  const key = getRequestId(
+    getMethodName(action),
+    payload.query,
+    payload.requestParams,
+    payload.elementId
+  )
   const request = state[key] || {}
   const needsRefresh = payload.refresh && request.refresh !== payload.refresh
 

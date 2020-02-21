@@ -3,7 +3,7 @@ import { cachePolicies } from './cachePolicies'
 import callApi from './callApi'
 import createConnect from './components'
 import type { ApiTypeMap } from './flowTypes'
-import createUseApi from './hooks'
+import { createUseFetch } from './hooks'
 import createReducer from './reducers'
 import createSaga from './sagas'
 import * as typeUtils from './types'
@@ -25,7 +25,7 @@ const apiCreator = (types: ApiTypeMap) => {
     reducer: createReducer(preparedTypes),
     saga: createSaga(preparedTypes),
     connect: createConnect(preparedTypes),
-    useApi: createUseApi(preparedTypes),
+    useFetch: createUseFetch(preparedTypes),
     actions: createActions(preparedTypes),
   }
 }

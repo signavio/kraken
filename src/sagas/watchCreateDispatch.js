@@ -1,17 +1,21 @@
-import { put, call, takeEvery } from 'redux-saga/effects'
-import { get, omitBy, isNil } from 'lodash'
-
-import { ApiTypeMap, CreateDispatchAction } from '../flowTypes'
+import { get, isNil, omitBy } from 'lodash'
+import { call, put, takeEvery } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
+import { ApiTypeMap, CreateDispatchAction } from '../flowTypes'
 import { getCreate } from '../types'
-import { deriveRequestIdFromAction } from '../utils'
+import { getMethodName, getRequestId } from '../utils'
 
 export const createCreateDispatch = (types: ApiTypeMap) => {
   const actionCreators = createActionCreators(types)
 
   return function* createEntity(action: CreateDispatchAction) {
-    const requestId = deriveRequestIdFromAction(action)
+    const requestId = getRequestId(
+      getMethodName(action),
+      action.payload.query,
+      action.payload.requestParams,
+      action.payload.elementId
+    )
     const entityType = action.payload.entityType
     const create = getCreate(types, entityType)
 

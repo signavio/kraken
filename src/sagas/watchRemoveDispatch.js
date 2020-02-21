@@ -1,17 +1,21 @@
-import { put, call, takeEvery } from 'redux-saga/effects'
-import { omitBy, isNil } from 'lodash'
-
-import { ApiTypeMap, RemoveDispatchAction } from '../flowTypes'
+import { isNil, omitBy } from 'lodash'
+import { call, put, takeEvery } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
+import { ApiTypeMap, RemoveDispatchAction } from '../flowTypes'
 import { getRemove } from '../types'
-import { deriveRequestIdFromAction } from '../utils'
+import { getMethodName, getRequestId } from '../utils'
 
 export function createRemoveDispatch(types: ApiTypeMap) {
   const actions = createActionCreators(types)
 
   return function* removeEntity(action: RemoveDispatchAction) {
-    const requestId = deriveRequestIdFromAction(action)
+    const requestId = getRequestId(
+      getMethodName(action),
+      action.payload.query,
+      action.payload.requestParams,
+      action.payload.elementId
+    )
     const entityType = action.payload.entityType
 
     const remove = getRemove(types, entityType)

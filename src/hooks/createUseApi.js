@@ -14,7 +14,13 @@ import {
   type RequestStatus,
 } from '../flowTypes'
 import { getIdAttribute } from '../types'
-import { getEntityState, getRequestState, stringifyQuery } from '../utils'
+import {
+  getEntityState,
+  getRequestId,
+  getRequestState,
+  stringifyQuery,
+} from '../utils'
+import createUseFetch from './createUseFetch'
 
 type BaseOptions = {|
   method?: MethodName,
@@ -54,7 +60,7 @@ type Options = BaseOptions | QueryOptions | IdOptions
 function createUseApi(apiTypes: ApiTypeMap) {
   const actionCreators = createActionCreators(apiTypes)
 
-  return function useApi<Body, Value>(
+  function useApi<Body, Value>(
     entityType: $Keys<ApiTypeMap>,
     options?: Options
   ): [RequestStatus<Value>, RequestAction<Body>] {
@@ -65,9 +71,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
       refresh,
       denormalize,
       lazy,
-
-      onSuccess,
-      onFailure,
     } = resolveOptions(apiTypes, entityType, options)
 
     invariant(
@@ -87,7 +90,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const [elementId] = useState(uniqueId())
     const krakenState = useSelector(({ kraken }) => kraken)
     const dispatch = useDispatch()
-    const actionCreator = getActionCreator(actionCreators, method, {
+    const actionCreator = useActionCreator(actionCreators, method, {
       entityType,
       query,
       requestParams,
@@ -107,9 +110,9 @@ function createUseApi(apiTypes: ApiTypeMap) {
     )
 
     const requestState = getRequestState(
-      apiTypes,
-      krakenState.requests,
-      actionCreator()
+      krakenState,
+      entityType,
+      getRequestId(method, query, requestParams, elementId)
     )
 
     const lastEntityState = useRef(null)
@@ -117,7 +120,9 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const currentEntityState = getEntityState(
       apiTypes,
       krakenState,
-      actionCreator()
+      entityType,
+      getRequestId(method, query, requestParams, elementId),
+      denormalize
     )
 
     const useMemoized =
@@ -163,11 +168,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
           }
     )
 
-    useRequestHandlers(requestState || initialRequestState, {
-      onSuccess,
-      onFailure,
-    })
-
     const [promiseState, setPromiseState] = useState({
       ...(requestState || initialRequestState),
       value: entityState,
@@ -183,55 +183,44 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     return [promiseState, promiseProp]
   }
+
+  return {
+    useApi,
+    useFetch: createUseFetch(apiTypes),
+  }
 }
 
-const useRequestHandlers = (requestState, { onSuccess, onFailure }) => {
-  useCallbackOnSuccess(requestState, onSuccess)
-  useCallbackOnFailure(requestState, onFailure)
-}
+const usePromiseProp = (
+  actionCreators,
+  entityType,
+  { query, requestParams, refresh, denormalize }
+) => {
+  const dispatch = useDispatch()
 
-const useCallbackOnFailure = (requestState, onFailure) => {
-  const pendingRef = useRef(null)
+  const { dispatchFetch } = actionCreators
 
-  const { pending, rejected } = requestState
-
-  useEffect(() => {
-    if (!onFailure) {
-      return
-    }
-
-    if (pendingRef.current === null && rejected) {
-      onFailure()
-    }
-
-    if (pendingRef.current && !pending && rejected) {
-      onFailure()
-    }
-
-    pendingRef.current = pending
-  }, [pending, rejected, onFailure])
-}
-
-const useCallbackOnSuccess = (requestState, onSuccess) => {
-  const pendingRef = useRef(null)
-
-  const { pending, fulfilled } = requestState
-
-  useEffect(() => {
-    if (!onSuccess) {
-      return
-    }
-
-    if (pendingRef.current === null && fulfilled) {
-      onSuccess()
-    }
-
-    if (pendingRef.current && !pending && fulfilled) {
-      onSuccess()
-    }
-
-    pendingRef.current = pending
-  }, [pending, fulfilled, onSuccess])
+  return useCallback(
+    body =>
+      dispatch(
+        dispatchFetch({
+          entityType,
+          query,
+          requestParams,
+          refresh,
+          body,
+          denormalizeValue: denormalize,
+        })
+      ),
+    [
+      denormalize,
+      dispatch,
+      dispatchFetch,
+      entityType,
+      query,
+      refresh,
+      requestParams,
+    ]
+  )
 }
 
 const resolveOptions = (
@@ -280,48 +269,62 @@ const resolveOptions = (
   }
 }
 
-const getActionCreator = (
+const useActionCreator = (
   actionCreators,
   method: MethodName,
   { entityType, query, requestParams, refresh, elementId, denormalize }
 ) => {
-  const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
+  return useCallback(
+    body => {
+      const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
 
-  switch (method) {
-    case 'fetch':
-      return body =>
-        actionCreator({
-          entityType,
-          query,
-          requestParams,
-          refresh,
-          body,
-          denormalizeValue: denormalize,
-        })
+      switch (method) {
+        case 'fetch':
+          return body =>
+            actionCreator({
+              entityType,
+              query,
+              requestParams,
+              refresh,
+              body,
+              denormalizeValue: denormalize,
+            })
 
-    case 'create':
-      return body =>
-        actionCreator({
-          entityType,
-          elementId,
-          query,
-          requestParams,
-          body,
-        })
+        case 'create':
+          return body =>
+            actionCreator({
+              entityType,
+              elementId,
+              query,
+              requestParams,
+              body,
+            })
 
-    case 'update':
-    case 'remove':
-      return body =>
-        actionCreator({
-          entityType,
-          query,
-          requestParams,
-          body,
-        })
+        case 'update':
+        case 'remove':
+          return body =>
+            actionCreator({
+              entityType,
+              query,
+              requestParams,
+              body,
+            })
 
-    default:
-      invariant(false, `Unknown method ${method}`)
-  }
+        default:
+          invariant(false, `Unknown method ${method}`)
+      }
+    },
+    [
+      actionCreators,
+      denormalize,
+      elementId,
+      entityType,
+      method,
+      query,
+      refresh,
+      requestParams,
+    ]
+  )
 }
 
 export default createUseApi

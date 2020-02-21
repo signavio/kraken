@@ -1,17 +1,12 @@
-import { put, call } from 'redux-saga/effects'
 import { normalize } from 'normalizr'
-
-import expect from '../../expect'
-
-import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
-
-import actionsCreator, { actionTypes } from '../../../src/actions'
-
-import { deriveRequestIdFromAction } from '../../../src/utils'
+import { call, put } from 'redux-saga/effects'
 
 import { typeUtils } from '../../../src'
-
-import { apiTypes, types, data } from '../fixtures'
+import actionsCreator, { actionTypes } from '../../../src/actions'
+import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
+import { getRequestId } from '../../../src/utils'
+import expect from '../../expect'
+import { apiTypes, data, types } from '../fixtures'
 
 const createEntity = createCreateDispatch(apiTypes)
 const actions = actionsCreator(apiTypes)
@@ -33,7 +28,7 @@ const createAction = {
   payload: createPayload,
 }
 
-const requestId = deriveRequestIdFromAction(createAction)
+const requestId = getRequestId('create', {}, {})
 
 describe('Saga - createEntity', () => {
   let generator
@@ -59,7 +54,7 @@ describe('Saga - createEntity', () => {
       put(
         actions.succeedCreate({
           entityType,
-          requestId: deriveRequestIdFromAction(createAction),
+          requestId: getRequestId('create', {}, {}),
           value: result,
           entities,
         })

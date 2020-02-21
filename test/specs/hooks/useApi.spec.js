@@ -6,19 +6,15 @@ import { Provider } from 'react-redux'
 import { combineReducers, createStore } from 'redux'
 import sinon from 'sinon'
 
-import createActionCreators, { actionTypes } from '../../../src/actions'
-import createUseApi from '../../../src/hooks'
+import { actionTypes } from '../../../src/actions'
+import { createUseFetch } from '../../../src/hooks'
 import createReducer from '../../../src/reducers'
-import { deriveRequestIdFromAction } from '../../../src/utils'
+import { getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
-const useApi = createUseApi(apiTypes)
-const reudcer = createReducer(apiTypes)
-
-const { dispatchFetch, succeedFetch, failFetch } = createActionCreators(
-  apiTypes
-)
+const useFetch = createUseFetch(apiTypes)
+const reducer = createReducer(apiTypes)
 
 const renderSpy = sinon.spy()
 
@@ -28,7 +24,7 @@ const User = () => null
 const TestComponent = props => {
   const { id, refresh, lazy, denormalize } = props
 
-  const [fetchUser] = useApi(types.USER, { id, refresh, lazy, denormalize })
+  const [fetchUser] = useFetch(types.USER, id, { refresh, lazy, denormalize })
 
   if (fetchUser.pending) {
     return 'Pending'
@@ -49,11 +45,6 @@ const TestComponent = props => {
 
   return 'Nothings happening'
 }
-
-const fetchUserJaneAction = dispatchFetch({
-  entityType: types.USER,
-  query: { id: 'user-jane' },
-})
 
 const posts = [
   {
@@ -79,7 +70,7 @@ const initialState = {
   kraken: {
     requests: {
       [types.USER]: {
-        [deriveRequestIdFromAction(fetchUserJaneAction)]: {
+        [getRequestId('fetch', { id: jane.id }, {})]: {
           value: jane.id,
           fulfilled: true,
           refresh: 2,
@@ -90,9 +81,9 @@ const initialState = {
   },
 }
 
-const reducerSpy = sinon.spy((state, action) => reudcer(state, action))
+const reducerSpy = sinon.spy((state, action) => reducer(state, action))
 
-describe('useApi', () => {
+describe('useFetch', () => {
   let testStore
   let TestContainer
 
@@ -175,24 +166,6 @@ describe('useApi', () => {
     )
   })
 
-  it('should inline referenced data, when denormalize is used.', () => {
-    let component
-
-    act(() => {
-      component = mount(<TestContainer id="user-jane" />)
-    })
-
-    expect(component.find(Posts).prop('value')).to.eql(
-      posts.map(({ id }) => id)
-    )
-
-    act(() => {
-      component = mount(<TestContainer denormalize id="user-jane" />)
-    })
-
-    expect(component.find(Posts).prop('value')).to.eql(posts)
-  })
-
   it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
     const component = mount(<TestContainer id="user-jane" />)
 
@@ -227,13 +200,7 @@ describe('useApi', () => {
 
   it('should validate the promise props and throw on invalid values', () => {
     const InvalidType = () => {
-      useApi(undefined)
-
-      return null
-    }
-
-    const InvalidMethod = () => {
-      useApi(types.USER, { method: 'prost' })
+      useFetch(undefined)
 
       return null
     }
@@ -246,123 +213,96 @@ describe('useApi', () => {
       )
     }
 
-    const invalidMethod = () => {
-      mount(
-        <Provider store={testStore}>
-          <InvalidMethod />
-        </Provider>
-      )
-    }
-
     expect(invalidType).to.throw(/^Invalid type value/)
-    expect(invalidMethod).to.throw(
-      /^Invalid method "prost" specified for api type "USER"/
-    )
   })
 
-  it('should provide a pre-configured action creator when using a `create` method ', () => {
-    const body = { firstName: 'Henry' }
+  // it('should provide a pre-configured action creator when using a `create` method ', () => {
+  //   const body = { firstName: 'Henry' }
 
-    const CreateComponent = () => {
-      const createUser = useApi(types.USER, { method: 'create' })
+  //   const CreateComponent = () => {
+  //     const createUser = useFetch(types.USER, { method: 'create' })
 
-      return <button onClick={() => createUser(body)}>Click me</button>
-    }
+  //     return <button onClick={() => createUser(body)}>Click me</button>
+  //   }
 
-    const component = mount(
-      <Provider store={testStore}>
-        <CreateComponent />
-      </Provider>
-    )
+  //   const component = mount(
+  //     <Provider store={testStore}>
+  //       <CreateComponent />
+  //     </Provider>
+  //   )
 
-    expect(reducerSpy).not.to.have.been.called
+  //   expect(reducerSpy).not.to.have.been.called
 
-    component.find('button').simulate('click')
+  //   component.find('button').simulate('click')
 
-    // reducer should have been called with that action
-    expect(reducerSpy).to.have.been.calledOnce
-    expect(reducerSpy).to.have.been.calledWithMatch(
-      {},
-      {
-        type: actionTypes.CREATE_DISPATCH,
-        payload: {
-          entityType: types.USER,
-          body,
-          query: {},
-        },
-      }
-    )
-  })
+  //   // reducer should have been called with that action
+  //   expect(reducerSpy).to.have.been.calledOnce
+  //   expect(reducerSpy).to.have.been.calledWithMatch(
+  //     {},
+  //     {
+  //       type: actionTypes.CREATE_DISPATCH,
+  //       payload: {
+  //         entityType: types.USER,
+  //         body,
+  //         query: {},
+  //       },
+  //     }
+  //   )
+  // })
 
-  it('should be possible to pass a callback for when the request succeeds.', () => {
-    const onSuccess = sinon.spy()
+  // it('should be possible to pass a callback for when the request succeeds.', () => {
+  //   const onSuccess = sinon.spy()
 
-    const Component = () => {
-      useApi(types.USER, { id: 'some-user', onSuccess })
+  //   const Component = () => {
+  //     useFetch(types.USER, { id: 'some-user', onSuccess })
 
-      return null
-    }
+  //     return null
+  //   }
 
-    mount(
-      <Provider store={testStore}>
-        <Component />
-      </Provider>
-    )
+  //   mount(
+  //     <Provider store={testStore}>
+  //       <Component />
+  //     </Provider>
+  //   )
 
-    expect(onSuccess).not.to.have.been.called
+  //   expect(onSuccess).not.to.have.been.called
 
-    act(() => {
-      testStore.dispatch(
-        succeedFetch({
-          entityType: types.USER,
-          requestId: deriveRequestIdFromAction({
-            type: actionTypes.FETCH_DISPATCH,
-            payload: {
-              entityType: types.USER,
-              query: {
-                id: 'some-user',
-              },
-            },
-          }),
-        })
-      )
-    })
+  //   act(() => {
+  //     testStore.dispatch(
+  //       succeedFetch({
+  //         entityType: types.USER,
+  //         requestId: getRequestId('fetch', { id: 'some-user' }, {}),
+  //       })
+  //     )
+  //   })
 
-    expect(onSuccess).to.have.been.calledOnce
-  })
+  //   expect(onSuccess).to.have.been.calledOnce
+  // })
 
-  it('should be possible to pass a callback for when a request fails.', () => {
-    const onFailure = sinon.spy()
+  // it('should be possible to pass a callback for when a request fails.', () => {
+  //   const onFailure = sinon.spy()
 
-    const Component = () => {
-      useApi(types.USER, { id: 'some-user' })
+  //   const Component = () => {
+  //     useFetch(types.USER, 'some-user')
 
-      return null
-    }
+  //     return null
+  //   }
 
-    mount(
-      <Provider store={testStore}>
-        <Component />
-      </Provider>
-    )
+  //   mount(
+  //     <Provider store={testStore}>
+  //       <Component />
+  //     </Provider>
+  //   )
 
-    expect(onFailure).not.to.have.been.called
+  //   expect(onFailure).not.to.have.been.called
 
-    testStore.dispatch(
-      failFetch({
-        entityType: types.USER,
-        requestId: deriveRequestIdFromAction({
-          type: actionTypes.FETCH_DISPATCH,
-          payload: {
-            entityType: types.USER,
-            query: {
-              id: 'some-user',
-            },
-          },
-        }),
-      })
-    )
+  //   testStore.dispatch(
+  //     failFetch({
+  //       entityType: types.USER,
+  //       requestId: getRequestId('fetch', { id: 'some-user' }, {}),
+  //     })
+  //   )
 
-    expect(onFailure).not.to.have.been.calledOnce
-  })
+  //   expect(onFailure).not.to.have.been.calledOnce
+  // })
 })
