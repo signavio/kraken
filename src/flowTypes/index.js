@@ -19,7 +19,7 @@ export type EntityType = string
 
 export type KrakenState = {
   requests: RequestsState,
-  entities: EntitiesState,
+  entities: EntitiesState<mixed>,
 }
 
 export type MethodName = 'create' | 'fetch' | 'remove' | 'update'

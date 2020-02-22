@@ -6,35 +6,44 @@ import { type EntitiesState, type EntityCollectionT } from './entityState'
 import { type Query } from './requestState'
 
 export type normalizrResult =
-  | { response: { result: string | Array<string>, entities: EntitiesState } }
+  | {
+      response: {
+        result: string | Array<string>,
+        entities: EntitiesState<mixed>,
+      },
+    }
   | { error: any }
 
 type ApiRequest = (
   query?: Query,
-  body?: any,
+  body?: mixed,
   requestParams?: Query
 ) => Promise<normalizrResult>
 
-export type ApiType = {|
-  collection: string,
-  schema: schema.Entity | schema.Array,
+export type ApiTypeMap = {
+  [name: string]: {|
+    collection: string,
+    schema: schema.Entity | schema.Array,
 
-  cachePolicy?: {
-    updateRequestOnCollectionChange?: (
-      apiTypes: { [string]: ApiType },
-      request: Request,
-      collection: EntityCollectionT,
-      entityType: string
-    ) => Request,
-    updateEntitiesOnAction?: (
-      apiTypes: { [string]: ApiType },
-      entities: EntitiesState,
-      action: Action
-    ) => EntitiesState,
-  },
+    cachePolicy?: {
+      updateRequestOnCollectionChange?: (
+        apiTypes: ApiTypeMap,
+        request: Request,
+        collection: EntityCollectionT<mixed>,
+        entityType: string
+      ) => ApiRequest,
+      updateEntitiesOnAction?: (
+        apiTypes: ApiTypeMap,
+        entities: EntitiesState<mixed>,
+        action: Action
+      ) => EntitiesState<mixed>,
+    },
 
-  fetch?: ApiRequest,
-  create?: ApiRequest,
-  remove?: ApiRequest,
-  update?: ApiRequest,
-|}
+    fetch?: ApiRequest,
+    create?: ApiRequest,
+    remove?: ApiRequest,
+    update?: ApiRequest,
+  |},
+}
+
+export type ApiType = $Values<ApiTypeMap>
