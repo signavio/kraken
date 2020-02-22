@@ -1,15 +1,9 @@
-import createActionCreators from '../../../src/actions'
-import { deriveRequestIdFromAction } from '../../../src/utils'
-
+import { getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 
-import { apiTypes, types } from '../fixtures'
+const methods = ['fetch', 'update', 'remove']
 
-const actionTypes = ['Fetch', 'Update', 'Remove']
-
-const actions = createActionCreators(apiTypes)
-
-describe('deriveRequestIdFromAction', () => {
+describe('getRequestId', () => {
   const query = {
     id: 'abc123',
   }
@@ -18,47 +12,31 @@ describe('deriveRequestIdFromAction', () => {
     offset: 0,
   }
 
-  const createAction = (actionType, payload) =>
-    actions[`dispatch${actionType}`]({
-      entityType: types.USER,
-      ...payload,
-    })
-
-  actionTypes.forEach(actionType => {
-    describe(`dispatch${actionType}`, () => {
+  methods.forEach(method => {
+    describe(`dispatch${method}`, () => {
       it('should derive a request id without query and params', () => {
-        const action = createAction(actionType)
+        const requestId = getRequestId(method, null, null)
 
-        const requestId = deriveRequestIdFromAction(action)
-
-        expect(requestId).to.equal(`${actionType.toLowerCase()}_`)
+        expect(requestId).to.equal(`${method.toLowerCase()}_[]`)
       })
 
       it('should derive a request id with query', () => {
-        const action = createAction(actionType, { query })
+        const requestId = getRequestId(method, query, null)
 
-        const requestId = deriveRequestIdFromAction(action)
-
-        expect(requestId).to.equal(
-          `${actionType.toLowerCase()}_["id","abc123"]`
-        )
+        expect(requestId).to.equal(`${method.toLowerCase()}_[["id","abc123"]]`)
       })
 
       it('should derive a request id with request params', () => {
-        const action = createAction(actionType, { requestParams })
+        const requestId = getRequestId(method, null, requestParams)
 
-        const requestId = deriveRequestIdFromAction(action)
-
-        expect(requestId).to.equal(`${actionType.toLowerCase()}_["offset",0]`)
+        expect(requestId).to.equal(`${method.toLowerCase()}_[["offset",0]]`)
       })
 
       it('should derive a request id with request params and query', () => {
-        const action = createAction(actionType, { query, requestParams })
-
-        const requestId = deriveRequestIdFromAction(action)
+        const requestId = getRequestId(method, query, requestParams)
 
         expect(requestId).to.equal(
-          `${actionType.toLowerCase()}_["id","abc123"]["offset",0]`
+          `${method.toLowerCase()}_[["id","abc123"],["offset",0]]`
         )
       })
     })

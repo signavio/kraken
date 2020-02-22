@@ -1,14 +1,10 @@
-import { actionTypes } from '../../../src/actions'
 import { getCachedValue, getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
-const fetchAction = {
-  type: actionTypes.FETCH_DISPATCH,
-  payload: { entityType: types.USER, query: { id: data.user.id } },
-}
-
 describe('Utils - getCachedValue', () => {
+  const requestId = getRequestId('fetch', { id: data.user.id }, null)
+
   it('should return undefined if no value has been cached.', () => {
     const state = {
       kraken: {
@@ -17,7 +13,7 @@ describe('Utils - getCachedValue', () => {
       },
     }
 
-    const result = getCachedValue(apiTypes, state.kraken, fetchAction)
+    const result = getCachedValue(apiTypes, state.kraken, types.USER, requestId)
 
     expect(result).to.be.undefined
   })
@@ -34,7 +30,7 @@ describe('Utils - getCachedValue', () => {
       },
     }
 
-    const result = getCachedValue(apiTypes, state.kraken, fetchAction)
+    const result = getCachedValue(apiTypes, state.kraken, types.USER, requestId)
 
     expect(result).to.not.be.undefined
     expect(result).to.equal(data.user.id)
@@ -45,7 +41,7 @@ describe('Utils - getCachedValue', () => {
       kraken: {
         requests: {
           [types.USER]: {
-            [getRequestId('fetch', { id: data.user.id }, {})]: {
+            [requestId]: {
               value: data.user.id,
             },
           },
@@ -54,7 +50,7 @@ describe('Utils - getCachedValue', () => {
       },
     }
 
-    const result = getCachedValue(apiTypes, state.kraken, fetchAction)
+    const result = getCachedValue(apiTypes, state.kraken, types.USER, requestId)
 
     expect(result).to.not.be.undefined
     expect(result).to.equal(data.user.id)

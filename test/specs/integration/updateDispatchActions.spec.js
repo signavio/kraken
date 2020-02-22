@@ -1,14 +1,13 @@
-import { compose, combineReducers, applyMiddleware, createStore } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import { Provider } from 'react-redux'
-
-import React from 'react'
 import { mount } from 'enzyme'
 import fetchMock from 'fetch-mock'
-import expect from '../../expect'
+import React from 'react'
+import { Provider } from 'react-redux'
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 
 import apiCreator from '../../../src'
-import { apiTypes, types, data } from '../fixtures'
+import expect from '../../expect'
+import { apiTypes, data, types } from '../fixtures'
 import createLogActions from './createLogActions'
 
 const { reducer, saga, connect, actions: actionCreator } = apiCreator(apiTypes)
@@ -95,7 +94,7 @@ describe('Integration - dispatch update actions', () => {
       expect(actions[1]).to.deep.equal(
         actionCreator.succeedUpdate({
           entityType: 'POST',
-          requestId: `update_["id","${data.post.id}"]`,
+          requestId: `update_[["id","${data.post.id}"]]`,
           value: data.post.id,
           entities: {
             posts: {
@@ -146,7 +145,7 @@ describe('Integration - dispatch update actions', () => {
       expect(actions[1]).to.deep.equal(
         actionCreator.failUpdate({
           entityType: 'POST',
-          requestId: `update_["id","${data.post.id}"]`,
+          requestId: `update_[["id","${data.post.id}"]]`,
           error: 'Unauthorized',
           status: 401,
         })

@@ -28,7 +28,7 @@ const createAction = {
   payload: createPayload,
 }
 
-const requestId = getRequestId('create', {}, {})
+const requestId = getRequestId('create', null, null, elementId)
 
 describe('Saga - createEntity', () => {
   let generator
@@ -54,7 +54,7 @@ describe('Saga - createEntity', () => {
       put(
         actions.succeedCreate({
           entityType,
-          requestId: getRequestId('create', {}, {}),
+          requestId: getRequestId('create', null, null, elementId),
           value: result,
           entities,
         })

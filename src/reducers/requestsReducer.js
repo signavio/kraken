@@ -6,20 +6,24 @@ import { getMethodName, getRequestId } from '../utils'
 
 const requestsReducer = (state: RequestsState, action: Action) => {
   const { payload = {} } = action
-  const key = getRequestId(
-    getMethodName(action),
-    payload.query,
-    payload.requestParams,
-    payload.elementId
-  )
-  const request = state[key] || {}
-  const needsRefresh = payload.refresh && request.refresh !== payload.refresh
 
   switch (action.type) {
     case actionTypes.FETCH_DISPATCH:
     case actionTypes.CREATE_DISPATCH:
     case actionTypes.UPDATE_DISPATCH:
     case actionTypes.REMOVE_DISPATCH:
+      const key = getRequestId(
+        getMethodName(action),
+        payload.query,
+        payload.requestParams,
+        payload.elementId
+      )
+
+      const request = state[key] || {}
+
+      const needsRefresh =
+        payload.refresh && request.refresh !== payload.refresh
+
       if (request.pending && !needsRefresh) {
         return state
       }
@@ -44,8 +48,8 @@ const requestsReducer = (state: RequestsState, action: Action) => {
     case actionTypes.REQUEST_START:
       return {
         ...state,
-        [key]: {
-          ...request,
+        [payload.requestId]: {
+          ...state[payload.requestId],
           outstanding: false,
         },
       }
@@ -55,8 +59,8 @@ const requestsReducer = (state: RequestsState, action: Action) => {
     case actionTypes.REMOVE_SUCCESS:
       return {
         ...state,
-        [key]: {
-          ...request,
+        [payload.requestId]: {
+          ...state[payload.requestId],
           pending: false,
           fulfilled: true,
           rejected: false,
@@ -72,8 +76,8 @@ const requestsReducer = (state: RequestsState, action: Action) => {
     case actionTypes.REMOVE_FAILURE:
       return {
         ...state,
-        [key]: {
-          ...request,
+        [payload.requestId]: {
+          ...state[payload.requestId],
           pending: false,
           fulfilled: false,
           rejected: true,

@@ -1,20 +1,14 @@
 import { normalize } from 'normalizr'
 
-import { actionTypes } from '../../../src/actions'
 import { getEntityState, getRequestId } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
 describe('Utils - getEntityState', () => {
   it('should find the cached entity based on provided action.', () => {
-    const action = {
-      action: actionTypes.FETCH_DISPATCH,
-      payload: { query: { id: 'post-1' }, entityType: types.POST },
-    }
-
     const query = { id: 'post-1' }
 
-    const requestId = getRequestId('fetch', query, {})
+    const requestId = getRequestId('fetch', query, null)
 
     const state = {
       kraken: {
@@ -27,18 +21,13 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state.kraken, action)
+    const result = getEntityState(apiTypes, state.kraken, types.POST, requestId)
 
     expect(result.id).to.equal(data.post.id)
   })
 
   it('should find the cached entities based on provided action with multiple values.', () => {
-    const action = {
-      action: actionTypes.FETCH_DISPATCH,
-      payload: { entityType: types.POSTS },
-    }
-
-    const requestId = getRequestId('fetch', {}, {})
+    const requestId = getRequestId('fetch', null, null)
 
     const state = {
       kraken: {
@@ -51,7 +40,12 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state.kraken, action)
+    const result = getEntityState(
+      apiTypes,
+      state.kraken,
+      types.POSTS,
+      requestId
+    )
 
     expect(result).to.have.length(1)
 
@@ -61,12 +55,7 @@ describe('Utils - getEntityState', () => {
   })
 
   it('should be possible to get the denormalized state.', () => {
-    const action = {
-      action: actionTypes.FETCH_DISPATCH,
-      payload: { entityType: types.POST },
-    }
-
-    const requestId = getRequestId('fetch', {}, {})
+    const requestId = getRequestId('fetch', null, null)
 
     const state = {
       kraken: {
@@ -79,24 +68,18 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state.kraken, action)
+    const result = getEntityState(apiTypes, state.kraken, types.POST, requestId)
 
     expect(result.comments).to.deep.equal(
       data.post.comments.map(({ id }) => id)
     )
 
-    const denormalizeAction = {
-      action: actionTypes.FETCH_DISPATCH,
-      payload: {
-        entityType: types.POST,
-        denormalizeValue: true,
-      },
-    }
-
     const denormalizedResult = getEntityState(
       apiTypes,
       state.kraken,
-      denormalizeAction
+      types.POST,
+      requestId,
+      true
     )
 
     expect(denormalizedResult.comments).to.deep.equal(data.post.comments)
@@ -121,11 +104,6 @@ describe('Utils - getEntityState', () => {
       },
     ]
 
-    const action = {
-      action: actionTypes.FETCH_DISPATCH,
-      payload: { entityType: types.POSTS },
-    }
-
     const requestId = getRequestId('fetch', {}, {})
 
     const state = {
@@ -142,7 +120,12 @@ describe('Utils - getEntityState', () => {
       },
     }
 
-    const result = getEntityState(apiTypes, state.kraken, action)
+    const result = getEntityState(
+      apiTypes,
+      state.kraken,
+      types.POSTS,
+      requestId
+    )
 
     result.forEach((post, index) => {
       expect(post.comments).to.deep.equal(
@@ -150,18 +133,12 @@ describe('Utils - getEntityState', () => {
       )
     })
 
-    const denormalizeAction = {
-      action: actionTypes.FETCH_DISPATCH,
-      payload: {
-        entityType: types.POSTS,
-        denormalizeValue: true,
-      },
-    }
-
     const denormalizedResult = getEntityState(
       apiTypes,
       state.kraken,
-      denormalizeAction
+      types.POSTS,
+      requestId,
+      true
     )
 
     expect(denormalizedResult).to.deep.equal(posts)

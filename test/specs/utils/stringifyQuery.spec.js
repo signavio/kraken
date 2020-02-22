@@ -1,6 +1,5 @@
-import expect from '../../expect'
-
 import stringifyQuery from '../../../src/utils/stringifyQuery'
+import expect from '../../expect'
 
 describe('Utils - stringifyQuery', () => {
   it('should always generate the same string no matter the order of keys', () => {
@@ -16,7 +15,7 @@ describe('Utils - stringifyQuery', () => {
     const stringified = stringifyQuery(query)
     const stringifiedInDifferentOrder = stringifyQuery(queryInDifferentOrder)
 
-    expect(stringified).to.equal('["id","foo"]["parentId","bar"]')
+    expect(stringified).to.equal('[["id","foo"],["parentId","bar"]]')
     expect(stringified).to.equal(stringifiedInDifferentOrder)
   })
 })

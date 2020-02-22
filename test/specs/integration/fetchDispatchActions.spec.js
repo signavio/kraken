@@ -1,14 +1,13 @@
-import { compose, combineReducers, applyMiddleware, createStore } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import { Provider } from 'react-redux'
-
-import React from 'react'
 import { mount } from 'enzyme'
 import fetchMock from 'fetch-mock'
 import { startsWith } from 'lodash/fp'
-import expect from '../../expect'
+import React from 'react'
+import { Provider } from 'react-redux'
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 
 import apiCreator from '../../../src'
+import expect from '../../expect'
 import { apiTypes, types } from '../fixtures'
 import createLogActions from './createLogActions'
 
@@ -133,7 +132,7 @@ describe('Integration - dispatch fetch actions', () => {
         actionCreator.succeedFetch({
           entityType: 'COMMENT',
           isCachedResponse: false,
-          requestId: 'fetch_["id","123"]',
+          requestId: 'fetch_[["id","123"]]',
           responseHeaders: success.payload.responseHeaders,
           value: '123',
           entities: {
@@ -161,7 +160,7 @@ describe('Integration - dispatch fetch actions', () => {
 
     setTimeout(() => {
       const request = store.getState().kraken.requests.COMMENT[
-        'fetch_["id","123"]'
+        'fetch_[["id","123"]]'
       ]
       expect(request).to.not.be.undefined
       expect(request.rejected).to.be.true
@@ -173,7 +172,7 @@ describe('Integration - dispatch fetch actions', () => {
       expect(failure).to.deep.equal(
         actionCreator.failFetch({
           entityType: 'COMMENT',
-          requestId: 'fetch_["id","123"]',
+          requestId: 'fetch_[["id","123"]]',
           error: 'Unauthorized',
           status: 401,
         })

@@ -1,7 +1,7 @@
 // @flow
 import { findKey } from 'lodash'
 
-import { type ApiTypeMap, type KrakenState, type Query } from '../flowTypes'
+import { type ApiTypeMap, type KrakenState } from '../flowTypes'
 import { hasEntitySchema } from '../types'
 import getEntityCollectionState from './getEntityCollectionState'
 import getRequestState from './getRequestState'
@@ -12,11 +12,7 @@ const getCachedValue = (
   entityType: string,
   requestId: string
 ): null | string | Array<string> => {
-  let requestState = getRequestState(krakenState, entityType, requestId)
-
-  if (requestState === undefined) {
-    requestState = {}
-  }
+  const requestState = getRequestState(krakenState, entityType, requestId) || {}
 
   if (hasEntitySchema(types, entityType)) {
     const entityCollection = getEntityCollectionState(
@@ -27,14 +23,27 @@ const getCachedValue = (
 
     const [, queryString] = requestId.split('_')
 
-    // return requestState.value || findKey(entityCollection, action.payload.query)
-
     return (
-      requestState.value || findKey(entityCollection, JSON.parse(queryString))
+      requestState.value ||
+      findKey(entityCollection, fromEntries(JSON.parse(queryString)))
     )
   }
 
   return requestState.value
+}
+
+const fromEntries = entries => {
+  if (Object.fromEntries) {
+    return Object.fromEntries(entries)
+  }
+
+  return entries.reduce(
+    (result, [key, value]) => ({
+      ...result,
+      [key]: value,
+    }),
+    {}
+  )
 }
 
 export default getCachedValue

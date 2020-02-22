@@ -1,13 +1,12 @@
-import { compose, combineReducers, applyMiddleware, createStore } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import { Provider } from 'react-redux'
-
-import React from 'react'
 import { mount } from 'enzyme'
 import fetchMock from 'fetch-mock'
-import expect from '../../expect'
+import React from 'react'
+import { Provider } from 'react-redux'
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import createSagaMiddleware from 'redux-saga'
 
 import apiCreator from '../../../src'
+import expect from '../../expect'
 import { apiTypes, types } from '../fixtures'
 import createLogActions from './createLogActions'
 
@@ -94,7 +93,7 @@ describe('Integration - dispatch create actions', () => {
       expect(actions[1]).to.deep.equal(
         actionCreator.succeedCreate({
           entityType: 'POST',
-          requestId: `create__${elementId}`,
+          requestId: `create_[]_${elementId}`,
           value: 'post-2',
           entities: {
             posts: {
@@ -143,7 +142,7 @@ describe('Integration - dispatch create actions', () => {
       expect(actions[1]).to.deep.equal(
         actionCreator.succeedCreate({
           entityType: 'POST',
-          requestId: `create__${elementId}`,
+          requestId: `create_[]_${elementId}`,
           value: undefined,
           entities: {},
         })
@@ -185,7 +184,7 @@ describe('Integration - dispatch create actions', () => {
       expect(actions[1]).to.deep.equal(
         actionCreator.failCreate({
           entityType: 'POST',
-          requestId: `create__${elementId}`,
+          requestId: `create_[]_${elementId}`,
           error: 'Unauthorized',
           status: 401,
         })
