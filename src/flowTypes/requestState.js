@@ -10,15 +10,27 @@ export type RequestParams = {|
 |}
 
 type RequestBase = {|
-  outstanding: boolean,
+  refresh: void | string | number,
+  query: ?Query,
+  requestParams: ?RequestParams,
+|}
 
-  refresh: any,
-  query: Query,
-  requestParams: RequestParams,
+type OutstandingRequest = {|
+  ...RequestBase,
+
+  outstanding: true,
+
+  pending: false,
+  fulfilled: false,
+  rejected: false,
+
+  value: null,
 |}
 
 type PendingRequest = {|
   ...RequestBase,
+
+  outstanding: false,
 
   pending: true,
   fulfilled: false,
@@ -29,6 +41,8 @@ type PendingRequest = {|
 
 type FulfilledRequest = {|
   ...RequestBase,
+
+  outstanding: false,
 
   pending: false,
   fulfilled: true,
@@ -42,6 +56,8 @@ type FulfilledRequest = {|
 type RejectedRequest = {|
   ...RequestBase,
 
+  outstanding: false,
+
   pending: false,
   fulfilled: false,
   rejected: true,
@@ -53,7 +69,11 @@ type RejectedRequest = {|
   value: null,
 |}
 
-export type Request = PendingRequest | FulfilledRequest | RejectedRequest
+export type Request =
+  | OutstandingRequest
+  | PendingRequest
+  | FulfilledRequest
+  | RejectedRequest
 
 export type RequestCollection = {|
   [requestId: string]: Request,

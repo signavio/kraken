@@ -1,4 +1,17 @@
 // @flow
+export type OutstandingRequest = {|
+  fulfilled: false,
+  pending: false,
+  rejected: false,
+
+  value: void,
+|}
+
+type OutstandingPromise<Body> = {|
+  (body: ?Body): void,
+
+  ...OutstandingRequest,
+|}
 
 type FulfilledRequest<Value> = {|
   status: number,
@@ -49,11 +62,13 @@ type RejectedPromise<Body> = {|
 |}
 
 export type PromiseProp<Value, Body = Value> =
+  | OutstandingPromise<Body>
   | PendingPromise<Value, Body>
   | RejectedPromise<Body>
   | FulfilledPromise<Value, Body>
 
 export type RequestStatus<Value> =
+  | OutstandingRequest
   | PendingRequest<Value>
   | RejectedRequest
   | FulfilledRequest<Value>
