@@ -1,15 +1,14 @@
-import React from 'react'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
+import React from 'react'
+import { act } from 'react-dom/test-utils'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
 import sinon from 'sinon'
 
-import createConnect from '../../../src/components'
 import { actionTypes } from '../../../src/actions'
-
+import createConnect from '../../../src/components'
 import expect from '../../expect'
-
-import { types, apiTypes, data } from '../fixtures'
+import { apiTypes, data, types } from '../fixtures'
 
 const connect = createConnect(apiTypes)
 
@@ -79,7 +78,10 @@ describe('connectWithQuery', () => {
     reducerSpy.resetHistory()
 
     expect(reducerSpy).to.have.not.been.called
-    wrapper.setProps({ id: 'user-2' })
+
+    act(() => {
+      wrapper.setProps({ id: 'user-2' })
+    })
 
     expect(reducerSpy).to.have.been.calledOnce
     expect(reducerSpy).to.have.been.calledWithMatch(testStore.getState(), {

@@ -1,5 +1,6 @@
 import hoistStatics from 'hoist-non-react-statics'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { shallowEqual } from 'react-redux'
 
 import { promisePropsEqual } from '../../utils'
 import { ELEMENT_ID_PROP_NAME } from './constants'
@@ -12,20 +13,43 @@ const wrapWithApiConnect = ({
     const promisePropsRef = useRef({})
 
     const promiseProps = finalMapPropsToPromiseProps(rest)
-    const prevPromiseProps = promisePropsRef.current
 
-    const fetchProps = Object.keys(promiseProps).reduce((props, propName) => {
-      const promiseProp = promiseProps[propName]
+    const [fetchProps, setFetchProps] = useState(() =>
+      Object.keys(promiseProps).reduce((props, propName) => {
+        const promiseProp = promiseProps[propName]
 
-      if (promiseProp.method !== 'fetch') {
-        return props
+        if (promiseProp.method !== 'fetch') {
+          return props
+        }
+
+        return {
+          ...props,
+          [propName]: rest[propName],
+        }
+      }, {})
+    )
+
+    useEffect(() => {
+      const newFetchProps = Object.keys(promiseProps).reduce(
+        (props, propName) => {
+          const promiseProp = promiseProps[propName]
+
+          if (promiseProp.method !== 'fetch') {
+            return props
+          }
+
+          return {
+            ...props,
+            [propName]: rest[propName],
+          }
+        },
+        {}
+      )
+
+      if (!shallowEqual(newFetchProps, fetchProps)) {
+        setFetchProps(newFetchProps)
       }
-
-      return {
-        ...props,
-        [propName]: rest[propName],
-      }
-    }, {})
+    }, [fetchProps, promiseProps, rest])
 
     useEffect(() => {
       Object.keys(fetchProps).forEach(propName => {
@@ -34,8 +58,11 @@ const wrapWithApiConnect = ({
         // always refresh on any change of the query or if the refresh token is set
         // and changed since the last render
         const promisePropUpdated =
-          !prevPromiseProps[propName] ||
-          !promisePropsEqual(promiseProps[propName], prevPromiseProps[propName])
+          !promisePropsRef.current[propName] ||
+          !promisePropsEqual(
+            promiseProps[propName],
+            promisePropsRef.current[propName]
+          )
 
         const isInCache = !!fetchProp.value
         const hasNewRefreshToken =
@@ -51,7 +78,7 @@ const wrapWithApiConnect = ({
       })
 
       promisePropsRef.current = promiseProps
-    })
+    }, [fetchProps, promiseProps])
 
     return <WrappedComponent {...rest} ref={innerRef} />
   }
