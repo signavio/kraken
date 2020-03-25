@@ -6,10 +6,16 @@ import { ApiTypeMap } from '../flowTypes'
 import { getCollectionName, getTypeNames } from '../types'
 import createEnhanceWithSideEffects from './enhanceWithSideEffects'
 import createEntitiesReducer from './entitiesReducer'
+import metaDataReducer from './metaDataReducer'
 import createRequestsReducer from './requestsReducer'
 import wipeReducer from './wipeReducer'
 
-export { createRequestsReducer, createEntitiesReducer }
+export {
+  createRequestsReducer,
+  createEntitiesReducer,
+  wipeReducer,
+  metaDataReducer,
+}
 
 const createReducer = (apiTypes: ApiTypeMap) => {
   const constants = getTypeNames(apiTypes)

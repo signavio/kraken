@@ -1,13 +1,9 @@
-import expect from '../../expect'
-
 import createActionCreators from '../../../src/actions'
-import { createWipeReducer } from '../../../src/reducers'
-
+import { wipeReducer } from '../../../src/reducers'
+import expect from '../../expect'
 import { apiTypes } from '../fixtures'
 
 const actions = createActionCreators(apiTypes)
-
-const wipeReducer = createWipeReducer
 
 describe('wipeReducer', () => {
   describe('WIPE_CACHE', () => {
