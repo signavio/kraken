@@ -1,4 +1,5 @@
 // @flow
+import { type MetaData } from './metaData'
 import { type Query } from './requestState'
 
 ///////////////////
@@ -228,11 +229,7 @@ export type WipeAction = {|
   type: '@@kraken/WIPE_CACHE',
 |}
 
-export type AddMetaDataPayload = {|
-  headers: {|
-    [header: string]: ?string,
-  |},
-|}
+export type AddMetaDataPayload = MetaData
 
 export type AddMetaDataAction = {|
   type: '@@kraken/ADD_META_DATA',

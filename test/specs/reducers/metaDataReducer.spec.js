@@ -23,4 +23,16 @@ describe('metaDataReducer', () => {
       Authorization
     )
   })
+
+  it('should be possible to set credentials', () => {
+    const credentials = 'same-origin'
+
+    const action = actions.addMetaData({
+      credentials,
+    })
+
+    const updatedState = metaDataReducer({}, action)
+
+    expect(updatedState).to.have.property('credentials', credentials)
+  })
 })

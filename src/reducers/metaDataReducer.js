@@ -8,10 +8,11 @@ function metaReducer(
 ): MetaData {
   switch (action.type) {
     case ADD_META_DATA: {
-      const { headers } = action.payload
+      const { headers, credentials } = action.payload
 
       return {
         headers,
+        credentials,
       }
     }
 

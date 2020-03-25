@@ -6,4 +6,5 @@ type Headers = {|
 
 export type MetaData = {|
   headers?: Headers,
+  credentials?: string,
 |}
