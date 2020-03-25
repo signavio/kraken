@@ -20,6 +20,7 @@ global.navigator = { userAgent: 'Node.js' }
 global.Blob = window.Blob
 // fixes https://github.com/chaijs/type-detect/issues/98
 global.HTMLElement = win.HTMLElement
+global.FormData = win.FormData
 
 global.navigator = {
   userAgent: 'node.js',

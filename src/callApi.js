@@ -6,12 +6,21 @@ import { bustRequest } from './utils'
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-export default async function callApi(fullUrl, schema, options) {
+export default async function callApi(fullUrl, schema, options = {}) {
   const url = typeof fullUrl === 'function' ? fullUrl() : fullUrl
+
+  let body
+
+  if (options.body instanceof FormData) {
+    body = options.body
+  } else if (options.body) {
+    body = JSON.stringify(options.body)
+  }
+
   const finalUrl = bustRequest(url, options)
 
   try {
-    const response = await fetch(finalUrl, options)
+    const response = await fetch(finalUrl, { ...options, body })
 
     if (response.status === 204) {
       return { response: null, error: null, status: 204 }
