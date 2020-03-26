@@ -41,6 +41,8 @@ const createReducer = (apiTypes: ApiTypeMap) => {
           createRequestsReducer(apiTypes, typeConstant)
         )
       ),
+
+      metaData: metaDataReducer,
     })
   )
 

@@ -38,3 +38,14 @@ export type ApiType = {|
   remove?: ApiRequest,
   update?: ApiRequest,
 |}
+
+type RequestOptions = {|
+  method: 'PUT' | 'POST' | 'GET' | 'DELETE',
+  body?: mixed,
+|}
+
+export type CallApi = (
+  url: string,
+  schema: schema.Array | schema.Entity,
+  options?: RequestOptions
+) => Promise<JSON>

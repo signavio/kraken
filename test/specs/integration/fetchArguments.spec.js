@@ -1,11 +1,10 @@
-import React from 'react'
-import { compose, combineReducers, applyMiddleware, createStore } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import { Provider } from 'react-redux'
-
-import { stub } from 'sinon'
-import { mount } from 'enzyme'
 import { expect } from 'chai'
+import { mount } from 'enzyme'
+import React from 'react'
+import { Provider } from 'react-redux'
+import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
+import createSagaMiddleware from 'redux-saga'
+import { stub } from 'sinon'
 
 import apiCreator from '../../../src'
 
@@ -28,12 +27,12 @@ describe('Integration - fetch', () => {
   let createApp
 
   beforeEach(() => {
-    fetch = stub().returns({})
+    fetch = stub().returns()
 
     const types = {
       [entityType]: {
         collection: 'test',
-        fetch,
+        fetch: () => fetch,
       },
     }
 

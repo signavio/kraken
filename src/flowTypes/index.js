@@ -22,7 +22,7 @@ export type EntityType = string
 export type KrakenState = {
   requests: RequestsState,
   entities: EntitiesState,
-  meta: MetaData,
+  metaData: MetaData,
 }
 
 export type State = {

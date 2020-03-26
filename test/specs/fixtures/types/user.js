@@ -1,7 +1,7 @@
 // @flow
 import { schema as schemas } from 'normalizr'
 
-import { callApi } from '../../../../src'
+import { type CallApi } from '../../../../src/flowTypes'
 import { schema as postSchema } from './post'
 
 export const collection = 'users'
@@ -10,7 +10,8 @@ export const schema = new schemas.Entity(collection, {
   posts: [postSchema],
 })
 
-export const fetch = ({ id }: { id: string }) => callApi(`/users/${id}`, schema)
+export const fetch = (callApi: CallApi) => ({ id }: { id: string }) =>
+  callApi(`/users/${id}`, schema)
 
-export const create = (_: any, body: JSON) =>
+export const create = (callApi: CallApi) => (_: any, body: JSON) =>
   callApi('/users/', schema, { method: 'POST', body })

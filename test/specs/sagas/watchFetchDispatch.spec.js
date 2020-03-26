@@ -1,15 +1,11 @@
-import { put, call } from 'redux-saga/effects'
 import { normalize } from 'normalizr'
-
-import { createFetchSaga } from '../../../src/sagas/watchFetchDispatch'
+import { put } from 'redux-saga/effects'
 
 import actionsCreator, { actionTypes } from '../../../src/actions'
+import { createFetchSaga } from '../../../src/sagas/watchFetchDispatch'
 import { deriveRequestIdFromAction } from '../../../src/utils'
-import { getFetch } from '../../../src/types'
-
 import expect from '../../expect'
-
-import { apiTypes, types, data } from '../fixtures'
+import { apiTypes, data, types } from '../fixtures'
 
 const fetchSaga = createFetchSaga(apiTypes)
 const actions = actionsCreator(apiTypes)
@@ -34,6 +30,8 @@ const state = {
     entities: {
       [types.USER]: {},
     },
+
+    metaData: {},
   },
 }
 
@@ -59,9 +57,9 @@ describe('Saga - fetchSaga', () => {
   })
 
   it('should call the `fetch` function of the entity type passing in the query object', () => {
-    expect(generator.next().value).to.deep.equal(
-      call(getFetch(apiTypes, types.USER), query, undefined, undefined)
-    )
+    expect(generator.next().value.payload)
+      .to.have.property('args')
+      .that.is.eql([query, undefined, undefined])
   })
 
   it('should dispatch the `success` action with the server response data', () => {
