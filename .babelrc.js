@@ -25,6 +25,7 @@ module.exports = {
     '@babel/plugin-proposal-export-namespace-from',
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-proposal-function-bind',
+    '@babel/plugin-proposal-optional-chaining',
 
     'syntax-dynamic-import',
     'lodash',
