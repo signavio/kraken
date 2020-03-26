@@ -12,7 +12,10 @@ const queriesAreEqual = ({ query: queryA }, { query: queryB }) => {
   return isEqual(queryA, queryB)
 }
 
-const fieldsAreEqual = ({ requiredFields: fieldsA }, { requiredFields: fieldsB }) => {
+const fieldsAreEqual = (
+  { requiredFields: fieldsA },
+  { requiredFields: fieldsB }
+) => {
   if (fieldsA === fieldsB) {
     return true
   }
@@ -20,11 +23,10 @@ const fieldsAreEqual = ({ requiredFields: fieldsA }, { requiredFields: fieldsB }
   return isEqual(fieldsA, fieldsB)
 }
 
-export default (leftProps, rightProps) => (
+export default (leftProps, rightProps) =>
   queriesAreEqual(leftProps, rightProps) &&
   fieldsAreEqual(leftProps, rightProps) &&
   isEqual(
     omit(leftProps, 'query', 'requiredFields'),
-    omit(rightProps, 'query', 'requiredFields'),
+    omit(rightProps, 'query', 'requiredFields')
   )
-)

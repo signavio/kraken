@@ -15,7 +15,7 @@ const connect = createConnect(apiTypes)
 
 const renderSpy = sinon.spy()
 
-const MyComp = props => {
+const MyComp = (props) => {
   renderSpy(props)
   return <div />
 }
@@ -44,7 +44,7 @@ const TestComponent = connect(({ id }) => ({
   },
 }))(MyComp)
 
-const TestContainer = props => (
+const TestContainer = (props) => (
   <Provider store={testStore}>
     <TestComponent {...props} />
   </Provider>

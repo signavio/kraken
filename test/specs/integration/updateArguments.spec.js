@@ -43,7 +43,7 @@ describe('Integration - update', () => {
       kraken: reducer,
     })
 
-    createApp = query => {
+    createApp = (query) => {
       const ConnectedApp = connect(() => ({
         updateSomething: {
           type: entityType,

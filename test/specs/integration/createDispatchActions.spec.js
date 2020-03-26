@@ -37,7 +37,7 @@ describe('Integration - dispatch create actions', () => {
   let actions
 
   beforeEach(() => {
-    createApp = options => {
+    createApp = (options) => {
       const ConnectedApp = connect(() => ({
         createPost: {
           type: types.POST,
@@ -47,7 +47,7 @@ describe('Integration - dispatch create actions', () => {
       }))(App)
 
       actions = []
-      store = configureStore({}, action => actions.push(action))
+      store = configureStore({}, (action) => actions.push(action))
 
       return mount(
         <Provider store={store}>
@@ -61,7 +61,7 @@ describe('Integration - dispatch create actions', () => {
     fetchMock.restore()
   })
 
-  it('should dispatch a create success action when the server returns a 200', done => {
+  it('should dispatch a create success action when the server returns a 200', (done) => {
     fetchMock.post('/posts/', {
       id: 'post-2',
       title: 'Very new post',
@@ -112,7 +112,7 @@ describe('Integration - dispatch create actions', () => {
     }, 20)
   })
 
-  it('should dispatch a create success action when the server returns a 204 and no body', done => {
+  it('should dispatch a create success action when the server returns a 204 and no body', (done) => {
     fetchMock.post('/posts/', {
       status: 204,
     })
@@ -153,7 +153,7 @@ describe('Integration - dispatch create actions', () => {
     }, 20)
   })
 
-  it('should dispatch a create failure action when the server returns a 401', done => {
+  it('should dispatch a create failure action when the server returns a 401', (done) => {
     fetchMock.post('/posts/', {
       body: { message: 'Unauthorized' },
       status: 401,

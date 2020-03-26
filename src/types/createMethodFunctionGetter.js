@@ -1,11 +1,7 @@
 // @flow
 import { isFunction } from 'lodash'
 
-import {
-  type ApiTypeMap,
-  type EntityType,
-  type MethodName,
-} from '../flowTypes'
+import { type ApiTypeMap, type EntityType, type MethodName } from '../flowTypes'
 
 const createMethodFunctionGetter = (methodName: MethodName) => (
   types: ApiTypeMap,

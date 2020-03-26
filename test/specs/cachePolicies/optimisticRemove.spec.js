@@ -24,7 +24,7 @@ describe('optimistic remove', () => {
 
   const typeConstant = 'USER'
 
-  const assertWithWrongType = action =>
+  const assertWithWrongType = (action) =>
     expect(
       cachePolicies.optimisticRemove.updateEntitiesOnAction(
         apiTypes,

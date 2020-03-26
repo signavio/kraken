@@ -19,7 +19,7 @@ const requestsSideEffectsReducer = (
   entityType: EntityType,
   updateRequestOnCollectionChange
 ) => {
-  const newState = mapValues(state, request =>
+  const newState = mapValues(state, (request) =>
     updateRequestOnCollectionChange(apiTypes, request, collection, entityType)
   )
 
