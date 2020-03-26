@@ -15,6 +15,19 @@ type ApiRequest = (
   requestParams?: Query
 ) => Promise<normalizrResult>
 
+type RequestOptions = {|
+  method: 'PUT' | 'POST' | 'GET' | 'DELETE',
+  body?: mixed,
+|}
+
+export type CallApi = (
+  url: string,
+  schema: schema.Array | schema.Entity,
+  options?: RequestOptions
+) => Promise<JSON>
+
+type ApiCreator = (callApi: CallApi, apiBase: string) => ApiRequest
+
 export type ApiType = {|
   collection: string,
   schema: schema.Entity | schema.Array,
@@ -33,19 +46,8 @@ export type ApiType = {|
     ) => EntitiesState,
   },
 
-  fetch?: ApiRequest,
-  create?: ApiRequest,
-  remove?: ApiRequest,
-  update?: ApiRequest,
+  fetch?: ApiCreator,
+  create?: ApiCreator,
+  remove?: ApiCreator,
+  update?: ApiCreator,
 |}
-
-type RequestOptions = {|
-  method: 'PUT' | 'POST' | 'GET' | 'DELETE',
-  body?: mixed,
-|}
-
-export type CallApi = (
-  url: string,
-  schema: schema.Array | schema.Entity,
-  options?: RequestOptions
-) => Promise<JSON>
