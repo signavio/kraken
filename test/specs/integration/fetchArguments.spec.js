@@ -27,7 +27,7 @@ describe('Integration - fetch', () => {
   let createApp
 
   beforeEach(() => {
-    fetch = stub().returns()
+    fetch = stub().returns({})
 
     const types = {
       [entityType]: {
