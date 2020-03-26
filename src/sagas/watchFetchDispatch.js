@@ -17,7 +17,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
     yield delay(1) // throttle to avoid duplicate requests
 
     const requestId = deriveRequestIdFromAction(action)
-    const { headers, credentials } = getState().kraken.metaData
+    const { headers, credentials, apiBase } = getState().kraken.metaData
     const request = getRequestState(types, getState(), action)
     const entityType = action.payload.entityType
 
@@ -29,15 +29,17 @@ export const createFetchSaga = (types: ApiTypeMap) => {
 
     const createFetch = getFetch(types, entityType)
 
-    const fetch = createFetch((url, schema, options) =>
-      callApi(url, schema, {
-        credentials,
-        ...options,
-        headers: {
-          ...headers,
-          ...options?.headers,
-        },
-      })
+    const fetch = createFetch(
+      (url, schema, options) =>
+        callApi(url, schema, {
+          credentials,
+          ...options,
+          headers: {
+            ...headers,
+            ...options?.headers,
+          },
+        }),
+      apiBase
     )
 
     const { response, error, status } = yield call(

@@ -15,17 +15,19 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
     const entityType = action.payload.entityType
     const createCreate = getCreate(types, entityType)
 
-    const { headers, credentials } = getState().kraken.metaData
+    const { headers, credentials, apiBase } = getState().kraken.metaData
 
-    const create = createCreate((url, schema, options) =>
-      callApi(url, schema, {
-        credentials,
-        ...options,
-        headers: {
-          ...headers,
-          ...options?.headers,
-        },
-      })
+    const create = createCreate(
+      (url, schema, options) =>
+        callApi(url, schema, {
+          credentials,
+          ...options,
+          headers: {
+            ...headers,
+            ...options?.headers,
+          },
+        }),
+      apiBase
     )
 
     const result = yield call(

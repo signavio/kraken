@@ -20,17 +20,19 @@ export function createUpdateDispatch(types: ApiTypeMap) {
 
     const createUpdate = getUpdate(types, entityType)
 
-    const { headers, credentials } = getState().kraken.metaData
+    const { headers, credentials, apiBase } = getState().kraken.metaData
 
-    const update = createUpdate((url, schema, options) =>
-      callApi(url, schema, {
-        credentials,
-        ...options,
-        headers: {
-          ...headers,
-          ...options?.headers,
-        },
-      })
+    const update = createUpdate(
+      (url, schema, options) =>
+        callApi(url, schema, {
+          credentials,
+          ...options,
+          headers: {
+            ...headers,
+            ...options?.headers,
+          },
+        }),
+      apiBase
     )
 
     const result = yield call(

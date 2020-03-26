@@ -13,19 +13,21 @@ export function createRemoveDispatch(types: ApiTypeMap) {
   return function* removeEntity(action: RemoveDispatchAction, getState) {
     const requestId = deriveRequestIdFromAction(action)
     const entityType = action.payload.entityType
-    const { headers, credentials } = getState().kraken.metaData
+    const { headers, credentials, apiBase } = getState().kraken.metaData
 
     const createRemove = getRemove(types, entityType)
 
-    const remove = createRemove((url, schema, options) =>
-      callApi(url, schema, {
-        credentials,
-        ...options,
-        headers: {
-          ...headers,
-          ...options?.headers,
-        },
-      })
+    const remove = createRemove(
+      (url, schema, options) =>
+        callApi(url, schema, {
+          credentials,
+          ...options,
+          headers: {
+            ...headers,
+            ...options?.headers,
+          },
+        }),
+      apiBase
     )
 
     const { error, status } = yield call(
