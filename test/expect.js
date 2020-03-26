@@ -1,9 +1,9 @@
 // exports preconfigured chai expect
-import 'babel-polyfill'
-import chai, { expect } from 'chai'
+import '@babel/polyfill'
 
-import sinonChai from 'sinon-chai'
+import chai, { expect } from 'chai'
 import chaiEnzyme from 'chai-enzyme'
+import sinonChai from 'sinon-chai'
 
 chai.use(sinonChai)
 chai.use(chaiEnzyme())
