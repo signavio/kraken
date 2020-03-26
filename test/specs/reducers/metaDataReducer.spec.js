@@ -35,4 +35,16 @@ describe('metaDataReducer', () => {
 
     expect(updatedState).to.have.property('credentials', credentials)
   })
+
+  it('should be possible to define a base API endpoint', () => {
+    const apiBase = '/my/api/v1'
+
+    const action = actions.addMetaData({
+      apiBase,
+    })
+
+    const updatedState = metaDataReducer({}, action)
+
+    expect(updatedState).to.have.property('apiBase', apiBase)
+  })
 })
