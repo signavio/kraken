@@ -20,6 +20,7 @@ describe('Utils - bustRequest', () => {
   it('should append timestamp to GET requests with query string.', () => {
     const fullUrl = `${URL}?a=1&b=2`
     const result = bustRequest(fullUrl, {})
-    expect(new RegExp(/api\/resource\?a=1&b=2&_=([0-9])+/, 'g').test(result)).to.be.true
+    expect(new RegExp(/api\/resource\?a=1&b=2&_=([0-9])+/, 'g').test(result)).to
+      .be.true
   })
 })

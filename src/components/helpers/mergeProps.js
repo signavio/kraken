@@ -7,7 +7,7 @@ const mergeProps = ({ finalMapPropsToPromiseProps }) => (
 ) => {
   const promiseProps = finalMapPropsToPromiseProps(ownProps)
 
-  const joinPromiseValue = propName => {
+  const joinPromiseValue = (propName) => {
     const promise = stateProps[`${propName}_request`]
     const entity = stateProps[`${propName}_entity`]
 

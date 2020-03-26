@@ -5,12 +5,7 @@ import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import { actionTypes } from '../actions'
 import { getCollectionName, getTypeNames } from '../types'
 import { removeReferences, isMatch } from '../utils'
-import type {
-  Action,
-  ApiTypeMap,
-  EntitiesState,
-  Entity,
-} from '../flowTypes'
+import type { Action, ApiTypeMap, EntitiesState, Entity } from '../flowTypes'
 
 const removeReferencesFromAllInCollection = (
   collection: Entity,

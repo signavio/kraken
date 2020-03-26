@@ -1,11 +1,11 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "javascript.validate.enable": false,
-    "editor.tabSize": 2,
-    "search.exclude": {
-        ".git": true,
-        "**/node_modules": true,
-        "**/lib": true,
-        "target": true
-    }
+  "javascript.validate.enable": false,
+  "editor.tabSize": 2,
+  "search.exclude": {
+    ".git": true,
+    "**/node_modules": true,
+    "**/lib": true,
+    "target": true
+  }
 }

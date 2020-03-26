@@ -3,7 +3,7 @@ import { actionTypes } from '../actions'
 const wipeReducer = (state = {}, action) => {
   switch (action.type) {
     case actionTypes.WIPE_CACHE:
-      return { }
+      return {}
     default:
       return state
   }

@@ -40,7 +40,7 @@ describe('Integration - dispatch fetch actions', () => {
   let ConnectedApp
 
   beforeEach(() => {
-    createApp = initialProps => {
+    createApp = (initialProps) => {
       ConnectedApp = connect(({ type, query, requestParams }) => ({
         fetchComment: {
           type,
@@ -50,9 +50,9 @@ describe('Integration - dispatch fetch actions', () => {
       }))(App)
 
       actions = []
-      store = configureStore({}, action => actions.push(action))
+      store = configureStore({}, (action) => actions.push(action))
 
-      const Component = props => (
+      const Component = (props) => (
         <Provider store={store}>
           <ConnectedApp {...props} />
         </Provider>
@@ -66,7 +66,7 @@ describe('Integration - dispatch fetch actions', () => {
     fetchMock.restore()
   })
 
-  it('should partition results based on request params.', done => {
+  it('should partition results based on request params.', (done) => {
     const firstComment = { id: 'c1', body: 'My first comment' }
     const secondComment = { id: 'c2', body: 'My second comment' }
 
@@ -117,7 +117,7 @@ describe('Integration - dispatch fetch actions', () => {
     }, 20)
   })
 
-  it('should dispatch a success if the server responds with a 200', done => {
+  it('should dispatch a success if the server responds with a 200', (done) => {
     fetchMock.get(startsWith('/comments/123'), {
       body: { id: '123', body: 'My awesome comment' },
       status: 200,
@@ -151,7 +151,7 @@ describe('Integration - dispatch fetch actions', () => {
     }, 20)
   })
 
-  it('should dispatch an error if the server responds with a 401', done => {
+  it('should dispatch an error if the server responds with a 401', (done) => {
     fetchMock.get(startsWith('/comments/123'), {
       body: { message: 'Unauthorized' },
       status: 401,

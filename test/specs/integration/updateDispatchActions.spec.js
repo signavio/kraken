@@ -37,7 +37,7 @@ describe('Integration - dispatch update actions', () => {
   let actions
 
   beforeEach(() => {
-    createApp = options => {
+    createApp = (options) => {
       const ConnectedApp = connect(() => ({
         updatePost: {
           type: types.POST,
@@ -47,7 +47,7 @@ describe('Integration - dispatch update actions', () => {
       }))(App)
 
       actions = []
-      store = configureStore({}, action => actions.push(action))
+      store = configureStore({}, (action) => actions.push(action))
 
       return mount(
         <Provider store={store}>
@@ -61,7 +61,7 @@ describe('Integration - dispatch update actions', () => {
     fetchMock.restore()
   })
 
-  it('should dispatch an update success action when the server returns a 200', done => {
+  it('should dispatch an update success action when the server returns a 200', (done) => {
     fetchMock.put(`/posts/${data.post.id}`, {
       id: data.post.id,
       title: 'Updated post',
@@ -113,7 +113,7 @@ describe('Integration - dispatch update actions', () => {
     }, 20)
   })
 
-  it('should dispatch a create failure action when the server returns a 401', done => {
+  it('should dispatch a create failure action when the server returns a 401', (done) => {
     fetchMock.put(`/posts/${data.post.id}`, {
       body: { message: 'Unauthorized' },
       status: 401,
