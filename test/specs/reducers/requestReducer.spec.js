@@ -262,9 +262,7 @@ describe('requestReducer', () => {
       )
 
       expect(newState).to.have.property(requestId)
-      expect(newState[requestId])
-        .to.have.property('value')
-        .to.equal(result)
+      expect(newState[requestId]).to.have.property('value').to.equal(result)
     })
 
     it('should set the responseHeaders', () => {
@@ -318,9 +316,7 @@ describe('requestReducer', () => {
       )
       expect(newState).to.have.property(requestId)
 
-      expect(newState[requestId])
-        .to.have.property('value')
-        .to.equal(result)
+      expect(newState[requestId]).to.have.property('value').to.equal(result)
     })
   })
 

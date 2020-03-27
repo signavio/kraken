@@ -43,7 +43,7 @@ describe('Integration - fetch', () => {
       kraken: reducer,
     })
 
-    createApp = options => {
+    createApp = (options) => {
       const ConnectedApp = connect(() => ({
         fetchSomething: {
           type: entityType,
@@ -60,7 +60,7 @@ describe('Integration - fetch', () => {
     }
   })
 
-  it('should call the fetch action', done => {
+  it('should call the fetch action', (done) => {
     createApp()
 
     setTimeout(() => {
@@ -70,7 +70,7 @@ describe('Integration - fetch', () => {
     })
   })
 
-  it('should not call the fetch function if the `lazy` prop is set.', done => {
+  it('should not call the fetch function if the `lazy` prop is set.', (done) => {
     const component = createApp({ lazy: true })
 
     setTimeout(() => {
@@ -86,7 +86,7 @@ describe('Integration - fetch', () => {
     })
   })
 
-  it('should pass query params to the fetch action', done => {
+  it('should pass query params to the fetch action', (done) => {
     const query = { foo: 'bar' }
 
     createApp({ query })
@@ -99,7 +99,7 @@ describe('Integration - fetch', () => {
     }, 2)
   })
 
-  it('should pass the body to the fetch action', done => {
+  it('should pass the body to the fetch action', (done) => {
     const body = { id: 'foo' }
 
     const component = createApp({ lazy: true })

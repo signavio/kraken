@@ -1,7 +1,7 @@
 import { take, cancel, fork, call } from 'redux-saga/effects'
 
 const takeLatestOfEvery = (getBucketKey, saga, ...args) =>
-  fork(function*() {
+  fork(function* () {
     const lastTaskOfBucket = {}
     while (true) {
       const action = yield take('*')
@@ -14,7 +14,7 @@ const takeLatestOfEvery = (getBucketKey, saga, ...args) =>
       if (lastTaskOfBucket[key]) {
         yield cancel(lastTaskOfBucket[key])
       }
-      lastTaskOfBucket[key] = yield fork(function*() {
+      lastTaskOfBucket[key] = yield fork(function* () {
         yield call(saga, ...args.concat(action))
         delete lastTaskOfBucket[key]
       })

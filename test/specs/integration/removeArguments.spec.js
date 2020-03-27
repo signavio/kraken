@@ -43,7 +43,7 @@ describe('Integration - remove', () => {
       kraken: reducer,
     })
 
-    createApp = query => {
+    createApp = (query) => {
       const ConnectedApp = connect(() => ({
         removeSomething: {
           type: entityType,
@@ -60,7 +60,7 @@ describe('Integration - remove', () => {
     }
   })
 
-  it('should call the remove action', done => {
+  it('should call the remove action', (done) => {
     const component = createApp()
 
     expect(component).to.have.prop('removeSomething')

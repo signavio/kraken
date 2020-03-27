@@ -5,9 +5,9 @@ import { promisePropsEqual } from '../../utils'
 import { ELEMENT_ID_PROP_NAME } from './constants'
 import getDisplayName from './getDisplayName'
 
-const wrapWithApiConnect = ({
-  finalMapPropsToPromiseProps,
-}) => WrappedComponent => {
+const wrapWithApiConnect = ({ finalMapPropsToPromiseProps }) => (
+  WrappedComponent
+) => {
   function ApiConnect({ [ELEMENT_ID_PROP_NAME]: _, innerRef, ...rest }) {
     const promisePropsRef = useRef({})
 
@@ -28,7 +28,7 @@ const wrapWithApiConnect = ({
     }, {})
 
     useEffect(() => {
-      Object.keys(fetchProps).forEach(propName => {
+      Object.keys(fetchProps).forEach((propName) => {
         const fetchProp = fetchProps[propName]
         const promiseProp = promiseProps[propName]
         // always refresh on any change of the query or if the refresh token is set
@@ -41,9 +41,11 @@ const wrapWithApiConnect = ({
         const hasNewRefreshToken =
           promiseProp.refresh !== undefined &&
           promiseProp.refresh !== fetchProp.refresh
-        const needsFetch = !isInCache || hasNewRefreshToken
 
-        if (promisePropUpdated && needsFetch && !promiseProp.lazy) {
+        if (
+          ((promisePropUpdated && !isInCache) || hasNewRefreshToken) &&
+          !promiseProp.lazy
+        ) {
           fetchProp()
         }
       })

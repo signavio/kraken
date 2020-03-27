@@ -7,14 +7,11 @@ references:
     docker:
       - image: circleci/node:latest
 
-  dep_cache_key: &dep_cache_key deps-{{ checksum "yarn.lock" }}
-  dep_backup_cache_key: &dep_backup_cache_key deps
-
   restore_deps: &restore_deps
     restore_cache:
       keys:
-        - *dep_cache_key
-        - *dep_backup_cache_key
+        - deps-v3-{{ checksum "yarn.lock" }}
+        - deps-v3
 
   publish_test_results: &publish_test_results
     store_test_results:
@@ -42,13 +39,13 @@ jobs:
 
       - restore_cache:
           keys:
-            - deps-{{ checksum "yarn.lock" }}
-            - *dep_backup_cache_key
+            - deps-v3-{{ checksum "yarn.lock" }}
+            - deps-v3
 
       - run: yarn install
 
       - save_cache:
-          key: deps-{{ checksum "yarn.lock" }}
+          key: deps-v3-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
 
@@ -92,18 +89,6 @@ jobs:
 
       - run: yarn find-circular-dependencies
 
-  renovate:
-    <<: *container_config
-
-    working_directory: *workspace_root
-
-    steps:
-      - checkout
-
-      - *restore_deps
-
-      - run: yarn renovate --token $GITHUB_ACCESS_TOKEN
-
   flow:
     <<: *container_config
 
@@ -136,20 +121,5 @@ workflows:
             - build
 
       - flow:
-          requires:
-            - build
-
-  renovate:
-    triggers:
-      - schedule:
-          cron: '0 2 * * *'
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - build
-
-      - renovate:
           requires:
             - build

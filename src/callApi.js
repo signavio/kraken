@@ -9,7 +9,7 @@ export default function callApi(fullUrl, schema, options) {
   const finalUrl = bustRequest(url, options)
 
   return fetch(finalUrl, options)
-    .then(response => {
+    .then((response) => {
       let contentType = response.headers.get('Content-Type')
 
       if (contentType !== null) {
@@ -18,11 +18,11 @@ export default function callApi(fullUrl, schema, options) {
 
       switch (contentType) {
         case 'application/json':
-          return response.json().then(json => ({ json, response }))
+          return response.json().then((json) => ({ json, response }))
         case 'text/plain':
           return response
             .text()
-            .then(text => ({ json: { message: text }, response }))
+            .then((text) => ({ json: { message: text }, response }))
         default:
           if (response.status === 204) {
             return { response }
@@ -43,7 +43,7 @@ export default function callApi(fullUrl, schema, options) {
         : null
     })
     .then(
-      response => ({ response }),
+      (response) => ({ response }),
       ({ json, response, message }) => {
         const result = {
           error: message

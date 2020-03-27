@@ -15,39 +15,34 @@ export { createRequestsReducer, createEntitiesReducer, createWipeReducer }
 
 const createReducer = (apiTypes: ApiTypeMap) => {
   const constants = getTypeNames(apiTypes)
-  const constantsByCollection = groupBy(
-    constants,
-    (constant) => getCollectionName(apiTypes, constant)
+  const constantsByCollection = groupBy(constants, (constant) =>
+    getCollectionName(apiTypes, constant)
   )
   const enhanceWithSideEffects = createEnhanceWithSideEffects(apiTypes)
 
   const apiReducer = enhanceWithSideEffects(
     combineReducers({
-
       entities: combineReducers(
-        mapValues(
-          constantsByCollection,
-          (constantsWithSameCollection) => reduceReducers(
-            ...constantsWithSameCollection.map(
-              (typeConstant) => createEntitiesReducer(apiTypes, typeConstant)
+        mapValues(constantsByCollection, (constantsWithSameCollection) =>
+          reduceReducers(
+            ...constantsWithSameCollection.map((typeConstant) =>
+              createEntitiesReducer(apiTypes, typeConstant)
             )
           )
         )
       ),
 
       requests: combineReducers(
-        mapValues(constants, (typeConstant) => createRequestsReducer(apiTypes, typeConstant))
+        mapValues(constants, (typeConstant) =>
+          createRequestsReducer(apiTypes, typeConstant)
+        )
       ),
-
     })
   )
 
   const wipeReducer = (state, action) => createWipeReducer(state, action)
 
-  return reduceReducers(
-    wipeReducer,
-    apiReducer
-  )
+  return reduceReducers(wipeReducer, apiReducer)
 }
 
 export default createReducer

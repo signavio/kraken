@@ -17,7 +17,7 @@ const { dispatchFetch } = createActionCreators(apiTypes)
 
 const renderSpy = sinon.spy()
 
-const MyComp = props => {
+const MyComp = (props) => {
   renderSpy(props)
   return <div />
 }
@@ -74,7 +74,7 @@ const TestComponent = connect(
   })
 )(MyComp)
 
-const TestContainer = props => (
+const TestContainer = (props) => (
   <Provider store={testStore}>
     <TestComponent {...props} />
   </Provider>
@@ -213,12 +213,15 @@ describe('connect', () => {
   it('should not dispatch FETCH_DISPATCH action on update when promise props did not change', () => {
     const wrapper = mount(<TestContainer id={data.user.id} />)
     reducerSpy.resetHistory()
+
     expect(reducerSpy).to.have.not.been.called
 
     wrapper.setProps({ bla: 'blups' })
+
     expect(reducerSpy).to.have.not.been.called
 
     wrapper.update() // calls forceUpdate
+
     expect(reducerSpy).to.have.not.been.called
   })
 
@@ -299,26 +302,26 @@ describe('connect', () => {
       return <div ref={ref}>Text</div>
     }
 
-
     const CompWithRefs = forwardRef(Component)
 
-    const ConnectedComponent = connect(
-      ({ id }) => ({
-        traceFetch: {
-          type: types.USER,
-          id,
-        },
-      }),
-    )(CompWithRefs)
+    const ConnectedComponent = connect(({ id }) => ({
+      traceFetch: {
+        type: types.USER,
+        id,
+      },
+    }))(CompWithRefs)
 
     it('should return the wrapped instance', (done) => {
       mount(
         <Provider store={testStore}>
-          <ConnectedComponent id={data.user.id} ref={(ref) => {
-            expect(ref).to.exist
+          <ConnectedComponent
+            id={data.user.id}
+            ref={(ref) => {
+              expect(ref).to.exist
 
-            done()
-          }} />
+              done()
+            }}
+          />
         </Provider>
       )
     })

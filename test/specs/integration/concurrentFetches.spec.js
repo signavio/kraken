@@ -53,7 +53,7 @@ describe('concurrent fetches', () => {
 
   let app
 
-  beforeEach(done => {
+  beforeEach((done) => {
     store = configureStore()
     fetchMock.get(userPath, data.user)
     app = mount(<App />)
@@ -71,23 +71,15 @@ describe('concurrent fetches', () => {
   })
 
   it('should render the firstName in both components', () => {
-    expect(
-      app
-        .find(UserPure)
-        .first()
-        .find('div')
-        .text()
-    ).to.equal(data.user.firstName)
-    expect(
-      app
-        .find(UserPure)
-        .last()
-        .find('div')
-        .text()
-    ).to.equal(data.user.firstName)
+    expect(app.find(UserPure).first().find('div').text()).to.equal(
+      data.user.firstName
+    )
+    expect(app.find(UserPure).last().find('div').text()).to.equal(
+      data.user.firstName
+    )
   })
 
-  it('should use caches after the first fetch and not call fetch again', done => {
+  it('should use caches after the first fetch and not call fetch again', (done) => {
     expect(fetchMock.calls(userPath, 'GET')).to.have.length(1)
     app = mount(<App />)
     setTimeout(() => {

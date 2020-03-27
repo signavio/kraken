@@ -4,13 +4,13 @@ import { ApiTypeMap, StateGetter } from '../flowTypes'
 
 import createWatchCreateDispatch from './watchCreateDispatch'
 import createWatchUpdateDispatch from './watchUpdateDispatch'
-import createWatchFetchDispatch  from './watchFetchDispatch'
+import createWatchFetchDispatch from './watchFetchDispatch'
 import createWatchRemoveDispatch from './watchRemoveDispatch'
 
 const createSaga = (types: ApiTypeMap) => {
   const watchCreateEntity = createWatchCreateDispatch(types)
   const watchUpdateEntity = createWatchUpdateDispatch(types)
-  const watchFetchEntity  = createWatchFetchDispatch(types)
+  const watchFetchEntity = createWatchFetchDispatch(types)
   const watchRemoveEntity = createWatchRemoveDispatch(types)
 
   return function* rootSaga(getState: StateGetter) {

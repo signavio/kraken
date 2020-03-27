@@ -24,7 +24,7 @@ describe('deriveRequestIdFromAction', () => {
       ...payload,
     })
 
-  actionTypes.forEach(actionType => {
+  actionTypes.forEach((actionType) => {
     describe(`dispatch${actionType}`, () => {
       it('should derive a request id without query and params', () => {
         const action = createAction(actionType)

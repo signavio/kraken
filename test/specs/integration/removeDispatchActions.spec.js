@@ -37,7 +37,7 @@ describe('Integration - dispatch remove actions', () => {
   let actions
 
   beforeEach(() => {
-    createApp = options => {
+    createApp = (options) => {
       const ConnectedApp = connect(() => ({
         removePost: {
           type: types.POST,
@@ -47,7 +47,7 @@ describe('Integration - dispatch remove actions', () => {
       }))(App)
 
       actions = []
-      store = configureStore({}, action => actions.push(action))
+      store = configureStore({}, (action) => actions.push(action))
 
       return mount(
         <Provider store={store}>
@@ -61,7 +61,7 @@ describe('Integration - dispatch remove actions', () => {
     fetchMock.restore()
   })
 
-  it('should dispatch a remove success action when the server returns a 204', done => {
+  it('should dispatch a remove success action when the server returns a 204', (done) => {
     fetchMock.delete(`/posts/${data.post.id}`, {
       status: 204,
     })
@@ -93,7 +93,7 @@ describe('Integration - dispatch remove actions', () => {
     }, 20)
   })
 
-  it('should dispatch a remove failure action when the server returns a 401', done => {
+  it('should dispatch a remove failure action when the server returns a 401', (done) => {
     fetchMock.delete(`/posts/${data.post.id}`, {
       body: { message: 'Unauthorized' },
       status: 401,
