@@ -238,6 +238,7 @@ out.
 | ------------- | ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | type          | `undefined` | `true`   | The API type which is concered.                                                                                                                     |
 | query         | `undefined` | `false`  | An object of query parameters.                                                                                                                      |
+| refresh .     | `undefined` | `false`  | Compares the old value with the new value to determine if a fresh request should be made. |
 | requestParams | `undefined` | `false`  | An object of extra parameters to tell different requests apart.                                                                                     |
 | id            | `undefined` | `false`  | Shortcut to provide an ID query parameter, `id: 1` is equivalent to `query: { id: 1 }`                                                              |
 | method        | `fetch`     | `false`  | Either one of `fetch`, `create`, `update`, or `remove`.                                                                                             |
