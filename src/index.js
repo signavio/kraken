@@ -8,6 +8,9 @@ import createSaga from './sagas'
 import * as typeUtils from './types'
 import * as promise from './utils/promise'
 
+export * from './flowTypes'
+export * from './hooks'
+
 const apiCreator = (types: ApiTypeMap) => {
   const preparedTypes = Object.keys(types).reduce(
     (prev, key) => ({
