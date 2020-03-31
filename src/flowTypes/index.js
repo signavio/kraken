@@ -1,6 +1,7 @@
 // @flow
 
 import { type EntitiesState } from './entityState'
+import { type MetaData } from './metaData'
 import { type RequestsState } from './requestState'
 
 export * from './promiseProps'
@@ -10,6 +11,7 @@ export * from './requestState'
 export * from './types'
 export * from './actions'
 export * from './cachePolicies'
+export * from './metaData'
 
 export type EntityId = string
 export type RequestId = string
@@ -20,6 +22,7 @@ export type EntityType = string
 export type KrakenState = {
   requests: RequestsState,
   entities: EntitiesState,
+  metaData: MetaData,
 }
 
 export type State = {

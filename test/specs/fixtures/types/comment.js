@@ -1,7 +1,7 @@
 // @flow
 import { schema as schemas } from 'normalizr'
 
-import { callApi } from '../../../../src'
+import { type CallApi } from '../../../../src/flowTypes'
 
 export const collection = 'comments'
 
@@ -10,5 +10,5 @@ schema.define({
   parent: schema,
 })
 
-export const fetch = ({ id }: { id: string }) =>
+export const fetch = (callApi: CallApi) => ({ id }: { id: string }) =>
   callApi(`/comments/${id}`, schema, { method: 'GET' })

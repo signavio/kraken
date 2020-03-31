@@ -1,9 +1,9 @@
-import { put, call } from 'redux-saga/effects'
-import { omitBy, isNil } from 'lodash'
-
-import { ApiTypeMap, UpdateDispatchAction, Action } from '../flowTypes'
+import { isNil, omitBy } from 'lodash'
+import { call, put } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
+import callApi from '../callApi'
+import { Action, ApiTypeMap, UpdateDispatchAction } from '../flowTypes'
 import { getUpdate } from '../types'
 import {
   deriveRequestIdFromAction,
@@ -14,11 +14,27 @@ import {
 export function createUpdateDispatch(types: ApiTypeMap) {
   const actions = createActionCreators(types)
 
-  return function* updateEntity(action: UpdateDispatchAction) {
+  return function* updateEntity(action: UpdateDispatchAction, getState) {
     const requestId = deriveRequestIdFromAction(action)
     const entityType = action.payload.entityType
 
-    const update = getUpdate(types, entityType)
+    const createUpdate = getUpdate(types, entityType)
+
+    const { headers, credentials, apiBase } = getState().kraken.metaData
+
+    const update = createUpdate(
+      (url, schema, options) =>
+        callApi(url, schema, {
+          credentials,
+          ...options,
+          headers: {
+            ...headers,
+            ...options?.headers,
+          },
+        }),
+      apiBase
+    )
+
     const result = yield call(
       update,
       action.payload.query,
@@ -58,7 +74,9 @@ const mapActionToEntity = ({ type, payload = {} }: Action) => {
 export default function createWatchUpdateDispatch(types: ApiTypeMap) {
   const updateDispatch = createUpdateDispatch(types)
 
-  return function* watchUpdateDispatch() {
-    yield takeLatestOfEvery(mapActionToEntity, updateDispatch)
+  return function* watchUpdateDispatch(getState) {
+    yield takeLatestOfEvery(mapActionToEntity, action =>
+      updateDispatch(action, getState)
+    )
   }
 }

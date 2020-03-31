@@ -1,4 +1,5 @@
 // @flow
+import { type MetaData } from './metaData'
 import { type Query } from './requestState'
 
 ///////////////////
@@ -128,22 +129,22 @@ export type Payload =
 ///////////////////////////
 
 export type CreateDispatchAction = {
-  type: 'KRAKEN_CREATE_DISPATCH',
+  type: '@@kraken/CREATE_DISPATCH',
   payload: DispatchPayload,
 }
 
 export type FetchDispatchAction = {
-  type: 'KRAKEN_FETCH_DISPATCH',
+  type: '@@kraken/FETCH_DISPATCH',
   payload: DispatchPayload,
 }
 
 export type UpdateDispatchAction = {
-  type: 'KRAKEN_UPDATE_DISPATCH',
+  type: '@@kraken/UPDATE_DISPATCH',
   payload: DispatchPayload,
 }
 
 export type RemoveDispatchAction = {
-  type: 'KRAKEN_REMOVE_DISPATCH',
+  type: '@@kraken/REMOVE_DISPATCH',
   payload: DispatchPayload,
 }
 
@@ -160,22 +161,22 @@ export type DispatchT = (payload: DispatchPayload) => DispatchAction
 //////////////////////////
 
 export type CreateSuccessAction = {
-  type: 'KRAKEN_CREATE_SUCCESS',
+  type: '@@kraken/CREATE_SUCCESS',
   payload: CreateSuccessPayload,
 }
 
 export type UpdateSuccessAction = {
-  type: 'KRAKEN_UPDATE_SUCCESS',
+  type: '@@kraken/UPDATE_SUCCESS',
   payload: UpdateSuccessPayload,
 }
 
 export type FetchSuccessAction = {
-  type: 'KRAKEN_FETCH_SUCCESS',
+  type: '@@kraken/FETCH_SUCCESS',
   payload: FetchSuccessPayload,
 }
 
 export type RemoveSuccessAction = {
-  type: 'KRAKEN_REMOVE_SUCCESS',
+  type: '@@kraken/REMOVE_SUCCESS',
   payload: RemoveSuccessPayload,
 }
 
@@ -190,22 +191,22 @@ export type SuccessAction =
 //////////////////////////
 
 export type CreateFailureAction = {
-  type: 'KRAKEN_CREATE_FAILURE',
+  type: '@@kraken/CREATE_FAILURE',
   payload: CreateFailurePayload,
 }
 
 export type UpdateFailureAction = {
-  type: 'KRAKEN_UPDATE_FAILURE',
+  type: '@@kraken/UPDATE_FAILURE',
   payload: UpdateFailurePayload,
 }
 
 export type FetchFailureAction = {
-  type: 'KRAKEN_FETCH_FAILURE',
+  type: '@@kraken/FETCH_FAILURE',
   payload: FetchFailurePayload,
 }
 
 export type RemoveFailureAction = {
-  type: 'KRAKEN_REMOVE_FAILURE',
+  type: '@@kraken/REMOVE_FAILURE',
   payload: RemoveFailurePayload,
 }
 
@@ -220,12 +221,25 @@ export type FailureAction =
 //////////////////////////
 
 export type RequestStartAction = {
-  type: 'KRAKEN_REQUEST_START',
+  type: '@@kraken/REQUEST_START',
   payload: RequestStartPayload,
 }
+
+export type WipeAction = {|
+  type: '@@kraken/WIPE_CACHE',
+|}
+
+export type AddMetaDataPayload = MetaData
+
+export type AddMetaDataAction = {|
+  type: '@@kraken/ADD_META_DATA',
+  payload: AddMetaDataPayload,
+|}
 
 export type Action =
   | DispatchAction
   | SuccessAction
   | FailureAction
   | RequestStartAction
+  | WipeAction
+  | AddMetaDataAction

@@ -1,33 +1,37 @@
+// @flow
 import invariant from 'invariant'
 import { mapValues } from 'lodash'
 
-import {
-  ApiTypeMap,
-  Payload,
+import type {
   Action,
-  DispatchPayload,
+  AddMetaDataAction,
+  AddMetaDataPayload,
+  ApiTypeMap,
   CreateDispatchAction,
-  CreateSuccessPayload,
-  CreateSuccessAction,
-  CreateFailurePayload,
   CreateFailureAction,
-  UpdateDispatchAction,
-  UpdateSuccessPayload,
-  UpdateSuccessAction,
-  UpdateFailurePayload,
-  UpdateFailureAction,
+  CreateFailurePayload,
+  CreateSuccessAction,
+  CreateSuccessPayload,
+  DispatchPayload,
   FetchDispatchAction,
-  FetchSuccessPayload,
-  FetchSuccessAction,
-  FetchFailurePayload,
   FetchFailureAction,
+  FetchFailurePayload,
+  FetchSuccessAction,
+  FetchSuccessPayload,
+  Payload,
   RemoveDispatchAction,
-  RemoveSuccessPayload,
-  RemoveSuccessAction,
-  RemoveFailurePayload,
   RemoveFailureAction,
+  RemoveFailurePayload,
+  RemoveSuccessAction,
+  RemoveSuccessPayload,
   RequestStartAction,
   RequestStartPayload,
+  UpdateDispatchAction,
+  UpdateFailureAction,
+  UpdateFailurePayload,
+  UpdateSuccessAction,
+  UpdateSuccessPayload,
+  WipeAction,
 } from '../flowTypes'
 
 type ActionCreator = (payload: Payload) => Action
@@ -48,120 +52,146 @@ type ActionCreatorMap = {
   failRemove: (payload: RemoveFailurePayload) => RemoveFailureAction,
 }
 
+export const CREATE_DISPATCH = '@@kraken/CREATE_DISPATCH'
+
+const dispatchCreate = (payload: DispatchPayload): CreateDispatchAction => ({
+  type: CREATE_DISPATCH,
+  payload,
+})
+
+export const UPDATE_DISPATCH = '@@kraken/UPDATE_DISPATCH'
+
+const dispatchUpdate = (payload: DispatchPayload): UpdateDispatchAction => ({
+  type: UPDATE_DISPATCH,
+  payload,
+})
+
+export const FETCH_DISPATCH = '@@kraken/FETCH_DISPATCH'
+
+const dispatchFetch = (payload: DispatchPayload): FetchDispatchAction => ({
+  type: FETCH_DISPATCH,
+  payload,
+})
+
+export const REMOVE_DISPATCH = '@@kraken/REMOVE_DISPATCH'
+
+const dispatchRemove = (payload: DispatchPayload): RemoveDispatchAction => ({
+  type: REMOVE_DISPATCH,
+  payload,
+})
+
+export const CREATE_SUCCESS = '@@kraken/CREATE_SUCCESS'
+
+const succeedCreate = (payload: CreateSuccessPayload): CreateSuccessAction => ({
+  type: CREATE_SUCCESS,
+  payload,
+})
+
+export const UPDATE_SUCCESS = '@@kraken/UPDATE_SUCCESS'
+
+const succeedUpdate = (payload: UpdateSuccessPayload): UpdateSuccessAction => ({
+  type: UPDATE_SUCCESS,
+  payload,
+})
+
+export const FETCH_SUCCESS = '@@kraken/FETCH_SUCCESS'
+
+const succeedFetch = (payload: FetchSuccessPayload): FetchSuccessAction => ({
+  type: FETCH_SUCCESS,
+  payload,
+})
+
+export const REMOVE_SUCCESS = '@@kraken/REMOVE_SUCCESS'
+
+const succeedRemove = (payload: RemoveSuccessPayload): RemoveSuccessAction => ({
+  type: REMOVE_SUCCESS,
+  payload,
+})
+
+export const CREATE_FAILURE = '@@kraken/CREATE_FAILURE'
+
+const failCreate = (payload: CreateFailurePayload): CreateFailureAction => ({
+  type: CREATE_FAILURE,
+  payload,
+})
+
+export const UPDATE_FAILURE = '@@kraken/UPDATE_FAILURE'
+
+const failUpdate = (payload: UpdateFailurePayload): UpdateFailureAction => ({
+  type: UPDATE_FAILURE,
+  payload,
+})
+
+export const FETCH_FAILURE = '@@kraken/FETCH_FAILURE'
+
+const failFetch = (payload: FetchFailurePayload): FetchFailureAction => ({
+  type: FETCH_FAILURE,
+  payload,
+})
+
+export const REMOVE_FAILURE = '@@kraken/REMOVE_FAILURE'
+
+const failRemove = (payload: RemoveFailurePayload): RemoveFailureAction => ({
+  type: REMOVE_FAILURE,
+  payload,
+})
+
+export const REQUEST_START = '@@kraken/REQUEST_START'
+
+const startRequest = (payload: RequestStartPayload): RequestStartAction => ({
+  type: REQUEST_START,
+  payload,
+})
+
+export const WIPE_CACHE = '@@kraken/WIPE_CACHE'
+
+// Non entityType specific action creator
+const wipe = (): WipeAction => ({
+  type: WIPE_CACHE,
+})
+
+export const ADD_META_DATA = '@@kraken/ADD_META_DATA'
+
+const addMetaData = (payload: AddMetaDataPayload): AddMetaDataAction => ({
+  type: ADD_META_DATA,
+  payload,
+})
+
 export const actionTypes = {
-  CREATE_DISPATCH: '@@kraken/CREATE_DISPATCH',
-  UPDATE_DISPATCH: '@@kraken/UPDATE_DISPATCH',
-  FETCH_DISPATCH: '@@kraken/FETCH_DISPATCH',
-  REMOVE_DISPATCH: '@@kraken/REMOVE_DISPATCH',
-  CREATE_SUCCESS: '@@kraken/CREATE_SUCCESS',
-  UPDATE_SUCCESS: '@@kraken/UPDATE_SUCCESS',
-  FETCH_SUCCESS: '@@kraken/FETCH_SUCCESS',
-  REMOVE_SUCCESS: '@@kraken/REMOVE_SUCCESS',
-  CREATE_FAILURE: '@@kraken/CREATE_FAILURE',
-  UPDATE_FAILURE: '@@kraken/UPDATE_FAILURE',
-  FETCH_FAILURE: '@@kraken/FETCH_FAILURE',
-  REMOVE_FAILURE: '@@kraken/REMOVE_FAILURE',
-  REQUEST_START: '@@kraken/REQUEST_START',
-  WIPE_CACHE: '@@kraken/WIPE_CACHE',
+  CREATE_DISPATCH,
+  UPDATE_DISPATCH,
+  FETCH_DISPATCH,
+  REMOVE_DISPATCH,
+  CREATE_SUCCESS,
+  UPDATE_SUCCESS,
+  FETCH_SUCCESS,
+  REMOVE_SUCCESS,
+  CREATE_FAILURE,
+  UPDATE_FAILURE,
+  FETCH_FAILURE,
+  REMOVE_FAILURE,
+  REQUEST_START,
+  WIPE_CACHE,
 }
 
 const actionCreatorMap: ActionCreatorMap = {
-  dispatchCreate(payload: DispatchPayload): CreateDispatchAction {
-    return {
-      type: actionTypes.CREATE_DISPATCH,
-      payload,
-    }
-  },
+  dispatchCreate,
+  dispatchUpdate,
+  dispatchFetch,
+  dispatchRemove,
 
-  dispatchUpdate(payload: DispatchPayload): UpdateDispatchAction {
-    return {
-      type: actionTypes.UPDATE_DISPATCH,
-      payload,
-    }
-  },
+  succeedCreate,
+  succeedUpdate,
+  succeedFetch,
+  succeedRemove,
 
-  dispatchFetch(payload: DispatchPayload): FetchDispatchAction {
-    return {
-      type: actionTypes.FETCH_DISPATCH,
-      payload,
-    }
-  },
+  failCreate,
+  failUpdate,
+  failFetch,
+  failRemove,
 
-  dispatchRemove(payload: DispatchPayload): RemoveDispatchAction {
-    return {
-      type: actionTypes.REMOVE_DISPATCH,
-      payload,
-    }
-  },
-
-  succeedCreate(payload: CreateSuccessPayload): CreateSuccessAction {
-    return {
-      type: actionTypes.CREATE_SUCCESS,
-      payload,
-    }
-  },
-
-  succeedUpdate(payload: UpdateSuccessPayload): UpdateSuccessAction {
-    return {
-      type: actionTypes.UPDATE_SUCCESS,
-      payload,
-    }
-  },
-
-  succeedFetch(payload: FetchSuccessPayload): FetchSuccessAction {
-    return {
-      type: actionTypes.FETCH_SUCCESS,
-      payload,
-    }
-  },
-
-  succeedRemove(payload: RemoveSuccessPayload): RemoveSuccessAction {
-    return {
-      type: actionTypes.REMOVE_SUCCESS,
-      payload,
-    }
-  },
-
-  failCreate(payload: CreateFailurePayload): CreateFailureAction {
-    return {
-      type: actionTypes.CREATE_FAILURE,
-      payload,
-    }
-  },
-
-  failUpdate(payload: UpdateFailurePayload): UpdateFailureAction {
-    return {
-      type: actionTypes.UPDATE_FAILURE,
-      payload,
-    }
-  },
-
-  failFetch(payload: FetchFailurePayload): FetchFailureAction {
-    return {
-      type: actionTypes.FETCH_FAILURE,
-      payload,
-    }
-  },
-
-  failRemove(payload: RemoveFailurePayload): RemoveFailureAction {
-    return {
-      type: actionTypes.REMOVE_FAILURE,
-      payload,
-    }
-  },
-
-  startRequest(payload: RequestStartPayload): RequestStartAction {
-    return {
-      type: actionTypes.REQUEST_START,
-      payload,
-    }
-  },
+  startRequest,
 }
-
-// Non entityType specific action creator
-const wipe = () => ({
-  type: actionTypes.WIPE_CACHE,
-})
 
 const enhanceWithEntityTypeValidation = (
   types: ApiTypeMap,
@@ -184,6 +214,7 @@ const createActionCreators = (types: ApiTypeMap) => ({
     enhanceWithEntityTypeValidation.bind(null, types)
   ),
   wipe,
+  addMetaData,
 })
 
 export default createActionCreators

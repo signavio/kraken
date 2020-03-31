@@ -44,22 +44,20 @@ Each type must export a certain set of attributes. These contain descriptions
 about the structure of each type and also methods to read, create or modify an
 instance of that type.
 
-| Attribute                          | Required | Description                                                                                                                                                                                 |
-| ---------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| schema                             | `true`   | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data.                                                                                |
-| collection                         | `true`   | Identifier where all retrieved instances for that type will be stored.                                                                                                                      |
-| fetch(query, body, requestParams)  | `false`  | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
-| create(query, body, requestParams) | `false`  | Function that describes how an instance is created.                                                                                                                                         |
-| update(query, body, requestParams) | `false`  | Function that describes how an instance is updaetd.                                                                                                                                         |
-| remove(query, body, requestParams) | `false`  | Function that describes how an instance is removed.                                                                                                                                         |
-| cachePolicy                        | `false`  | The cache policy that should be used for that type. See [cache policies](#cache-policies) for the possible options.                                                                         |
+| Attribute                                                | Required | Description                                                                                                                                                                                 |
+| -------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| schema                                                   | `true`   | A [normalizr](https://github.com/paularmstrong/normalizr) schema that is used to store and access your data.                                                                                |
+| collection                                               | `true`   | Identifier where all retrieved instances for that type will be stored.                                                                                                                      |
+| (callApi, apiBase) => fetch(query, body, requestParams)  | `false`  | A method that takes a custom set of properties and maps it to a call of [`callAPI`](https://github.com/signavio/generic-api/blob/master/src/callApi.js) to retrieve data from your backend. |
+| (callApi, apiBase) => create(query, body, requestParams) | `false`  | Function that describes how an instance is created.                                                                                                                                         |
+| (callApi, apiBase) => update(query, body, requestParams) | `false`  | Function that describes how an instance is updaetd.                                                                                                                                         |
+| (callApi, apiBase) => remove(query, body, requestParams) | `false`  | Function that describes how an instance is removed.                                                                                                                                         |
+| cachePolicy                                              | `false`  | The cache policy that should be used for that type. See [cache policies](#cache-policies) for the possible options.                                                                         |
 
 ### `callApi(fullUrl, schema[, options])`
 
-For every method you implement (i.e. fetch, create, update, remove) you will
-need to call the `callAPI` method from `kraken` in the end. It requires the two
-paramters `fullUrl` and `schema` and accepts extra options through the third
-parameter `options`.
+For every method you implement (i.e. fetch, create, update, remove) the `callAPI` method will be injected and must be called in the end.
+It requires the two parameters `fullUrl` and `schema` and accepts extra options through the third parameter `options`.
 
 #### `fullUrl`
 
@@ -80,17 +78,15 @@ A set of extra parameters that are also understood by
 ```es6
 import { schema as schemas } from 'normalizr'
 
-import { callApi } from '@signavio/kraken'
-
 export const collection = 'users'
 export const schema = new schemas.Entity(collection)
 
-export const fetch = ({ id }) => callApi(`users/${id}`, schema)
-export const create = (_, body) =>
+export const fetch = callApi => ({ id }) => callApi(`users/${id}`, schema)
+export const create = callApi => (_, body) =>
   callApi('users', schema, { method: 'POST', body })
-export const update = ({ id }, body) =>
+export const update = callApi => ({ id }, body) =>
   callApi(`users/${id}`, schema, { method: 'PUT', body })
-export const remove = ({ id }) =>
+export const remove = callApi => ({ id }) =>
   callApi(`users/${id}`, schema, { method: 'DELETE' })
 ```
 

@@ -1,9 +1,8 @@
 import fetchMock from 'fetch-mock'
 import { startsWith } from 'lodash/fp'
 
-import expect from '../expect'
-
 import callApi from '../../src/callApi'
+import expect from '../expect'
 
 describe('callApi', () => {
   afterEach(() => {
@@ -13,7 +12,8 @@ describe('callApi', () => {
     const response = await callApi('')
 
     expect(response).to.eql({
-      error: 'Error parsing the response: only absolute urls are supported',
+      response: null,
+      error: 'Error: only absolute urls are supported',
     })
   })
 

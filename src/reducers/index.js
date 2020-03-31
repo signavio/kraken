@@ -1,17 +1,21 @@
-import { combineReducers } from 'redux'
-import { mapValues, groupBy } from 'lodash'
+import { groupBy, mapValues } from 'lodash'
 import reduceReducers from 'reduce-reducers'
+import { combineReducers } from 'redux'
 
 import { ApiTypeMap } from '../flowTypes'
-
-import { getTypeNames, getCollectionName } from '../types'
-
-import createEntitiesReducer from './entitiesReducer'
-import createRequestsReducer from './requestsReducer'
+import { getCollectionName, getTypeNames } from '../types'
 import createEnhanceWithSideEffects from './enhanceWithSideEffects'
-import createWipeReducer from './wipeReducer'
+import createEntitiesReducer from './entitiesReducer'
+import metaDataReducer from './metaDataReducer'
+import createRequestsReducer from './requestsReducer'
+import wipeReducer from './wipeReducer'
 
-export { createRequestsReducer, createEntitiesReducer, createWipeReducer }
+export {
+  createRequestsReducer,
+  createEntitiesReducer,
+  wipeReducer,
+  metaDataReducer,
+}
 
 const createReducer = (apiTypes: ApiTypeMap) => {
   const constants = getTypeNames(apiTypes)
@@ -37,10 +41,10 @@ const createReducer = (apiTypes: ApiTypeMap) => {
           createRequestsReducer(apiTypes, typeConstant)
         )
       ),
+
+      metaData: metaDataReducer,
     })
   )
-
-  const wipeReducer = (state, action) => createWipeReducer(state, action)
 
   return reduceReducers(wipeReducer, apiReducer)
 }

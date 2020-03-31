@@ -1,19 +1,34 @@
-import { put, call, takeEvery } from 'redux-saga/effects'
-import { get, omitBy, isNil } from 'lodash'
-
-import { ApiTypeMap, CreateDispatchAction } from '../flowTypes'
+import { get, isNil, omitBy } from 'lodash'
+import { call, put, takeEvery } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
+import callApi from '../callApi'
+import { ApiTypeMap, CreateDispatchAction } from '../flowTypes'
 import { getCreate } from '../types'
 import { deriveRequestIdFromAction } from '../utils'
 
 export const createCreateDispatch = (types: ApiTypeMap) => {
   const actionCreators = createActionCreators(types)
 
-  return function* createEntity(action: CreateDispatchAction) {
+  return function* createEntity(action: CreateDispatchAction, getState) {
     const requestId = deriveRequestIdFromAction(action)
     const entityType = action.payload.entityType
-    const create = getCreate(types, entityType)
+    const createCreate = getCreate(types, entityType)
+
+    const { headers, credentials, apiBase } = getState().kraken.metaData
+
+    const create = createCreate(
+      (url, schema, options) =>
+        callApi(url, schema, {
+          credentials,
+          ...options,
+          headers: {
+            ...headers,
+            ...options?.headers,
+          },
+        }),
+      apiBase
+    )
 
     const result = yield call(
       create,
@@ -46,8 +61,11 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
 const createWatchCreateDispatch = (types: ApiTypeMap) => {
   const createDispatch = createCreateDispatch(types)
 
-  return function* watchCreateDispatch() {
-    yield takeEvery(actionTypes.CREATE_DISPATCH, createDispatch)
+  return function* watchCreateDispatch(getState: StateGetter) {
+    yield takeEvery(
+      actionTypes.CREATE_DISPATCH,
+      (action: CreateDispatchAction) => createDispatch(action, getState)
+    )
   }
 }
 

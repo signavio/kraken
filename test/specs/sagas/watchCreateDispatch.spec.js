@@ -1,17 +1,11 @@
-import { put, call } from 'redux-saga/effects'
 import { normalize } from 'normalizr'
-
-import expect from '../../expect'
-
-import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
+import { put } from 'redux-saga/effects'
 
 import actionsCreator, { actionTypes } from '../../../src/actions'
-
+import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
 import { deriveRequestIdFromAction } from '../../../src/utils'
-
-import { typeUtils } from '../../../src'
-
-import { apiTypes, types, data } from '../fixtures'
+import expect from '../../expect'
+import { apiTypes, data, types } from '../fixtures'
 
 const createEntity = createCreateDispatch(apiTypes)
 const actions = actionsCreator(apiTypes)
@@ -35,17 +29,36 @@ const createAction = {
 
 const requestId = deriveRequestIdFromAction(createAction)
 
+const state = {
+  kraken: {
+    requests: {
+      [types.USER]: {
+        [requestId]: {
+          outstanding: true,
+        },
+      },
+    },
+    entities: {
+      [types.USER]: {},
+    },
+
+    metaData: {},
+  },
+}
+
+const getState = () => state
+
 describe('Saga - createEntity', () => {
   let generator
 
   beforeEach(() => {
-    generator = createEntity(createAction)
+    generator = createEntity(createAction, getState)
   })
 
   it('should call the `create` function of the entity type passing in the query object', () => {
-    expect(generator.next().value).to.deep.equal(
-      call(typeUtils.getCreate(apiTypes, types.USER), {}, body, undefined)
-    )
+    expect(generator.next().value.payload)
+      .to.have.property('args')
+      .that.is.eql([{}, body, undefined])
   })
 
   it('should dispatch the `success` action with the server response data', () => {

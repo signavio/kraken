@@ -1,11 +1,10 @@
 import { spawn } from 'redux-saga/effects'
 
 import { ApiTypeMap, StateGetter } from '../flowTypes'
-
 import createWatchCreateDispatch from './watchCreateDispatch'
-import createWatchUpdateDispatch from './watchUpdateDispatch'
 import createWatchFetchDispatch from './watchFetchDispatch'
 import createWatchRemoveDispatch from './watchRemoveDispatch'
+import createWatchUpdateDispatch from './watchUpdateDispatch'
 
 const createSaga = (types: ApiTypeMap) => {
   const watchCreateEntity = createWatchCreateDispatch(types)
@@ -14,10 +13,10 @@ const createSaga = (types: ApiTypeMap) => {
   const watchRemoveEntity = createWatchRemoveDispatch(types)
 
   return function* rootSaga(getState: StateGetter) {
-    yield spawn(watchCreateEntity)
-    yield spawn(watchUpdateEntity)
+    yield spawn(watchCreateEntity, getState)
+    yield spawn(watchUpdateEntity, getState)
     yield spawn(watchFetchEntity, getState)
-    yield spawn(watchRemoveEntity)
+    yield spawn(watchRemoveEntity, getState)
   }
 }
 

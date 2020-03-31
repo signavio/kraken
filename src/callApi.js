@@ -1,59 +1,86 @@
 import 'isomorphic-fetch'
+
 import { normalize } from 'normalizr'
+
 import { bustRequest } from './utils'
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-export default function callApi(fullUrl, schema, options) {
+export default async function callApi(fullUrl, schema, options = {}) {
   const url = typeof fullUrl === 'function' ? fullUrl() : fullUrl
+
+  let body
+
+  if (options.body instanceof FormData) {
+    body = options.body
+  } else if (options.body) {
+    body = JSON.stringify(options.body)
+  }
+
   const finalUrl = bustRequest(url, options)
 
-  return fetch(finalUrl, options)
-    .then((response) => {
-      let contentType = response.headers.get('Content-Type')
+  try {
+    const response = await fetch(finalUrl, { ...options, body })
 
-      if (contentType !== null) {
-        contentType = contentType.split(';')[0]
-      }
+    if (response.status === 204) {
+      return { response: null, error: null, status: 204 }
+    }
 
-      switch (contentType) {
-        case 'application/json':
-          return response.json().then((json) => ({ json, response }))
-        case 'text/plain':
-          return response
-            .text()
-            .then((text) => ({ json: { message: text }, response }))
-        default:
-          if (response.status === 204) {
-            return { response }
-          }
+    if (!response.ok) {
+      return {
+        response: null,
+        error: response.statusText,
+        status: response.status,
+      }
+    }
 
-          return Promise.reject({
-            json: { message: `Bad response content type: '${contentType}'` },
-            response,
-          })
+    const json = await processResponse(response)
+
+    if (!json) {
+      return {
+        response: null,
+        error: `Error: Bad response content type "${getContentType(response)}"`,
+        status: response.status,
       }
-    })
-    .then(({ json, response }) => {
-      if (!response.ok) {
-        return Promise.reject({ json, response })
-      }
-      return json
-        ? { ...normalize(json, schema), responseHeaders: response.headers }
-        : null
-    })
-    .then(
-      (response) => ({ response }),
-      ({ json, response, message }) => {
-        const result = {
-          error: message
-            ? `Error parsing the response: ${message}`
-            : (json && json.message) || (response && response.statusText),
-        }
-        if (response && response.status) {
-          result.status = response.status
-        }
-        return result
-      }
-    )
+    }
+
+    return {
+      response: {
+        ...normalize(json, schema),
+        responseHeaders: response.headers,
+      },
+      error: null,
+      status: response.status,
+    }
+  } catch (e) {
+    return {
+      response: null,
+      error: e.toString(),
+    }
+  }
+}
+
+function getContentType(response) {
+  let contentType = response.headers.get('Content-Type')
+
+  if (contentType !== null) {
+    contentType = contentType.split(';')[0]
+  }
+
+  return contentType
+}
+
+async function processResponse(response) {
+  switch (getContentType(response)) {
+    case 'application/json':
+      return await response.json()
+
+    case 'text/plain':
+      const message = await response.text()
+
+      return { message }
+
+    default:
+      return null
+  }
 }
