@@ -1,4 +1,4 @@
-import { get, isNil, omitBy } from 'lodash'
+import { isNil, omitBy } from 'lodash'
 import { call, put, takeEvery } from 'redux-saga/effects'
 
 import createActionCreators, { actionTypes } from '../actions'
@@ -42,8 +42,8 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
         actionCreators.succeedCreate({
           entityType,
           requestId,
-          value: get(result, 'response.result'),
-          entities: get(result, 'response.entities', {}),
+          value: result.response?.result,
+          entities: result.response?.entities || {},
         })
       )
     } else {

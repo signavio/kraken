@@ -1,7 +1,5 @@
-import { get } from 'lodash'
-
 export default function bustRequest(url, options) {
-  const method = get(options, 'method', 'GET')
+  const method = options?.method || 'GET'
   if (method !== 'GET') {
     return url
   }
