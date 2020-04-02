@@ -37,7 +37,7 @@ export const createCreateDispatch = (types: ApiTypeMap) => {
       action.payload.requestParams
     )
 
-    if (!result.error) {
+    if (result.error == null) {
       yield put(
         actionCreators.succeedCreate({
           entityType,

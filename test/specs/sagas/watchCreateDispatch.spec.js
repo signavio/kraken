@@ -90,6 +90,16 @@ describe('Saga - createEntity', () => {
     )
   })
 
+  it('should dispatch an `error` action even if the error message is empty', () => {
+    generator.next()
+
+    const error = ''
+
+    expect(generator.next({ error }).value).to.deep.equal(
+      put(actions.failCreate({ entityType: types.USER, requestId, error }))
+    )
+  })
+
   it('should not create an `error` if the server returns an empty response.', () => {
     generator.next()
 
