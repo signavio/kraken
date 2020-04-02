@@ -65,7 +65,7 @@
     "flow-bin": "0.121.0",
     "install": "0.13.0",
     "istanbul": "1.1.0-alpha.1",
-    "jsdom": "16.2.1",
+    "jsdom": "16.2.2",
     "madge": "3.8.0",
     "mocha": "7.1.1",
     "normalizr": "3.6.0",
