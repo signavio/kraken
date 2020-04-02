@@ -1,12 +1,21 @@
+// @flow
 import 'isomorphic-fetch'
 
-import { normalize } from 'normalizr'
+import { normalize, schema as schemas } from 'normalizr'
 
 import { bustRequest } from './utils'
 
+type FetchOptions = {|
+  body?: FormData | JSON,
+|}
+
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-export default async function callApi(fullUrl, schema, options = {}) {
+export default async function callApi(
+  fullUrl: string,
+  schema: schemas.Entity | schemas.Array,
+  options: FetchOptions = Object.freeze({})
+) {
   const url = typeof fullUrl === 'function' ? fullUrl() : fullUrl
 
   let body
@@ -26,20 +35,20 @@ export default async function callApi(fullUrl, schema, options = {}) {
       return { response: null, error: null, status: 204 }
     }
 
-    if (!response.ok) {
-      return {
-        response: null,
-        error: response.statusText,
-        status: response.status,
-      }
-    }
-
     const json = await processResponse(response)
 
     if (!json) {
       return {
         response: null,
         error: `Error: Bad response content type "${getContentType(response)}"`,
+        status: response.status,
+      }
+    }
+
+    if (!response.ok) {
+      return {
+        response: null,
+        error: json.message || response.statusText,
         status: response.status,
       }
     }
@@ -67,7 +76,7 @@ function getContentType(response) {
     contentType = contentType.split(';')[0]
   }
 
-  return contentType
+  return contentType || 'Unknown content type'
 }
 
 async function processResponse(response) {
