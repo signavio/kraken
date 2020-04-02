@@ -38,13 +38,6 @@ const state = {
 const getState = () => state
 
 describe('Saga - fetchSaga', () => {
-  describe('Cached', () => {
-    it('should call `fetchSaga` the entity is not already cached')
-    it(
-      'should dispatch a `cacheHit` action if the entity is already in the cache'
-    )
-  })
-
   let generator
 
   beforeEach(() => {
@@ -94,6 +87,16 @@ describe('Saga - fetchSaga', () => {
     generator.next()
 
     const error = 'Some error message'
+
+    expect(generator.next({ error }).value).to.deep.equal(
+      put(actions.failFetch({ entityType: types.USER, requestId, error }))
+    )
+  })
+
+  it('should dispatch an `error` action even if the error message is empty', () => {
+    generator.next()
+
+    const error = ''
 
     expect(generator.next({ error }).value).to.deep.equal(
       put(actions.failFetch({ entityType: types.USER, requestId, error }))
