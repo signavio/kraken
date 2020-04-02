@@ -1,4 +1,6 @@
-export default function bustRequest(url, options) {
+// @flow
+
+export default function bustRequest(url: string, options: ?RequestOptions) {
   const method = options?.method || 'GET'
   if (method !== 'GET') {
     return url

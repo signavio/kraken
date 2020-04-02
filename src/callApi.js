@@ -5,16 +5,14 @@ import { normalize, schema as schemas } from 'normalizr'
 
 import { bustRequest } from './utils'
 
-type FetchOptions = {|
-  body?: FormData | JSON,
-|}
+type Url = string | (() => string)
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
 export default async function callApi(
-  fullUrl: string,
+  fullUrl: Url,
   schema: schemas.Entity | schemas.Array,
-  options: FetchOptions = Object.freeze({})
+  options?: RequestOptions = Object.freeze({})
 ) {
   const url = typeof fullUrl === 'function' ? fullUrl() : fullUrl
 
