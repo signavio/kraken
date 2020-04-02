@@ -37,7 +37,7 @@ export function createRemoveDispatch(types: ApiTypeMap) {
       action.payload.requestParams
     )
 
-    if (!error) {
+    if (error == null) {
       yield put(
         actions.succeedRemove({
           entityType,
