@@ -42,13 +42,13 @@ export function createUpdateDispatch(types: ApiTypeMap) {
       action.payload.requestParams
     )
 
-    if (result.response) {
+    if (result.error == null) {
       yield put(
         actions.succeedUpdate({
           entityType,
           requestId,
-          value: result.response.result,
-          entities: result.response.entities,
+          value: result.response?.result,
+          entities: result.response?.entities || {},
         })
       )
     } else {
@@ -75,7 +75,7 @@ export default function createWatchUpdateDispatch(types: ApiTypeMap) {
   const updateDispatch = createUpdateDispatch(types)
 
   return function* watchUpdateDispatch(getState) {
-    yield takeLatestOfEvery(mapActionToEntity, action =>
+    yield takeLatestOfEvery(mapActionToEntity, (action) =>
       updateDispatch(action, getState)
     )
   }

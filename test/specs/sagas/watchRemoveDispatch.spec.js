@@ -2,32 +2,30 @@ import { normalize } from 'normalizr'
 import { put } from 'redux-saga/effects'
 
 import actionsCreator, { actionTypes } from '../../../src/actions'
-import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
+import { createRemoveDispatch } from '../../../src/sagas/watchRemoveDispatch'
 import { deriveRequestIdFromAction } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
-const createEntity = createCreateDispatch(apiTypes)
+const removeEntity = createRemoveDispatch(apiTypes)
 const actions = actionsCreator(apiTypes)
 
 const entityType = types.USER
 const query = {}
-const elementId = 'elementId'
 const body = data.user
 
-const createPayload = {
+const removePayload = {
   entityType,
   body,
   query,
-  elementId,
 }
 
-const createAction = {
-  type: actionTypes.CREATE_DISPATCH,
-  payload: createPayload,
+const removeAction = {
+  type: actionTypes.REMOVE_DISPATCH,
+  payload: removePayload,
 }
 
-const requestId = deriveRequestIdFromAction(createAction)
+const requestId = deriveRequestIdFromAction(removeAction)
 
 const state = {
   kraken: {
@@ -48,33 +46,29 @@ const state = {
 
 const getState = () => state
 
-describe('Saga - createEntity', () => {
+describe('Saga - removeEntity', () => {
   let generator
 
   beforeEach(() => {
-    generator = createEntity(createAction, getState)
+    generator = removeEntity(removeAction, getState)
   })
 
-  it('should call the `create` function of the entity type passing in the query object', () => {
+  it('should call the `remove` function of the entity type passing in the query object', () => {
     expect(generator.next().value.payload)
       .to.have.property('args')
       .that.is.eql([{}, body, undefined])
   })
 
-  it('should dispatch the `success` action with the server response data', () => {
+  it('should dispatch the `success` action with the server positively responds', () => {
     generator.next()
 
-    const { result, entities } = normalize(body, apiTypes.USER.schema)
+    const { result } = normalize(body, apiTypes.USER.schema)
 
-    expect(
-      generator.next({ response: { result, entities } }).value
-    ).to.deep.equal(
+    expect(generator.next({ response: { result } }).value).to.deep.equal(
       put(
-        actions.succeedCreate({
+        actions.succeedRemove({
           entityType,
-          requestId: deriveRequestIdFromAction(createAction),
-          value: result,
-          entities,
+          requestId: deriveRequestIdFromAction(removeAction),
         })
       )
     )
@@ -86,7 +80,7 @@ describe('Saga - createEntity', () => {
     const error = 'Some error message'
 
     expect(generator.next({ error }).value).to.deep.equal(
-      put(actions.failCreate({ entityType: types.USER, requestId, error }))
+      put(actions.failRemove({ entityType: types.USER, requestId, error }))
     )
   })
 
@@ -96,7 +90,7 @@ describe('Saga - createEntity', () => {
     const error = ''
 
     expect(generator.next({ error }).value).to.deep.equal(
-      put(actions.failCreate({ entityType: types.USER, requestId, error }))
+      put(actions.failRemove({ entityType: types.USER, requestId, error }))
     )
   })
 
@@ -106,7 +100,7 @@ describe('Saga - createEntity', () => {
     const response = null
 
     expect(generator.next({ response }).value).to.not.deep.equal(
-      put(actions.failCreate({ entityType: types.USER, requestId }))
+      put(actions.failRemove({ entityType: types.USER, requestId }))
     )
   })
 
@@ -117,11 +111,9 @@ describe('Saga - createEntity', () => {
 
     expect(generator.next({ response }).value).to.deep.equal(
       put(
-        actions.succeedCreate({
+        actions.succeedRemove({
           entityType: types.USER,
           requestId,
-          value: undefined,
-          entities: {},
         })
       )
     )

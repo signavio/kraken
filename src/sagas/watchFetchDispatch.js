@@ -49,7 +49,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
       action.payload.requestParams
     )
 
-    if (!error) {
+    if (error == null) {
       yield put(
         actionCreators.succeedFetch({
           entityType,

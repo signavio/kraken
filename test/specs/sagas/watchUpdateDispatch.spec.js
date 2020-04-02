@@ -2,29 +2,27 @@ import { normalize } from 'normalizr'
 import { put } from 'redux-saga/effects'
 
 import actionsCreator, { actionTypes } from '../../../src/actions'
-import { createCreateDispatch } from '../../../src/sagas/watchCreateDispatch'
+import { createUpdateDispatch } from '../../../src/sagas/watchUpdateDispatch'
 import { deriveRequestIdFromAction } from '../../../src/utils'
 import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
-const createEntity = createCreateDispatch(apiTypes)
+const updateEntity = createUpdateDispatch(apiTypes)
 const actions = actionsCreator(apiTypes)
 
 const entityType = types.USER
 const query = {}
-const elementId = 'elementId'
 const body = data.user
 
-const createPayload = {
+const updatePayload = {
   entityType,
   body,
   query,
-  elementId,
 }
 
 const createAction = {
   type: actionTypes.CREATE_DISPATCH,
-  payload: createPayload,
+  payload: updatePayload,
 }
 
 const requestId = deriveRequestIdFromAction(createAction)
@@ -48,14 +46,14 @@ const state = {
 
 const getState = () => state
 
-describe('Saga - createEntity', () => {
+describe('Saga - updateEntity', () => {
   let generator
 
   beforeEach(() => {
-    generator = createEntity(createAction, getState)
+    generator = updateEntity(createAction, getState)
   })
 
-  it('should call the `create` function of the entity type passing in the query object', () => {
+  it('should call the `update` function of the entity type passing in the query object', () => {
     expect(generator.next().value.payload)
       .to.have.property('args')
       .that.is.eql([{}, body, undefined])
@@ -70,7 +68,7 @@ describe('Saga - createEntity', () => {
       generator.next({ response: { result, entities } }).value
     ).to.deep.equal(
       put(
-        actions.succeedCreate({
+        actions.succeedUpdate({
           entityType,
           requestId: deriveRequestIdFromAction(createAction),
           value: result,
@@ -86,7 +84,7 @@ describe('Saga - createEntity', () => {
     const error = 'Some error message'
 
     expect(generator.next({ error }).value).to.deep.equal(
-      put(actions.failCreate({ entityType: types.USER, requestId, error }))
+      put(actions.failUpdate({ entityType: types.USER, requestId, error }))
     )
   })
 
@@ -96,7 +94,7 @@ describe('Saga - createEntity', () => {
     const error = ''
 
     expect(generator.next({ error }).value).to.deep.equal(
-      put(actions.failCreate({ entityType: types.USER, requestId, error }))
+      put(actions.failUpdate({ entityType: types.USER, requestId, error }))
     )
   })
 
@@ -106,7 +104,7 @@ describe('Saga - createEntity', () => {
     const response = null
 
     expect(generator.next({ response }).value).to.not.deep.equal(
-      put(actions.failCreate({ entityType: types.USER, requestId }))
+      put(actions.failUpdate({ entityType: types.USER, requestId }))
     )
   })
 
@@ -117,7 +115,7 @@ describe('Saga - createEntity', () => {
 
     expect(generator.next({ response }).value).to.deep.equal(
       put(
-        actions.succeedCreate({
+        actions.succeedUpdate({
           entityType: types.USER,
           requestId,
           value: undefined,
