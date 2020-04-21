@@ -62,7 +62,7 @@
     "eslint-plugin-react": "7.19.0",
     "eslint-plugin-react-hooks": "3.0.0",
     "fetch-mock": "9.4.0",
-    "flow-bin": "0.121.0",
+    "flow-bin": "0.123.0",
     "install": "0.13.0",
     "istanbul": "1.1.0-alpha.1",
     "jsdom": "16.2.2",
