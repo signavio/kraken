@@ -1,7 +1,7 @@
 // @flow
 import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
@@ -120,14 +120,20 @@ function createUseApi(apiTypes: ApiTypeMap) {
       actionCreator()
     )
 
-    const useMemoized =
-      Array.isArray(currentEntityState) &&
-      lastEntityState.current &&
-      shallowEqual(currentEntityState, lastEntityState.current)
+    const entityState = useMemo(() => {
+      if (!lastEntityState.current) {
+        return currentEntityState
+      }
 
-    const entityState = useMemoized
-      ? lastEntityState.current
-      : currentEntityState
+      if (Array.isArray(currentEntityState)) {
+        return shallowEqual(currentEntityState, lastEntityState.current)
+      }
+
+      return (
+        JSON.stringify(currentEntityState) ===
+        JSON.stringify(lastEntityState.current)
+      )
+    }, [lastEntityState, currentEntityState])
 
     lastEntityState.current = currentEntityState
 

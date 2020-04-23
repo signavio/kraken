@@ -264,7 +264,7 @@ describe('useApi', () => {
     const body = { firstName: 'Henry' }
 
     const CreateComponent = () => {
-      const createUser = useApi(types.USER, { method: 'create' })
+      const [, createUser] = useApi(types.USER, { method: 'create' })
 
       return <button onClick={() => createUser(body)}>Click me</button>
     }

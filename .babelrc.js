@@ -32,4 +32,6 @@ module.exports = {
 
     ...(NODE_ENV === 'test' ? ['dynamic-import-node'] : []),
   ],
+  sourceMaps: 'inline',
+  retainLines: true,
 }
