@@ -20,7 +20,6 @@ type BaseOptions = {|
   method?: MethodName,
   requestParams?: Query,
   refresh?: any,
-  denormalize?: boolean,
   lazy?: boolean,
   onSuccess?: () => void,
   onFailure?: () => void,
@@ -41,7 +40,6 @@ type ResolvedOptions = {|
   query: Query,
   requestParams: Query,
   lazy: boolean,
-  denormalize: boolean,
 
   refresh?: any,
 
@@ -54,7 +52,7 @@ type Options = BaseOptions | QueryOptions | IdOptions
 function createUseApi(apiTypes: ApiTypeMap) {
   const actionCreators = createActionCreators(apiTypes)
 
-  return function useApi<Body, Value>(
+  function useApi<Body, Value>(
     entityType: $Keys<ApiTypeMap>,
     options?: Options
   ): [RequestStatus<Value>, RequestAction<Body>] {
@@ -84,7 +82,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const [elementId] = useState(() => uniqueId())
     const krakenState = useSelector(({ kraken }) => kraken)
     const dispatch = useDispatch()
-    const actionCreator = useActionCreator(actionCreators, method, {
+    const actionCreator = useActionCreator(method, {
       entityType,
       query: memoizedQuery,
       requestParams: memoizedRequestParams,
@@ -133,47 +131,40 @@ function createUseApi(apiTypes: ApiTypeMap) {
       return lastEntityState.current
     }, [currentEntityState])
 
-    const initialRun = useRef(true)
-    const queryRef = useRef(
-      stringifyQuery({ ...memoizedQuery, ...memoizedRequestParams })
+    useFetchOnInitialMount(method, lazy, entityState, promiseProp)
+    useReFetchOnRefresh(refresh, method, lazy, promiseProp)
+    useReFetchOnQueryChange(
+      method,
+      lazy,
+      memoizedQuery,
+      memoizedRequestParams,
+      entityState,
+      promiseProp
     )
-    const refreshRef = useRef(refresh)
 
-    if (method === 'fetch' && !lazy) {
-      if (initialRun.current && !entityState) {
-        initialRun.current = false
-
-        promiseProp()
-      } else if (
-        queryRef.current !==
-          stringifyQuery({ ...memoizedQuery, ...memoizedRequestParams }) ||
-        refreshRef.current !== refresh
-      ) {
-        queryRef.current = stringifyQuery({
-          ...memoizedQuery,
-          ...memoizedRequestParams,
-        })
-        refreshRef.current = refresh
-
-        promiseProp()
-      }
-    }
-
-    const [initialRequestState] = useState(
-      method === 'fetch'
-        ? {
+    const [promiseState, setPromiseState] = useState(() => {
+      if (!requestState) {
+        if (method === 'fetch') {
+          return {
             pending: !entityState && !lazy,
             fulfilled: !!entityState,
+            rejected: false,
+            value: entityState,
           }
-        : {
-            pending: false,
-            fulfilled: false,
-          }
-    )
+        }
 
-    const [promiseState, setPromiseState] = useState({
-      ...(requestState || initialRequestState),
-      value: entityState,
+        return {
+          pending: false,
+          fulfilled: false,
+          rejected: false,
+          value: entityState,
+        }
+      }
+
+      return {
+        ...requestState,
+        value: entityState,
+      }
     })
 
     useEffect(() => {
@@ -186,6 +177,120 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     return [promiseState, promiseProp]
   }
+
+  const useActionCreator = (
+    method: MethodName,
+    { entityType, query, requestParams, refresh, elementId }
+  ) => {
+    const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
+
+    return useCallback(
+      (body) => {
+        switch (method) {
+          case 'fetch':
+            return actionCreator({
+              entityType,
+              query,
+              requestParams,
+              refresh,
+              body,
+            })
+
+          case 'create':
+            return actionCreator({
+              entityType,
+              elementId,
+              query,
+              requestParams,
+              body,
+            })
+
+          case 'update':
+          case 'remove':
+            return actionCreator({
+              entityType,
+              query,
+              requestParams,
+              body,
+            })
+
+          default:
+            invariant(false, `Unknown method ${method}`)
+        }
+      },
+      [
+        actionCreator,
+        elementId,
+        entityType,
+        method,
+        query,
+        refresh,
+        requestParams,
+      ]
+    )
+  }
+
+  return useApi
+}
+
+const useReFetchOnQueryChange = (
+  method,
+  lazy,
+  query,
+  requestParams,
+  entityState,
+  promiseProp
+) => {
+  const queryRef = useRef(stringifyQuery({ ...query, ...requestParams }))
+
+  const stringQuery = stringifyQuery({
+    ...query,
+    ...requestParams,
+  })
+
+  useEffect(() => {
+    if (method === 'fetch' && !lazy) {
+      if (queryRef.current !== stringQuery && !entityState) {
+        queryRef.current = stringQuery
+
+        promiseProp()
+      }
+    }
+  }, [
+    entityState,
+    lazy,
+    query,
+    requestParams,
+    method,
+    promiseProp,
+    stringQuery,
+  ])
+}
+
+const useReFetchOnRefresh = (refresh, method, lazy, promiseProp) => {
+  const refreshRef = useRef(refresh)
+
+  useEffect(() => {
+    if (method === 'fetch' && !lazy && refreshRef.current !== refresh) {
+      refreshRef.current = refresh
+
+      promiseProp()
+    }
+  }, [lazy, method, promiseProp, refresh])
+}
+
+const useFetchOnInitialMount = (method, lazy, entityState, promiseProp) => {
+  const initialRun = useRef(true)
+
+  useEffect(() => {
+    if (method === 'fetch' && !lazy) {
+      if (initialRun.current && !entityState) {
+        initialRun.current = false
+
+        promiseProp()
+      }
+    }
+  }, [entityState, lazy, method, promiseProp])
 }
 
 const useMemoized = (value) => {
@@ -220,7 +325,6 @@ const resolveOptions = (
         ...defaultOptions,
         ...rest,
 
-        denormalize: false,
         query: {
           [getIdAttribute(apiTypes, entityType)]: id,
         },
@@ -231,7 +335,6 @@ const resolveOptions = (
       return {
         ...defaultOptions,
         ...options,
-        denormalize: false,
       }
     }
 
@@ -242,63 +345,7 @@ const resolveOptions = (
     }
   }
 
-  return {
-    ...defaultOptions,
-    denormalize: false,
-  }
-}
-
-const useActionCreator = (
-  actionCreators,
-  method: MethodName,
-  { entityType, query, requestParams, refresh, elementId }
-) => {
-  const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
-
-  return useCallback(
-    (body) => {
-      switch (method) {
-        case 'fetch':
-          return actionCreator({
-            entityType,
-            query,
-            requestParams,
-            refresh,
-            body,
-          })
-
-        case 'create':
-          return actionCreator({
-            entityType,
-            elementId,
-            query,
-            requestParams,
-            body,
-          })
-
-        case 'update':
-        case 'remove':
-          return actionCreator({
-            entityType,
-            query,
-            requestParams,
-            body,
-          })
-
-        default:
-          invariant(false, `Unknown method ${method}`)
-      }
-    },
-    [
-      actionCreator,
-      elementId,
-      entityType,
-      method,
-      query,
-      refresh,
-      requestParams,
-    ]
-  )
+  return defaultOptions
 }
 
 export default createUseApi
