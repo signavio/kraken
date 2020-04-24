@@ -1,5 +1,6 @@
 import invariant from 'invariant'
 import { isArray, mapKeys, mapValues } from 'lodash'
+import { denormalize } from 'normalizr'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
 import { actionTypes } from '../../actions'
@@ -39,7 +40,14 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
         mapValues(
           promiseProps,
           (
-            { query, requestParams, refresh, type, method, denormalize },
+            {
+              query,
+              requestParams,
+              refresh,
+              type,
+              method,
+              denormalize: denormalizeValue,
+            },
             propName
           ) => {
             const entityState = getEntityState(types, state.kraken, {
@@ -50,7 +58,6 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
                 requestParams,
                 refresh,
                 elementId,
-                denormalizeValue: denormalize,
               },
             })
 
@@ -60,7 +67,15 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
               lastEntityState &&
               shallowEqual(entityState, lastEntityState)
 
-            return useMemoized ? lastEntityState : entityState
+            const finalValue = useMemoized ? lastEntityState : entityState
+
+            return denormalizeValue
+              ? denormalize(
+                  finalValue,
+                  types[type].schema,
+                  state.kraken.entities
+                )
+              : finalValue
           }
         ),
         (val, propName) => `${propName}_entity`
