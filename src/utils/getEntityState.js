@@ -1,6 +1,5 @@
 // @flow
 import { isArray } from 'lodash'
-import { denormalize } from 'normalizr'
 
 import {
   type ApiTypeMap,
@@ -27,7 +26,6 @@ const getEntityState = (
     action.payload.entityType
   )
 
-  const { denormalizeValue, entityType } = action.payload
   let finalValue
 
   if (isArray(value)) {
@@ -36,17 +34,7 @@ const getEntityState = (
     finalValue = entityCollection[value]
   }
 
-  if (finalValue) {
-    if (denormalizeValue) {
-      const { schema } = types[entityType]
-
-      return denormalize(value, schema, krakenState.entities)
-    }
-
-    return finalValue
-  }
-
-  return undefined
+  return finalValue
 }
 
 export default getEntityState

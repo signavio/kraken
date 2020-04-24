@@ -1,6 +1,7 @@
 // @flow
 import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
+import { denormalize } from 'normalizr'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
@@ -63,7 +64,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
       method,
       requestParams,
       refresh,
-      denormalize,
+      denormalize: denormalizeValue,
       lazy,
     } = resolveOptions(apiTypes, entityType, options)
 
@@ -93,10 +94,10 @@ function createUseApi(apiTypes: ApiTypeMap) {
       requestParams: memoizedRequestParams,
       refresh,
       elementId,
-      denormalize,
+      denormalize: denormalizeValue,
     })
 
-    const promiseProp = useCallback(body => dispatch(actionCreator(body)), [
+    const promiseProp = useCallback((body) => dispatch(actionCreator(body)), [
       actionCreator,
       dispatch,
     ])
@@ -112,21 +113,14 @@ function createUseApi(apiTypes: ApiTypeMap) {
       actionCreator()
     )
 
-    const lastEntityState = useRef(null)
-
     const currentEntityState = getEntityState(
       apiTypes,
       krakenState,
       actionCreator()
     )
+    const lastEntityState = useRef(currentEntityState)
 
     const entityState = useMemo(() => {
-      if (!lastEntityState.current) {
-        lastEntityState.current = currentEntityState
-
-        return currentEntityState
-      }
-
       if (
         Array.isArray(currentEntityState) &&
         !shallowEqual(currentEntityState, lastEntityState.current)
@@ -136,8 +130,13 @@ function createUseApi(apiTypes: ApiTypeMap) {
         return currentEntityState
       }
 
-      return lastEntityState.current 
+      if (lastEntityState.current !== currentEntityState) {
+        lastEntityState.current = currentEntityState
 
+        return currentEntityState
+      }
+
+      return lastEntityState.current
     }, [currentEntityState])
 
     const initialRun = useRef(true)
@@ -180,22 +179,40 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     const [promiseState, setPromiseState] = useState({
       ...(requestState || initialRequestState),
-      value: entityState,
+      value: denormalizeValue
+        ? denormalize(
+            entityState,
+            apiTypes[entityType].schema,
+            krakenState.entities
+          )
+        : entityState,
     })
 
     useEffect(() => {
-      setPromiseState(currentPromiseState => ({
+      setPromiseState((currentPromiseState) => ({
         ...currentPromiseState,
         ...requestState,
-        value: entityState,
+        value: denormalizeValue
+          ? denormalize(
+              entityState,
+              apiTypes[entityType].schema,
+              krakenState.entities
+            )
+          : entityState,
       }))
-    }, [entityState, requestState])
+    }, [
+      denormalizeValue,
+      entityState,
+      entityType,
+      krakenState.entities,
+      requestState,
+    ])
 
     return [promiseState, promiseProp]
   }
 }
 
-const useMemoized = value => {
+const useMemoized = (value) => {
   const [memoizedValue, setMemoizedValue] = useState(value)
 
   useEffect(() => {
@@ -261,7 +278,7 @@ const useActionCreator = (
   const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
 
   return useCallback(
-    body => {
+    (body) => {
       switch (method) {
         case 'fetch':
           return actionCreator({

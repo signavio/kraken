@@ -14,7 +14,7 @@ import expect from '../../expect'
 import { apiTypes, data, types } from '../fixtures'
 
 const useApi = createUseApi(apiTypes)
-const reudcer = createReducer(apiTypes)
+const reducer = createReducer(apiTypes)
 
 const { dispatchFetch } = createActionCreators(apiTypes)
 
@@ -23,7 +23,7 @@ const renderSpy = sinon.spy()
 const Posts = () => null
 const User = () => null
 
-const TestComponent = props => {
+const TestComponent = (props) => {
   const { id, refresh, lazy, denormalize } = props
 
   const [fetchUser] = useApi(types.USER, { id, refresh, lazy, denormalize })
@@ -88,9 +88,51 @@ const initialState = {
   },
 }
 
-const reducerSpy = sinon.spy((state, action) => reudcer(state, action))
+const reducerSpy = sinon.spy((state, action) => reducer(state, action))
 
-describe('useApi', () => {
+function render(Component, initialState) {
+  const reducerSpy = sinon.spy((state, action) => reducer(state, action))
+
+  const store = createStore(
+    combineReducers({ kraken: reducerSpy }),
+    initialState
+  )
+
+  reducerSpy.resetHistory()
+
+  const WrappedComponent = (props) => (
+    <Provider store={store}>
+      <Component {...props} />
+    </Provider>
+  )
+
+  return [mount(<WrappedComponent />), reducerSpy]
+}
+
+function loadData(type, data, query) {
+  const action = dispatchFetch({
+    entityType: type,
+    query,
+  })
+
+  const { entities } = normalize(data, apiTypes[type].schema, {})
+
+  return {
+    kraken: {
+      requests: {
+        [type]: {
+          [deriveRequestIdFromAction(action)]: {
+            value: data.id,
+            fulfilled: true,
+          },
+        },
+      },
+      entities,
+    },
+  }
+}
+
+describe.only('useApi', () => {
   let testStore
   let TestContainer
 
@@ -100,7 +142,7 @@ describe('useApi', () => {
       initialState
     )
 
-    TestContainer = props => (
+    TestContainer = (props) => (
       <Provider store={testStore}>
         <TestComponent {...props} />
       </Provider>
@@ -111,10 +153,15 @@ describe('useApi', () => {
   })
 
   it('should dispatch the FETCH_DISPATCH action on mount', () => {
-    mount(<TestContainer id={data.user.id} />)
+    const TestComponent = () => {
+      useApi(types.USER, { id: data.user.id })
 
-    expect(reducerSpy).to.have.been.calledOnce
-    expect(reducerSpy).to.have.been.calledWithMatch(
+      return null
+    }
+    const [, reducer] = render(TestComponent)
+
+    expect(reducer).to.have.been.calledOnce
+    expect(reducer).to.have.been.calledWithMatch(
       {},
       {
         type: actionTypes.FETCH_DISPATCH,
@@ -129,37 +176,50 @@ describe('useApi', () => {
   })
 
   it('should set `pending` flag on the injected prop if a request is dispatched', () => {
-    let component
+    const TestComponent = () => {
+      const [user] = useApi(types.USER, { id: data.user.id })
 
-    act(() => {
-      component = mount(<TestContainer id={data.user.id} />)
-    })
+      if (user.pending) {
+        return 'Pending'
+      }
+      return null
+    }
+
+    const [component] = render(TestComponent)
 
     expect(component.text()).to.equal('Pending')
   })
 
-  it('should set `fulfilled` flag and the value on the injected prop if the enitity is found in cache', () => {
-    let component
+  it('should set `fulfilled` flag and the value on the injected prop if the entity is found in cache', () => {
+    const TestComponent = () => {
+      const [user] = useApi(types.USER, { id: data.user.id })
 
-    act(() => {
-      component = mount(<TestContainer id="user-jane" />)
-    })
+      return user.value?.firstName
+    }
 
-    expect(component.find(User).prop('value')).to.eql({
-      ...jane,
-      posts: posts.map(({ id }) => id),
-    })
+    const [component] = render(
+      TestComponent,
+      loadData(types.USER, data.user, { id: data.user.id })
+    )
+
+    expect(component.text()).to.eql(data.user.firstName)
   })
 
-  it('should dispatch the FETCH_DISPATCH action when the promise props updates', () => {
-    const wrapper = mount(<TestContainer id={data.user.id} />)
-    reducerSpy.resetHistory()
+  it('should dispatch the FETCH_DISPATCH action when the query updates', () => {
+    const TestComponent = ({ id = data.user.id }) => {
+      useApi(types.USER, { id })
 
-    expect(reducerSpy).to.have.not.been.called
-    wrapper.setProps({ id: 'user-2' })
+      return null
+    }
 
-    expect(reducerSpy).to.have.been.calledOnce
-    expect(reducerSpy).to.have.been.calledWithMatch(
+    const [component, reducer] = render(TestComponent)
+
+    reducer.resetHistory()
+
+    component.setProps({ id: 'user-2' })
+
+    expect(reducer).to.have.been.calledOnce
+    expect(reducer).to.have.been.calledWithMatch(
       {},
       {
         type: actionTypes.FETCH_DISPATCH,
@@ -174,21 +234,37 @@ describe('useApi', () => {
   })
 
   it('should inline referenced data, when denormalize is used.', () => {
-    let component
+    const Spy = () => null
 
-    act(() => {
-      component = mount(<TestContainer id="user-jane" />)
-    })
+    const TestComponent = ({ id, denormalize }) => {
+      const [user] = useApi(types.USER, { id: jane.id, denormalize })
+      console.log('COMPONENT', user.value)
 
-    expect(component.find(Posts).prop('value')).to.eql(
-      posts.map(({ id }) => id)
+      return <Spy posts={user.value.posts} />
+    }
+
+    const [component] = render(
+      TestComponent,
+      loadData(types.USER, jane, { id: jane.id })
     )
 
+    expect(component.find(Spy).prop('posts')).to.eql(posts.map(({ id }) => id))
+
     act(() => {
-      component = mount(<TestContainer denormalize id="user-jane" />)
+      component.setProps({
+        denormalize: true,
+      })
     })
 
-    expect(component.find(Posts).prop('value')).to.eql(posts)
+    component.update()
+
+    expect(component.find(Spy).prop('posts')).to.eql(posts)
+
+    // act(() => {
+    //   component = mount(<TestContainer denormalize id="user-jane" />)
+    // })
+
+    // expect(component.find(Posts).prop('value')).to.eql(posts)
   })
 
   it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
