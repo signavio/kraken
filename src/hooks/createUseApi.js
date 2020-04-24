@@ -21,8 +21,6 @@ type BaseOptions = {|
   requestParams?: Query,
   refresh?: any,
   lazy?: boolean,
-  onSuccess?: () => void,
-  onFailure?: () => void,
 |}
 
 type QueryOptions = {|
@@ -42,9 +40,6 @@ type ResolvedOptions = {|
   lazy: boolean,
 
   refresh?: any,
-
-  onSuccess?: () => void,
-  onFailure?: () => void,
 |}
 
 type Options = BaseOptions | QueryOptions | IdOptions
