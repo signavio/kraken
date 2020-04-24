@@ -1,7 +1,7 @@
 // @flow
 import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
-import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
@@ -65,9 +65,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
       refresh,
       denormalize,
       lazy,
-
-      onSuccess,
-      onFailure,
     } = resolveOptions(apiTypes, entityType, options)
 
     invariant(
@@ -84,13 +81,16 @@ function createUseApi(apiTypes: ApiTypeMap) {
       `Invalid method "${method}" specified for api type "${entityType}"`
     )
 
-    const [elementId] = useState(uniqueId())
+    const memoizedQuery = useMemoized(query)
+    const memoizedRequestParams = useMemoized(requestParams)
+
+    const [elementId] = useState(() => uniqueId())
     const krakenState = useSelector(({ kraken }) => kraken)
     const dispatch = useDispatch()
-    const actionCreator = getActionCreator(actionCreators, method, {
+    const actionCreator = useActionCreator(actionCreators, method, {
       entityType,
-      query,
-      requestParams,
+      query: memoizedQuery,
+      requestParams: memoizedRequestParams,
       refresh,
       elementId,
       denormalize,
@@ -122,23 +122,36 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     const entityState = useMemo(() => {
       if (!lastEntityState.current) {
+        lastEntityState.current = currentEntityState
+
         return currentEntityState
       }
 
-      if (Array.isArray(currentEntityState)) {
-        return shallowEqual(currentEntityState, lastEntityState.current)
+      if (
+        Array.isArray(currentEntityState) &&
+        !shallowEqual(currentEntityState, lastEntityState.current)
+      ) {
+        lastEntityState.current = currentEntityState
+
+        return currentEntityState
       }
 
-      return (
+      if (
         JSON.stringify(currentEntityState) ===
         JSON.stringify(lastEntityState.current)
-      )
-    }, [lastEntityState, currentEntityState])
+      ) {
+        lastEntityState.current = currentEntityState
 
-    lastEntityState.current = currentEntityState
+        return currentEntityState
+      }
+
+      return lastEntityState.current
+    }, [currentEntityState])
 
     const initialRun = useRef(true)
-    const queryRef = useRef(stringifyQuery({ ...query, ...requestParams }))
+    const queryRef = useRef(
+      stringifyQuery({ ...memoizedQuery, ...memoizedRequestParams })
+    )
     const refreshRef = useRef(refresh)
 
     if (method === 'fetch' && !lazy) {
@@ -147,10 +160,14 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
         promiseProp()
       } else if (
-        queryRef.current !== stringifyQuery({ ...query, ...requestParams }) ||
+        queryRef.current !==
+          stringifyQuery({ ...memoizedQuery, ...memoizedRequestParams }) ||
         refreshRef.current !== refresh
       ) {
-        queryRef.current = stringifyQuery({ ...query, ...requestParams })
+        queryRef.current = stringifyQuery({
+          ...memoizedQuery,
+          ...memoizedRequestParams,
+        })
         refreshRef.current = refresh
 
         promiseProp()
@@ -169,11 +186,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
           }
     )
 
-    useRequestHandlers(requestState || initialRequestState, {
-      onSuccess,
-      onFailure,
-    })
-
     const [promiseState, setPromiseState] = useState({
       ...(requestState || initialRequestState),
       value: entityState,
@@ -191,53 +203,16 @@ function createUseApi(apiTypes: ApiTypeMap) {
   }
 }
 
-const useRequestHandlers = (requestState, { onSuccess, onFailure }) => {
-  useCallbackOnSuccess(requestState, onSuccess)
-  useCallbackOnFailure(requestState, onFailure)
-}
-
-const useCallbackOnFailure = (requestState, onFailure) => {
-  const pendingRef = useRef(null)
-
-  const { pending, rejected } = requestState
+const useMemoized = value => {
+  const [memoizedValue, setMemoizedValue] = useState(value)
 
   useEffect(() => {
-    if (!onFailure) {
-      return
+    if (!shallowEqual(memoizedValue, value)) {
+      setMemoizedValue(value)
     }
+  }, [memoizedValue, value])
 
-    if (pendingRef.current === null && rejected) {
-      onFailure()
-    }
-
-    if (pendingRef.current && !pending && rejected) {
-      onFailure()
-    }
-
-    pendingRef.current = pending
-  }, [pending, rejected, onFailure])
-}
-
-const useCallbackOnSuccess = (requestState, onSuccess) => {
-  const pendingRef = useRef(null)
-
-  const { pending, fulfilled } = requestState
-
-  useEffect(() => {
-    if (!onSuccess) {
-      return
-    }
-
-    if (pendingRef.current === null && fulfilled) {
-      onSuccess()
-    }
-
-    if (pendingRef.current && !pending && fulfilled) {
-      onSuccess()
-    }
-
-    pendingRef.current = pending
-  }, [pending, fulfilled, onSuccess])
+  return memoizedValue
 }
 
 const resolveOptions = (
@@ -286,48 +261,59 @@ const resolveOptions = (
   }
 }
 
-const getActionCreator = (
+const useActionCreator = (
   actionCreators,
   method: MethodName,
   { entityType, query, requestParams, refresh, elementId, denormalize }
 ) => {
   const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
 
-  switch (method) {
-    case 'fetch':
-      return body =>
-        actionCreator({
-          entityType,
-          query,
-          requestParams,
-          refresh,
-          body,
-          denormalizeValue: denormalize,
-        })
+  return useCallback(
+    body => {
+      switch (method) {
+        case 'fetch':
+          return actionCreator({
+            entityType,
+            query,
+            requestParams,
+            refresh,
+            body,
+            denormalizeValue: denormalize,
+          })
 
-    case 'create':
-      return body =>
-        actionCreator({
-          entityType,
-          elementId,
-          query,
-          requestParams,
-          body,
-        })
+        case 'create':
+          return actionCreator({
+            entityType,
+            elementId,
+            query,
+            requestParams,
+            body,
+          })
 
-    case 'update':
-    case 'remove':
-      return body =>
-        actionCreator({
-          entityType,
-          query,
-          requestParams,
-          body,
-        })
+        case 'update':
+        case 'remove':
+          return actionCreator({
+            entityType,
+            query,
+            requestParams,
+            body,
+          })
 
-    default:
-      invariant(false, `Unknown method ${method}`)
-  }
+        default:
+          invariant(false, `Unknown method ${method}`)
+      }
+    },
+    [
+      actionCreator,
+      denormalize,
+      elementId,
+      entityType,
+      method,
+      query,
+      refresh,
+      requestParams,
+    ]
+  )
 }
 
 export default createUseApi

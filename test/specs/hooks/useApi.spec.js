@@ -16,9 +16,7 @@ import { apiTypes, data, types } from '../fixtures'
 const useApi = createUseApi(apiTypes)
 const reudcer = createReducer(apiTypes)
 
-const { dispatchFetch, succeedFetch, failFetch } = createActionCreators(
-  apiTypes
-)
+const { dispatchFetch } = createActionCreators(apiTypes)
 
 const renderSpy = sinon.spy()
 
@@ -292,77 +290,5 @@ describe('useApi', () => {
         },
       }
     )
-  })
-
-  it('should be possible to pass a callback for when the request succeeds.', () => {
-    const onSuccess = sinon.spy()
-
-    const Component = () => {
-      useApi(types.USER, { id: 'some-user', onSuccess })
-
-      return null
-    }
-
-    mount(
-      <Provider store={testStore}>
-        <Component />
-      </Provider>
-    )
-
-    expect(onSuccess).not.to.have.been.called
-
-    act(() => {
-      testStore.dispatch(
-        succeedFetch({
-          entityType: types.USER,
-          requestId: deriveRequestIdFromAction({
-            type: actionTypes.FETCH_DISPATCH,
-            payload: {
-              entityType: types.USER,
-              query: {
-                id: 'some-user',
-              },
-            },
-          }),
-        })
-      )
-    })
-
-    expect(onSuccess).to.have.been.calledOnce
-  })
-
-  it('should be possible to pass a callback for when a request fails.', () => {
-    const onFailure = sinon.spy()
-
-    const Component = () => {
-      useApi(types.USER, { id: 'some-user' })
-
-      return null
-    }
-
-    mount(
-      <Provider store={testStore}>
-        <Component />
-      </Provider>
-    )
-
-    expect(onFailure).not.to.have.been.called
-
-    testStore.dispatch(
-      failFetch({
-        entityType: types.USER,
-        requestId: deriveRequestIdFromAction({
-          type: actionTypes.FETCH_DISPATCH,
-          payload: {
-            entityType: types.USER,
-            query: {
-              id: 'some-user',
-            },
-          },
-        }),
-      })
-    )
-
-    expect(onFailure).not.to.have.been.calledOnce
   })
 })
