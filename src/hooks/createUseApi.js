@@ -3,7 +3,7 @@ import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import shallowEqual from 'react-redux/lib/utils/shallowEqual'
+import { shallowEqual } from 'react-redux'
 
 import createActionCreators from '../actions'
 import {
