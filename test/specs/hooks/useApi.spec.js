@@ -132,7 +132,7 @@ function loadData(type, data, query) {
   }
 }
 
-describe.only('useApi', () => {
+describe('useApi', () => {
   let testStore
   let TestContainer
 
