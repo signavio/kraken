@@ -136,16 +136,8 @@ function createUseApi(apiTypes: ApiTypeMap) {
         return currentEntityState
       }
 
-      if (
-        JSON.stringify(currentEntityState) ===
-        JSON.stringify(lastEntityState.current)
-      ) {
-        lastEntityState.current = currentEntityState
+      return lastEntityState.current 
 
-        return currentEntityState
-      }
-
-      return lastEntityState.current
     }, [currentEntityState])
 
     const initialRun = useRef(true)
