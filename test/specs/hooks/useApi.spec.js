@@ -238,7 +238,6 @@ describe('useApi', () => {
 
     const TestComponent = ({ id, denormalize }) => {
       const [user] = useApi(types.USER, { id: jane.id, denormalize })
-      console.log('COMPONENT', user.value)
 
       return <Spy posts={user.value.posts} />
     }
