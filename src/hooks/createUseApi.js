@@ -1,7 +1,6 @@
 // @flow
 import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
-import { denormalize } from 'normalizr'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import shallowEqual from 'react-redux/lib/utils/shallowEqual'
@@ -59,14 +58,11 @@ function createUseApi(apiTypes: ApiTypeMap) {
     entityType: $Keys<ApiTypeMap>,
     options?: Options
   ): [RequestStatus<Value>, RequestAction<Body>] {
-    const {
-      query,
-      method,
-      requestParams,
-      refresh,
-      denormalize: denormalizeValue,
-      lazy,
-    } = resolveOptions(apiTypes, entityType, options)
+    const { query, method, requestParams, refresh, lazy } = resolveOptions(
+      apiTypes,
+      entityType,
+      options
+    )
 
     invariant(
       apiTypes[entityType],
@@ -94,7 +90,6 @@ function createUseApi(apiTypes: ApiTypeMap) {
       requestParams: memoizedRequestParams,
       refresh,
       elementId,
-      denormalize: denormalizeValue,
     })
 
     const promiseProp = useCallback((body) => dispatch(actionCreator(body)), [
@@ -121,19 +116,18 @@ function createUseApi(apiTypes: ApiTypeMap) {
     const lastEntityState = useRef(currentEntityState)
 
     const entityState = useMemo(() => {
-      if (
-        Array.isArray(currentEntityState) &&
-        !shallowEqual(currentEntityState, lastEntityState.current)
-      ) {
-        lastEntityState.current = currentEntityState
+      if (Array.isArray(currentEntityState)) {
+        if (!shallowEqual(currentEntityState, lastEntityState.current)) {
+          lastEntityState.current = currentEntityState
 
-        return currentEntityState
-      }
+          return currentEntityState
+        }
+      } else {
+        if (lastEntityState.current !== currentEntityState) {
+          lastEntityState.current = currentEntityState
 
-      if (lastEntityState.current !== currentEntityState) {
-        lastEntityState.current = currentEntityState
-
-        return currentEntityState
+          return currentEntityState
+        }
       }
 
       return lastEntityState.current
@@ -179,34 +173,16 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     const [promiseState, setPromiseState] = useState({
       ...(requestState || initialRequestState),
-      value: denormalizeValue
-        ? denormalize(
-            entityState,
-            apiTypes[entityType].schema,
-            krakenState.entities
-          )
-        : entityState,
+      value: entityState,
     })
 
     useEffect(() => {
       setPromiseState((currentPromiseState) => ({
         ...currentPromiseState,
         ...requestState,
-        value: denormalizeValue
-          ? denormalize(
-              entityState,
-              apiTypes[entityType].schema,
-              krakenState.entities
-            )
-          : entityState,
+        value: entityState,
       }))
-    }, [
-      denormalizeValue,
-      entityState,
-      entityType,
-      krakenState.entities,
-      requestState,
-    ])
+    }, [entityState, requestState])
 
     return [promiseState, promiseProp]
   }
@@ -233,7 +209,6 @@ const resolveOptions = (
     query: {},
     requestParams: {},
     method: 'fetch',
-    denormalize: false,
     lazy: false,
   }
 
@@ -245,6 +220,7 @@ const resolveOptions = (
         ...defaultOptions,
         ...rest,
 
+        denormalize: false,
         query: {
           [getIdAttribute(apiTypes, entityType)]: id,
         },
@@ -255,6 +231,7 @@ const resolveOptions = (
       return {
         ...defaultOptions,
         ...options,
+        denormalize: false,
       }
     }
 
@@ -267,13 +244,14 @@ const resolveOptions = (
 
   return {
     ...defaultOptions,
+    denormalize: false,
   }
 }
 
 const useActionCreator = (
   actionCreators,
   method: MethodName,
-  { entityType, query, requestParams, refresh, elementId, denormalize }
+  { entityType, query, requestParams, refresh, elementId }
 ) => {
   const actionCreator = actionCreators[`dispatch${capitalize(method)}`]
 
@@ -287,7 +265,6 @@ const useActionCreator = (
             requestParams,
             refresh,
             body,
-            denormalizeValue: denormalize,
           })
 
         case 'create':
@@ -314,7 +291,6 @@ const useActionCreator = (
     },
     [
       actionCreator,
-      denormalize,
       elementId,
       entityType,
       method,

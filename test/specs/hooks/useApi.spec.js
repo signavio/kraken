@@ -233,39 +233,6 @@ describe('useApi', () => {
     )
   })
 
-  it('should inline referenced data, when denormalize is used.', () => {
-    const Spy = () => null
-
-    const TestComponent = ({ id, denormalize }) => {
-      const [user] = useApi(types.USER, { id: jane.id, denormalize })
-
-      return <Spy posts={user.value.posts} />
-    }
-
-    const [component] = render(
-      TestComponent,
-      loadData(types.USER, jane, { id: jane.id })
-    )
-
-    expect(component.find(Spy).prop('posts')).to.eql(posts.map(({ id }) => id))
-
-    act(() => {
-      component.setProps({
-        denormalize: true,
-      })
-    })
-
-    component.update()
-
-    expect(component.find(Spy).prop('posts')).to.eql(posts)
-
-    // act(() => {
-    //   component = mount(<TestContainer denormalize id="user-jane" />)
-    // })
-
-    // expect(component.find(Posts).prop('value')).to.eql(posts)
-  })
-
   it('should dispatch FETCH_DISPATCH action if the refresh token is not matching', () => {
     const component = mount(<TestContainer id="user-jane" />)
 
