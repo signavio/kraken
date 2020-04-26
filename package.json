@@ -67,7 +67,7 @@
     "istanbul": "1.1.0-alpha.1",
     "jsdom": "16.2.2",
     "madge": "3.8.0",
-    "mocha": "7.1.1",
+    "mocha": "7.1.2",
     "normalizr": "3.6.0",
     "prettier": "2.0.2",
     "react": "16.13.1",
