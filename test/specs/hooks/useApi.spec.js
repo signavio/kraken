@@ -1,4 +1,5 @@
 import { mount } from 'enzyme'
+import invariant from 'invariant'
 import { normalize } from 'normalizr'
 import React, { Fragment } from 'react'
 import { act } from 'react-dom/test-utils'
@@ -150,6 +151,29 @@ describe('useApi', () => {
 
     renderSpy.resetHistory()
     reducerSpy.resetHistory()
+  })
+
+  it('should keep the request and entity states in sync.', () => {
+    const TestComponent = ({ id = data.user.id }) => {
+      const [user] = useApi(types.USER, { id })
+
+      if (user.fulfilled) {
+        invariant(user.value, 'Values must be present on fulfilled requests')
+      }
+
+      return null
+    }
+
+    const [component] = render(
+      TestComponent,
+      loadData(types.USER, data.user, { id: data.user.id })
+    )
+
+    const updateQuery = () => {
+      component.setProps({ id: 'another-id' })
+    }
+
+    expect(updateQuery).not.to.throw()
   })
 
   it('should dispatch the FETCH_DISPATCH action on mount', () => {

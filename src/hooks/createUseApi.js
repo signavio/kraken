@@ -128,7 +128,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     useFetchOnInitialMount(method, lazy, entityState, promiseProp)
     useReFetchOnRefresh(refresh, method, lazy, promiseProp)
-    useReFetchOnQueryChange(
+    const willReFetch = useReFetchOnQueryChange(
       method,
       lazy,
       memoizedQuery,
@@ -166,9 +166,17 @@ function createUseApi(apiTypes: ApiTypeMap) {
       setPromiseState((currentPromiseState) => ({
         ...currentPromiseState,
         ...requestState,
+
+        fulfilled:
+          (willReFetch ? false : requestState?.fulfilled) ??
+          currentPromiseState.fulfilled,
+        pending:
+          (willReFetch ? true : requestState?.pending) ??
+          currentPromiseState.pending,
+
         value: entityState,
       }))
-    }, [entityState, requestState])
+    }, [entityState, requestState, willReFetch])
 
     return [promiseState, promiseProp]
   }
@@ -243,23 +251,21 @@ const useReFetchOnQueryChange = (
     ...requestParams,
   })
 
-  useEffect(() => {
-    if (method === 'fetch' && !lazy) {
-      if (queryRef.current !== stringQuery && !entityState) {
-        queryRef.current = stringQuery
+  let needsReFetch = false
 
-        promiseProp()
-      }
+  if (method === 'fetch' && !lazy) {
+    if (queryRef.current !== stringQuery && !entityState) {
+      needsReFetch = true
     }
-  }, [
-    entityState,
-    lazy,
-    query,
-    requestParams,
-    method,
-    promiseProp,
-    stringQuery,
-  ])
+  }
+
+  useEffect(() => {
+    if (needsReFetch) {
+      promiseProp()
+    }
+  }, [needsReFetch, promiseProp])
+
+  return needsReFetch
 }
 
 const useReFetchOnRefresh = (refresh, method, lazy, promiseProp) => {
