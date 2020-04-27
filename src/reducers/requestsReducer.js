@@ -1,9 +1,8 @@
 import { startsWith } from 'lodash'
 
-import { ApiTypeMap, RequestsState, Action } from '../flowTypes'
-
-import { deriveRequestIdFromAction } from '../utils'
 import { actionTypes } from '../actions'
+import { Action, ApiTypeMap, RequestsState } from '../flowTypes'
+import { deriveRequestIdFromAction } from '../utils'
 
 const requestsReducer = (state: RequestsState, action: Action) => {
   const { payload = {} } = action
@@ -28,6 +27,7 @@ const requestsReducer = (state: RequestsState, action: Action) => {
           query: payload.query,
           body: payload.body,
           requestParams: payload.requestParams,
+          fulfilled: false,
           pending: true,
           refresh:
             payload.refresh !== undefined ? payload.refresh : request.refresh,

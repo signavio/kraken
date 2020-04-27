@@ -10,14 +10,13 @@
       "name": "Debug tests",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
       "stopOnEntry": false,
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "externalConsole": false,
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
       "sourceMaps": true,
-      "outDir": null,
-      "protocol": "inspector"
+      "outFiles": [
+        "${workspaceFolder}/lib/**/*.js",
+        "${workspaceFolder}/lib-es6/**/*.js"
+      ]
     }
   ]
 }

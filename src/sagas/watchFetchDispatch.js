@@ -18,7 +18,7 @@ export const createFetchSaga = (types: ApiTypeMap) => {
 
     const requestId = deriveRequestIdFromAction(action)
     const { headers, credentials, apiBase } = getState().kraken.metaData
-    const request = getRequestState(types, getState(), action)
+    const request = getRequestState(types, getState().kraken.requests, action)
     const entityType = action.payload.entityType
 
     if (request && !request.outstanding) {

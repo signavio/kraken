@@ -1,7 +1,11 @@
 // @flow
 import { useSelector } from 'react-redux'
 
-import { type MetaData, type State } from '../flowTypes'
+import { type KrakenState, type MetaData } from '../flowTypes'
+
+type State = {|
+  kraken: KrakenState,
+|}
 
 function useApiBase(): string {
   const metaData = useSelector<State, MetaData>(({ kraken }) => kraken.metaData)

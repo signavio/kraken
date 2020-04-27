@@ -1,11 +1,10 @@
-import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 import invariant from 'invariant'
+import { isArray, mapKeys, mapValues } from 'lodash'
+import { denormalize } from 'normalizr'
+import shallowEqual from 'react-redux/lib/utils/shallowEqual'
 
-import { mapValues, mapKeys, isArray } from 'lodash'
-
-import { getRequestState, getEntityState } from '../../utils'
 import { actionTypes } from '../../actions'
-
+import { getEntityState, getRequestState } from '../../utils'
 import { ELEMENT_ID_PROP_NAME } from './constants'
 
 const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
@@ -24,7 +23,7 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
         mapValues(
           promiseProps,
           ({ query, requestParams, type, method }, propName) =>
-            getRequestState(types, state, {
+            getRequestState(types, state.kraken.requests, {
               type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
               payload: {
                 entityType: type,
@@ -41,10 +40,17 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
         mapValues(
           promiseProps,
           (
-            { query, requestParams, refresh, type, method, denormalize },
+            {
+              query,
+              requestParams,
+              refresh,
+              type,
+              method,
+              denormalize: denormalizeValue,
+            },
             propName
           ) => {
-            const entityState = getEntityState(types, state, {
+            const entityState = getEntityState(types, state.kraken, {
               type: actionTypes[`${method.toUpperCase()}_DISPATCH`],
               payload: {
                 entityType: type,
@@ -52,7 +58,6 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
                 requestParams,
                 refresh,
                 elementId,
-                denormalizeValue: denormalize,
               },
             })
 
@@ -62,7 +67,15 @@ const mapStateToProps = ({ types, finalMapPropsToPromiseProps }) => () => {
               lastEntityState &&
               shallowEqual(entityState, lastEntityState)
 
-            return useMemoized ? lastEntityState : entityState
+            const finalValue = useMemoized ? lastEntityState : entityState
+
+            return denormalizeValue
+              ? denormalize(
+                  finalValue,
+                  types[type].schema,
+                  state.kraken.entities
+                )
+              : finalValue
           }
         ),
         (val, propName) => `${propName}_entity`
