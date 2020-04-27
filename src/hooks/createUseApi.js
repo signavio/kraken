@@ -8,7 +8,10 @@ import { shallowEqual } from 'react-redux'
 import createActionCreators from '../actions'
 import {
   type ApiTypeMap,
+  type FulfilledRequest,
+  type FutureRequest,
   type MethodName,
+  type PendingRequest,
   type Query,
   type RequestAction,
   type RequestStatus,
@@ -138,28 +141,47 @@ function createUseApi(apiTypes: ApiTypeMap) {
     )
 
     const [promiseState, setPromiseState] = useState(() => {
-      if (!requestState) {
-        if (method === 'fetch') {
-          return {
-            pending: !entityState && !lazy,
-            fulfilled: !!entityState,
-            rejected: false,
-            value: entityState,
-          }
-        }
-
+      if (requestState) {
         return {
-          pending: false,
-          fulfilled: false,
-          rejected: false,
+          ...requestState,
           value: entityState,
         }
       }
 
-      return {
-        ...requestState,
-        value: entityState,
+      if (method !== 'fetch') {
+        return ({
+          pending: false,
+          fulfilled: false,
+          rejected: false,
+          value: entityState,
+        }: FutureRequest<Value>)
       }
+
+      if (!entityState && !lazy) {
+        return ({
+          pending: true,
+          fulfilled: false,
+          rejected: false,
+          value: entityState,
+        }: PendingRequest<Value>)
+      }
+
+      if (entityState) {
+        return ({
+          pending: false,
+          fulfilled: true,
+          rejected: false,
+          status: 200,
+          value: entityState,
+        }: FulfilledRequest<Value>)
+      }
+
+      return ({
+        pending: false,
+        fulfilled: false,
+        rejected: false,
+        value: entityState,
+      }: FutureRequest<Value>)
     })
 
     useEffect(() => {

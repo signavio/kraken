@@ -1,6 +1,14 @@
 // @flow
 
-type FulfilledRequest<Value> = {|
+export type FutureRequest<Value> = {|
+  fulfilled: false,
+  pending: false,
+  rejected: false,
+
+  value: ?Value,
+|}
+
+export type FulfilledRequest<Value> = {|
   status: number,
 
   value: Value,
@@ -16,7 +24,7 @@ type FulfilledPromise<Value, Body> = {|
   ...FulfilledRequest<Value>,
 |}
 
-type PendingRequest<Value> = {|
+export type PendingRequest<Value> = {|
   value: ?Value,
 
   pending: true,
@@ -30,7 +38,7 @@ type PendingPromise<Value, Body> = {|
   ...PendingRequest<Value>,
 |}
 
-type RejectedRequest = {|
+export type RejectedRequest = {|
   status: number,
 
   value: void,
@@ -54,6 +62,7 @@ export type PromiseProp<Value, Body = Value> =
   | FulfilledPromise<Value, Body>
 
 export type RequestStatus<Value> =
+  | FutureRequest<Value>
   | PendingRequest<Value>
   | RejectedRequest
   | FulfilledRequest<Value>
