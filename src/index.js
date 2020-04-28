@@ -1,3 +1,4 @@
+// @flow
 import createActions, { actionTypes } from './actions'
 import { cachePolicies } from './cachePolicies'
 import callApi from './callApi'
