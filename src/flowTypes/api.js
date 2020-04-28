@@ -3,16 +3,15 @@ import { schema } from 'normalizr'
 
 import { type Action } from './actions'
 import { type EntitiesState, type EntityCollectionT } from './entityState'
-import { type Query } from './requestState'
 
 export type normalizrResult =
   | { response: { result: string | Array<string>, entities: EntitiesState } }
   | { error: any }
 
 type ApiRequest = (
-  query?: Query,
-  body?: any,
-  requestParams?: Query
+  query: any,
+  body: any,
+  requestParams: any
 ) => Promise<normalizrResult>
 
 type RequestOptions = {|
@@ -24,7 +23,7 @@ export type CallApi = (
   url: string,
   schema: schema.Array | schema.Entity,
   options?: RequestOptions
-) => Promise<JSON>
+) => Promise<normalizrResult>
 
 type ApiCreator = (callApi: CallApi, apiBase: string) => ApiRequest
 
