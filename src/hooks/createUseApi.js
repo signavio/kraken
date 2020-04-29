@@ -3,7 +3,7 @@ import invariant from 'invariant'
 import { capitalize, uniqueId } from 'lodash'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { shallowEqual } from 'react-redux'
+import { shallowEqualArrays, shallowEqualObjects } from 'shallow-equal'
 
 import createActionCreators from '../actions'
 import {
@@ -113,7 +113,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
     const entityState = useMemo(() => {
       if (Array.isArray(currentEntityState)) {
-        if (!shallowEqual(currentEntityState, lastEntityState.current)) {
+        if (!shallowEqualArrays(currentEntityState, lastEntityState.current)) {
           lastEntityState.current = currentEntityState
 
           return currentEntityState
@@ -320,7 +320,7 @@ const useMemoized = (value) => {
   const [memoizedValue, setMemoizedValue] = useState(value)
 
   useEffect(() => {
-    if (!shallowEqual(memoizedValue, value)) {
+    if (!shallowEqualObjects(memoizedValue, value)) {
       setMemoizedValue(value)
     }
   }, [memoizedValue, value])
