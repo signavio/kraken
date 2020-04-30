@@ -173,6 +173,7 @@ function createUseApi(apiTypes: ApiTypeMap) {
           rejected: false,
           status: 200,
           value: entityState,
+          responseHeaders: new Headers(),
         }: FulfilledRequest<Value>)
       }
 

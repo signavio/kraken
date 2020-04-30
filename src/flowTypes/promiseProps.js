@@ -16,6 +16,8 @@ export type FulfilledRequest<Value> = {|
   fulfilled: true,
   pending: false,
   rejected: false,
+
+  responseHeaders: Headers,
 |}
 
 type FulfilledPromise<Value, Body> = {|
@@ -48,6 +50,8 @@ export type RejectedRequest = {|
 
   fulfilled: false,
   pending: false,
+
+  responseHeaders: Headers,
 |}
 
 type RejectedPromise<Body> = {|
