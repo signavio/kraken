@@ -1,23 +1,23 @@
 // @flow
+import {
+  type FulfilledKrakenRequest,
+  type FutureKrakenRequest,
+  type PendingKrakenRequest,
+  type RejectedKrakenRequest,
+} from './requestState'
 
 export type FutureRequest<Value> = {|
-  fulfilled: false,
-  pending: false,
-  rejected: false,
+  ...FutureKrakenRequest,
 
   value: ?Value,
 |}
 
 export type FulfilledRequest<Value> = {|
+  ...FulfilledKrakenRequest,
+
   status: number,
 
   value: Value,
-
-  fulfilled: true,
-  pending: false,
-  rejected: false,
-
-  responseHeaders: Headers,
 |}
 
 type FulfilledPromise<Value, Body> = {|
@@ -27,11 +27,9 @@ type FulfilledPromise<Value, Body> = {|
 |}
 
 export type PendingRequest<Value> = {|
-  value: ?Value,
+  ...PendingKrakenRequest,
 
-  pending: true,
-  fulfilled: false,
-  rejected: false,
+  value: ?Value,
 |}
 
 type PendingPromise<Value, Body> = {|
@@ -41,17 +39,9 @@ type PendingPromise<Value, Body> = {|
 |}
 
 export type RejectedRequest = {|
+  ...RejectedKrakenRequest,
+
   status: number,
-
-  value: void,
-
-  rejected: true,
-  reason: string,
-
-  fulfilled: false,
-  pending: false,
-
-  responseHeaders: Headers,
 |}
 
 type RejectedPromise<Body> = {|

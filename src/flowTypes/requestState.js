@@ -4,13 +4,24 @@ export type Query = {
 }
 
 type RequestBase = {|
-  outstanding: boolean,
-
   refresh: any,
   query: Query,
+  requestParams: Query,
+
+  outstanding: boolean,
 |}
 
-type PendingRequest = {|
+export type FutureKrakenRequest = {|
+  ...RequestBase,
+
+  pending: false,
+  fulfilled: false,
+  rejected: false,
+
+  value: void | string | Array<string>,
+|}
+
+export type PendingKrakenRequest = {|
   ...RequestBase,
 
   pending: true,
@@ -20,7 +31,7 @@ type PendingRequest = {|
   value: string | Array<string> | null,
 |}
 
-type FulfilledRequest = {|
+export type FulfilledKrakenRequest = {|
   ...RequestBase,
 
   pending: false,
@@ -28,9 +39,11 @@ type FulfilledRequest = {|
   rejected: false,
 
   value: string | Array<string>,
+
+  responseHeaders: Headers,
 |}
 
-type RejectedRequest = {|
+export type RejectedKrakenRequest = {|
   ...RequestBase,
 
   pending: false,
@@ -42,7 +55,10 @@ type RejectedRequest = {|
   value: null,
 |}
 
-export type Request = PendingRequest | FulfilledRequest | RejectedRequest
+export type Request =
+  | PendingKrakenRequest
+  | FulfilledKrakenRequest
+  | RejectedKrakenRequest
 
 export type RequestCollection = {|
   [requestId: string]: Request,

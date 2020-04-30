@@ -150,38 +150,54 @@ function createUseApi(apiTypes: ApiTypeMap) {
 
       if (method !== 'fetch') {
         return ({
+          outstanding: false,
           pending: false,
           fulfilled: false,
           rejected: false,
           value: entityState,
+          query: memoizedQuery,
+          requestParams: memoizedRequestParams,
+          refresh,
         }: FutureRequest<Value>)
       }
 
       if (!entityState && !lazy) {
         return ({
+          outstanding: false,
           pending: true,
           fulfilled: false,
           rejected: false,
           value: entityState,
+          query: memoizedQuery,
+          requestParams: memoizedRequestParams,
+          refresh,
         }: PendingRequest<Value>)
       }
 
       if (entityState) {
         return ({
+          outstanding: false,
           pending: false,
           fulfilled: true,
           rejected: false,
           status: 200,
           value: entityState,
+          query: memoizedQuery,
+          requestParams: memoizedRequestParams,
+          refresh,
           responseHeaders: new Headers(),
         }: FulfilledRequest<Value>)
       }
 
       return ({
+        outstanding: false,
         pending: false,
         fulfilled: false,
         rejected: false,
         value: entityState,
+        query: memoizedQuery,
+        requestParams: memoizedRequestParams,
+        refresh,
       }: FutureRequest<Value>)
     })
 
