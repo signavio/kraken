@@ -28,7 +28,7 @@ type BaseOptions = {|
 
 type QueryOptions = {|
   ...BaseOptions,
-  query: Query,
+  query: any,
 |}
 
 type IdOptions = {|
