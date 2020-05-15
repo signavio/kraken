@@ -269,6 +269,18 @@ describe('useApi', () => {
     expect(reducerSpy).to.have.been.calledOnce
   })
 
+  it('should dispatch FETCH_DISPATCH action if the refresh token is not matching after a remount', () => {
+    const component = mount(<TestContainer id="user-jane" refresh={3} />)
+
+    expect(reducerSpy).to.have.been.calledOnce
+
+    component.unmount()
+
+    mount(<TestContainer id="user-jane" refresh={4} />)
+
+    expect(reducerSpy).to.have.been.calledTwice
+  })
+
   it('should never dispatch FETCH_DISPATCH action if the `lazy` flag is set', () => {
     const wrapper = mount(<TestContainer id="id-of-non-cached-item" lazy />)
     expect(reducerSpy).to.have.not.been.called

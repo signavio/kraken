@@ -130,7 +130,13 @@ function createUseApi(apiTypes: ApiTypeMap) {
     }, [currentEntityState])
 
     useFetchOnInitialMount(method, lazy, entityState, promiseProp)
-    useReFetchOnRefresh(refresh, method, lazy, promiseProp)
+    useReFetchOnRefresh(
+      refresh,
+      method,
+      lazy,
+      promiseProp,
+      requestState?.refresh
+    )
     const willReFetch = useReFetchOnQueryChange(
       method,
       lazy,
@@ -307,16 +313,23 @@ const useReFetchOnQueryChange = (
   return needsReFetch
 }
 
-const useReFetchOnRefresh = (refresh, method, lazy, promiseProp) => {
-  const refreshRef = useRef(refresh)
-
+const useReFetchOnRefresh = (
+  refresh,
+  method,
+  lazy,
+  promiseProp,
+  currentRefreshToken
+) => {
   useEffect(() => {
-    if (method === 'fetch' && !lazy && refreshRef.current !== refresh) {
-      refreshRef.current = refresh
-
+    if (
+      method === 'fetch' &&
+      !lazy &&
+      refresh &&
+      currentRefreshToken !== refresh
+    ) {
       promiseProp()
     }
-  }, [lazy, method, promiseProp, refresh])
+  }, [lazy, method, promiseProp, refresh, currentRefreshToken])
 }
 
 const useFetchOnInitialMount = (method, lazy, entityState, promiseProp) => {
