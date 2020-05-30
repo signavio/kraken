@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@babel/cli": "7.10.1",
-    "@babel/core": "7.10.1",
+    "@babel/core": "7.10.2",
     "@babel/plugin-proposal-class-properties": "7.10.1",
     "@babel/plugin-proposal-export-namespace-from": "7.10.1",
     "@babel/plugin-proposal-function-bind": "7.10.1",
@@ -46,7 +46,7 @@
     "@babel/plugin-transform-flow-strip-types": "7.10.1",
     "@babel/plugin-transform-runtime": "7.10.1",
     "@babel/polyfill": "7.10.1",
-    "@babel/preset-env": "7.10.1",
+    "@babel/preset-env": "7.10.2",
     "@babel/preset-react": "7.10.1",
     "@babel/register": "7.10.1",
     "babel-eslint": "10.1.0",
